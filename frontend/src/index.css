@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-blue-gradient text-white font-semibold px-5 py-2.5 shadow-card hover:shadow-cardHover transition-all duration-200 hover:-translate-y-0.5;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-white text-navy font-semibold px-5 py-2.5 border border-slate/20 hover:border-primary/40 hover:bg-veryLightBlue transition-all duration-200;
+  }
+  .card {
+    @apply bg-white rounded-2xl border border-slate/10 shadow-card p-6;
+  }
+  .input-field {
+    @apply w-full rounded-xl border border-slate/20 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+
+  .sidebar-shell {
+    @apply flex-col shrink-0 sticky top-0 h-screen bg-white border-r border-slate/15 transition-[width] duration-300 ease-out;
+  }
+  .nav-section-label {
+    @apply px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-slate/45;
+  }
+  .nav-item {
+    @apply relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate transition-all duration-200 hover:bg-veryLightBlue hover:text-navy;
+  }
+  .nav-item-active {
+    @apply bg-primary/[0.09] text-primary shadow-[inset_3px_0_0_#2563EB];
+  }
+  .sidebar-collapse {
+    @apply mt-3 flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate transition-colors hover:bg-veryLightBlue hover:text-navy;
+  }
+  .topbar-shell {
+    @apply sticky top-0 z-30 flex h-[76px] items-center gap-5 border-b border-slate/15 bg-white/90 px-4 backdrop-blur-xl md:px-7;
+  }
+  .topbar-search {
+    @apply mx-auto items-center gap-2 rounded-xl border border-slate/15 bg-veryLightBlue/70 px-3 py-2 text-slate w-full max-w-md focus-within:border-primary/40 focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/5 transition-all;
+  }
+  .topbar-search input { @apply min-w-0 flex-1 bg-transparent text-sm text-navy outline-none placeholder:text-slate/55; }
+  .topbar-search kbd { @apply inline-flex items-center gap-0.5 rounded-md border border-slate/15 bg-white px-1.5 py-0.5 text-[10px] font-medium text-slate; }
+  .topbar-icon { @apply relative grid h-9 w-9 place-items-center rounded-xl text-slate transition-colors hover:bg-veryLightBlue hover:text-navy; }
+  .topbar-icon span { @apply absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-danger ring-2 ring-white; }
+
+  .progress-hero {
+    @apply relative overflow-hidden rounded-3xl bg-navy px-5 py-6 text-white shadow-[0_18px_45px_-24px_rgba(15,23,42,.65)] sm:px-8 sm:py-8 md:flex md:items-end md:justify-between md:gap-8;
+    background-image: radial-gradient(circle at 83% 10%, rgba(56, 189, 248, .35), transparent 28%), linear-gradient(135deg, #0F172A 0%, #172554 100%);
+  }
+  .progress-hero h1 { @apply mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl; }
+  .progress-hero > div:first-child > p:last-child { @apply mt-2 max-w-xl text-sm leading-relaxed text-white/70 sm:text-base; }
+  .eyebrow { @apply flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate/60; }
+  .progress-hero .eyebrow { @apply text-sky; }
+  .progress-hero-readiness { @apply relative mt-6 w-full max-w-xs rounded-2xl border border-white/10 bg-white/[0.08] p-4 backdrop-blur-sm md:mt-0; }
+  .progress-hero-readiness span { @apply text-xs font-semibold text-white/70; }
+  .progress-hero-readiness strong { @apply ml-2 text-2xl font-extrabold; }
+  .progress-hero-readiness > div { @apply mt-3 h-1.5 overflow-hidden rounded-full bg-white/15; }
+  .progress-hero-readiness i { @apply block h-full rounded-full bg-sky; }
+  .progress-hero-readiness p { @apply mt-2 text-[11px] text-white/70; }
+  .progress-metric-card { @apply flex items-center gap-4 p-4 sm:p-5; }
+  .progress-metric-icon { @apply grid h-10 w-10 shrink-0 place-items-center rounded-xl; }
+  .metric-blue { @apply bg-primary/10 text-primary; }
+  .metric-violet { @apply bg-violet-100 text-violet-600; }
+  .metric-amber { @apply bg-amber-100 text-amber-600; }
+  .metric-emerald { @apply bg-emerald-100 text-emerald-600; }
+  .progress-card-heading { @apply flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between sm:px-6 sm:pt-6; }
+  .progress-card-heading h2, .next-step-card h2, .insight-card h2 { @apply mt-1 text-lg font-extrabold tracking-tight text-navy; }
+  .progress-card-heading > div > p:last-child { @apply mt-1 text-sm text-slate; }
+  .progress-select { @apply rounded-xl border border-slate/15 bg-white px-3 py-2 text-sm font-semibold text-navy outline-none focus:border-primary focus:ring-4 focus:ring-primary/10; }
+  .skill-snapshot-card { @apply p-5 sm:p-6; }
+  .skill-level-track { @apply h-2 overflow-hidden rounded-full bg-veryLightBlue; }
+  .skill-level-track span { @apply block h-full rounded-full bg-sky; }
+  .skill-level-track .top-skill { @apply bg-blue-gradient; }
+  .next-step-card { @apply flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center sm:p-6; }
+  .next-step-icon { @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20; }
+  .next-step-card > div:nth-child(2) { @apply flex-1; }
+  .next-step-card > div:nth-child(2) > p:last-child, .insight-card > p:last-child { @apply mt-1 text-sm leading-relaxed text-slate; }
+  .next-step-action { @apply inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-navy px-3.5 py-2.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5; }
+  .insight-card { @apply p-5 sm:p-6; background: linear-gradient(135deg, rgba(224,242,254,.72), rgba(255,255,255,1)); }
+}
+
+/* Reduced motion consideration */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Production Print Styling for ATS Resumes */
+@media print {
+  body {
+    background: white !important;
+    color: #111827 !important;
+  }
+  .sidebar-shell, .topbar-shell, nav, button, .print\:hidden, .fixed {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+}
