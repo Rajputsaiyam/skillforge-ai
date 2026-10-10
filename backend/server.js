@@ -86,6 +86,16 @@ const aiLimiter = rateLimit({
 // Apply global rate limiter
 app.use('/api', globalLimiter);
 
+// Root Welcome Route
+app.get('/', (req, res) => {
+  res.json({
+    message: '🚀 SkillForge AI Backend API is live and running!',
+    status: 'healthy',
+    documentation: '/api/health',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Comprehensive Production Diagnostics & Readiness Probe
 app.get('/api/health', (req, res) => {
   const dbState = mongoose.connection.readyState;
