@@ -521,6 +521,11 @@ All protected endpoints require an `Authorization: Bearer <token>` header.
 - `GET /api/applications` — Retrieve candidate tracked applications.
 - `POST /api/applications` — Save or update job application status.
 
+### Cold Outreach Studio (`/api/cold-email`)
+- `POST /api/cold-email/send` — Dispatch cold outreach email batch (1 to 10 recipients per batch) using verified developer email (`saiyamrajput71@gmail.com`) via Nodemailer SMTP or verified batch simulation.
+- `GET /api/cold-email/history` — Fetch recent batch dispatch logs and delivery statuses stored in MongoDB.
+- `GET /api/cold-email/stats` — Retrieve overall outreach metrics (total batches, total delivered, delivery rate %).
+
 ---
 
 ## Security & Resilience

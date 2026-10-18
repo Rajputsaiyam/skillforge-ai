@@ -23,6 +23,7 @@ const progressRoutes = require('./routes/progressRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const coldEmailRoutes = require('./routes/coldEmailRoutes');
 
 connectDB();
 
@@ -136,6 +137,7 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/chat', aiLimiter, chatRoutes);
+app.use('/api/cold-email', coldEmailRoutes);
 
 // Error handling middleware
 app.use(notFound);

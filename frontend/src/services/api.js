@@ -1,7 +1,36 @@
 import axios from 'axios';
 
+/**
+ * Resolves API Base URL:
+ * - If VITE_API_BASE_URL is set in environment, uses it.
+ * - If on localhost / 127.0.0.1, routes to local backend: http://localhost:5000/api
+ * - If accessed from any deployed / non-localhost domain, routes to deployed backend: https://skillforge-ai-1-d3pu.onrender.com/api
+ */
+export const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+  }
+
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    const isLocalhost =
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '0.0.0.0' ||
+      host.endsWith('.local');
+
+    if (isLocalhost) {
+      return 'http://localhost:5000/api';
+    }
+  }
+
+  return 'https://skillforge-ai-1-d3pu.onrender.com/api';
+};
+
+export const API_BASE_URL = getApiBaseUrl();
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
