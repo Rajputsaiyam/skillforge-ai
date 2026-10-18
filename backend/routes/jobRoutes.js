@@ -7,6 +7,9 @@ const {
   getLinkedInSearchLinks,
   getJobInterviewPrep,
   detectLocation,
+  runJobAutomation,
+  getJobAutomationConfig,
+  updateJobAutomationConfig,
 } = require('../controllers/jobController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -14,6 +17,9 @@ router.get('/', protect, searchJobs);
 router.get('/detect-location', protect, detectLocation);
 router.get('/sources', protect, getJobSources);
 router.get('/linkedin-links', protect, getLinkedInSearchLinks);
+router.get('/automation/config', protect, getJobAutomationConfig);
+router.post('/automation/config', protect, updateJobAutomationConfig);
+router.post('/automation/run', protect, runJobAutomation);
 router.get('/:id', protect, getJobDetails);
 router.post('/:id/interview-prep', protect, getJobInterviewPrep);
 

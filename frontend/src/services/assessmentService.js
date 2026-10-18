@@ -7,11 +7,15 @@ const assessmentService = {
   submitAssessment: (assessmentId, answers) =>
     api.post('/assessments/submit', { assessmentId, answers }).then((r) => r.data),
 
-  // AI Interview mode
-  startInterview: (skills, targetRole) => api.post('/assessments/interview/start', { skills, targetRole }).then((r) => r.data),
-  continueInterview: (assessmentId, message) =>
-    api.post('/assessments/interview/continue', { assessmentId, message }).then((r) => r.data),
-  endInterview: (assessmentId) => api.post('/assessments/interview/end', { assessmentId }).then((r) => r.data),
+  // Live AI Mock Interview
+  startInterview: (params) => {
+    const payload = Array.isArray(params) ? { skills: params } : params;
+    return api.post('/assessments/interview/start', payload).then((r) => r.data);
+  },
+  continueInterview: (assessmentId, message, extras = {}) =>
+    api.post('/assessments/interview/continue', { assessmentId, message, ...extras }).then((r) => r.data),
+  endInterview: (assessmentId, proctoringSummary = null) =>
+    api.post('/assessments/interview/end', { assessmentId, proctoringSummary }).then((r) => r.data),
 };
 
 export default assessmentService;

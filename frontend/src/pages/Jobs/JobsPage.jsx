@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, Linkedin, ExternalLink, RefreshCw, Radio, CheckCircle, Sparkles } from 'lucide-react';
+import { Briefcase, Linkedin, ExternalLink, RefreshCw, Radio, CheckCircle, Sparkles, Zap } from 'lucide-react';
 import JobFilters from '../../components/jobs/JobFilters';
 import JobCard from '../../components/jobs/JobCard';
 import EmptyState from '../../components/ui/EmptyState';
 import Skeleton from '../../components/ui/Skeleton';
+import JobAutomationModal from '../../components/jobs/JobAutomationModal';
 import jobService from '../../services/jobService';
 import applicationService from '../../services/applicationService';
 import { useApp } from '../../context/AppContext';
@@ -19,6 +20,7 @@ const JobsPage = () => {
   const [connected, setConnected] = useState(true);
   const [linkedInLinks, setLinkedInLinks] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [showAutomation, setShowAutomation] = useState(false);
   const { showToast, user } = useApp();
 
   const fetchJobs = async (customFilters = null) => {
@@ -130,7 +132,17 @@ const JobsPage = () => {
           <p className="text-slate mt-1">Real-time jobs matched to your target role & skills, with live application tracking.</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setShowAutomation(true)}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white text-xs font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+            title="Auto-search, AI pitch generation & 1-click batch application"
+          >
+            <Zap size={14} className="fill-white" />
+            <span>Job Auto-Apply Bot</span>
+            <span className="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-md font-mono uppercase tracking-wider">Free</span>
+          </button>
+
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <Linkedin size={13} className="text-[#0A66C2]" /> LinkedIn Live API Connected
@@ -253,6 +265,14 @@ const JobsPage = () => {
             />
           ))}
         </div>
+      )}
+
+      {/* 100% Free Job Automation & Auto-Apply Bot Modal */}
+      {showAutomation && (
+        <JobAutomationModal
+          onClose={() => setShowAutomation(false)}
+          onAppliedUpdated={fetchExistingApplications}
+        />
       )}
     </div>
   );

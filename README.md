@@ -1,446 +1,562 @@
 # SkillForge AI
 
-> An AI-powered career intelligence platform that turns a resume, a target role and real learning activity into a practical plan for becoming job-ready.
+> **Next-Generation AI Career Intelligence, Dedicated ATS Scoring Engine, Live Video & Voice Mock Interview Simulation with Face Proctoring, and Profile-Grounded AI Career Coach.**
 
-SkillForge AI helps students and early-career professionals answer four important questions:
-
-1. **What skills do I already have?**
-2. **What skills am I missing for my target role?**
-3. **What should I practise or learn next?**
-4. **How can I improve my resume and interview performance?**
-
-It combines resume parsing, role-based skill-gap analysis, an interactive skill graph, AI assessments, mock interviews, a career chatbot, ATS-oriented resume review, roadmap creation and application tracking in one responsive full-stack application.
+SkillForge AI turns a candidate's resume, target role, and active learning performance into a structured, verifiable plan for becoming job-ready. It bridges the gap between fragmented career tools by uniting resume intelligence, role-based skill gap analytics, an interactive dependency skill graph, live webcam and voice-enabled mock interviews with real-time proctoring alerts, grounded conversational AI, an enterprise-grade ATS scoring engine, and live job tracking into a single, cohesive full-stack platform.
 
 ---
 
-## Contents
+## Table of Contents
 
-- [Problem statement](#problem-statement)
-- [Solution and key objectives](#solution-and-key-objectives)
-- [Scope](#scope)
-- [Core features](#core-features)
-- [Technology stack](#technology-stack)
-- [System architecture](#system-architecture)
-- [AI and ML pipeline](#ai-and-ml-pipeline)
-- [Project structure](#project-structure)
-- [Quick start](#quick-start)
-- [Environment configuration](#environment-configuration)
-- [How to use the platform](#how-to-use-the-platform)
-- [API overview](#api-overview)
-- [Security and privacy](#security-and-privacy)
-- [Known limitations](#known-limitations)
-- [Future scope](#future-scope)
+- [Live Demo & Deployment](#live-demo--deployment)
+- [Problem Statement](#problem-statement)
+- [Solution & Value Proposition](#solution--value-proposition)
+- [Core Features](#core-features)
+  - [1. Live Video & Voice Mock Interview with AI Face Proctoring](#1-live-video--voice-mock-interview-with-ai-face-proctoring)
+  - [2. Dedicated ATS Scoring Engine (v2.0)](#2-dedicated-ats-scoring-engine-v20)
+  - [3. Profile-Grounded AI Career Copilot](#3-profile-grounded-ai-career-copilot)
+  - [4. Interactive Skill Graph & Gap Engine](#4-interactive-skill-graph--gap-engine)
+  - [5. Dynamic Learning Roadmap & Adaptive Assessments](#5-dynamic-learning-roadmap--adaptive-assessments)
+  - [6. Live Job Discovery & Geolocation Intelligence](#6-live-job-discovery--geolocation-intelligence)
+  - [7. Modern Obsidian Glassmorphic UI/UX](#7-modern-obsidian-glassmorphic-uiux)
+- [System Architecture](#system-architecture)
+- [AI & ML Pipelines](#ai--ml-pipelines)
+  - [Live Mock Interview & Face Proctoring Pipeline](#live-mock-interview--face-proctoring-pipeline)
+  - [ATS Scoring Pipeline](#ats-scoring-pipeline)
+  - [Profile Grounding & Knowledge Retrieval Pipeline](#profile-grounding--knowledge-retrieval-pipeline)
+- [Technology Stack](#technology-stack)
+- [Project Directory Structure](#project-directory-structure)
+- [Quick Start Guide](#quick-start-guide)
+  - [Prerequisites](#prerequisites)
+  - [1. Backend Setup (Node.js / Express)](#1-backend-setup-nodejs--express)
+  - [2. Machine Learning Microservice (FastAPI + PyTorch)](#2-machine-learning-microservice-fastapi--pytorch)
+  - [3. Frontend Setup (React + Vite)](#3-frontend-setup-react--vite)
+- [Deployment Guide](#deployment-guide)
+  - [Deploying Backend to Render](#deploying-backend-to-render)
+  - [Deploying Frontend to Vercel / Netlify / Render](#deploying-frontend-to-vercel--netlify--render)
+  - [Configuring MongoDB Atlas](#configuring-mongodb-atlas)
+- [Environment Configuration](#environment-configuration)
+- [REST API Reference](#rest-api-reference)
+- [Security & Resilience](#security--resilience)
 - [Troubleshooting](#troubleshooting)
+- [Academic & Production Note](#academic--production-note)
 
 ---
 
-## Problem statement
+## Live Demo & Deployment
 
-Students and job seekers usually use separate websites for resume creation, interview preparation, skill assessment, job discovery and learning resources. These tools often provide generic suggestions and do not connect a candidate's existing skills, resume, target role and progress. As a result, users may not know which missing skill matters most, whether their resume is ATS-friendly, or how to prepare for an interview in a measurable way.
-
-**SkillForge AI solves this fragmentation** by creating a single career workspace. It analyses a user's resume and skill profile, compares them against a selected target role, identifies gaps, recommends a learning sequence and supports preparation through AI-guided practice.
-
-## Solution and key objectives
-
-SkillForge AI is a decision-support platform, not merely a chatbot. Its objectives are to:
-
-- Extract useful career information from uploaded PDF and DOCX resumes.
-- Build a personalised skill profile and visual skill graph.
-- Compare the profile with target-role requirements to calculate skill gaps and career readiness.
-- Generate adaptive lessons, quizzes and mock-interview conversations.
-- Produce a prioritised learning roadmap with realistic milestones.
-- Review a resume for ATS relevance against a pasted job description.
-- Create a fact-grounded, printable ATS-friendly resume draft for user review.
-- Track assessment outcomes, skill history, roadmap completion and applications over time.
-
-## Scope
-
-### In scope
-
-- Individual learner and early-career professional use.
-- Resume upload and parsing for text-based PDF and DOCX files.
-- Role-based skill-gap analysis and career-readiness scoring.
-- AI-assisted career guidance, assessment, mock interviews and resume improvement.
-- Job/application tracking and compliant LinkedIn search/apply deep links.
-- Responsive web interface for desktop, tablet and mobile devices.
-- Admin tools for managing users, skills and mock jobs.
-
-### Out of scope
-
-- Guaranteed ATS scores, interviews or job offers.
-- Scraping LinkedIn, job boards or private applicant data.
-- Automated submission of job applications on a user's behalf.
-- Replacing professional recruitment, legal, immigration or financial advice.
-- Inventing candidate experience, employers, degrees or achievements in a resume.
+- **Backend API (Render):** `https://skillforge-ai-1-d3pu.onrender.com`
+- **Backend Health Check:** `https://skillforge-ai-1-d3pu.onrender.com/api/health`
+- **Database:** MongoDB Atlas Cloud Cluster (Replica Set)
+- **AI Core:** Enterprise Multi-Model Intelligence Pipeline
 
 ---
 
-## Core features
+## Problem Statement
 
-| Module | What it does |
-|---|---|
-| **Authentication and profiles** | JWT-protected accounts, target role, location and profile management. |
-| **Resume Intelligence** | Parses PDF/DOCX files; extracts skills, projects, experience, education and certifications. |
-| **ATS Resume Studio** | Analyses a resume against a job description, identifies relevant keywords and generates a fact-grounded draft template. |
-| **Skill Graph** | Visualises skills, prerequisites, related skills and personalised recommendations. |
-| **Skill Gap Engine** | Compares user proficiency with role requirements and prioritises gaps. |
-| **AI Assessment** | Provides micro-lessons, MCQs and open-ended questions calibrated to skill level. |
-| **AI Mock Interview** | Runs an adaptive interview conversation and returns a strengths/improvements scorecard. |
-| **Career Chatbot** | Answers career questions using selected user context such as resume, skills and gaps. |
-| **Learning Roadmap** | Produces a weekly, prioritised learning plan with progress tracking. |
-| **Jobs and Applications** | Displays mock/provider jobs, match information and application tracking; creates LinkedIn deep links without scraping. |
-| **Progress Analytics** | Shows readiness, assessment performance, learning milestones, applications and skill history. |
-| **Admin Workspace** | Provides administrative views for users, skills, jobs, analytics and activity. |
+Traditional career preparation is fragmented across disconnected utilities:
+- One website for resume generation.
+- Another for practice quizzes or DSA problems.
+- Third-party mock interview platforms requiring human scheduling.
+- Separate job portals with blind application submissions.
+
+These utilities offer generic advice that fails to connect a candidate's existing experience to their target role. Candidates submit resumes without knowing if Applicant Tracking Systems (ATS) can parse their structure, which critical skill gaps exist, or how their interview communication holds up under pressure.
+
+**SkillForge AI eliminates this fragmentation.** It provides an end-to-end intelligence engine that extracts candidate competencies from uploaded resumes, computes multi-dimensional ATS readiness against job descriptions, conducts real-time video and voice mock interviews with live proctoring checks, visualizes skill dependencies, and generates calibrated weekly learning roadmaps.
 
 ---
 
-## Technology stack
+## Solution & Value Proposition
 
-### Front end
+SkillForge AI functions as an intelligent career decision-support system:
 
-| Technology | Use |
-|---|---|
-| React 18 + Vite | Component-based SPA and development tooling |
-| Tailwind CSS | Responsive UI system and design tokens |
-| React Router | Client-side routing and protected routes |
-| Axios | Communication with REST APIs |
-| Recharts | Progress and analytics visualisation |
-| React Flow | Interactive skill-graph visualisation |
-| Framer Motion | Lightweight UI transitions |
-| Lucide React | Consistent iconography |
-
-### Back end
-
-| Technology | Use |
-|---|---|
-| Node.js + Express.js | REST API and application services |
-| MongoDB + Mongoose | User, resume, skill, assessment, roadmap and application persistence |
-| JWT + bcryptjs | Authentication and password security |
-| Multer | Secure multipart file upload handling |
-| pdf-parse + Mammoth | PDF and DOCX text extraction |
-| Natural + string-similarity | Tokenisation, exact/fuzzy skill matching |
-
-### AI and ML
-
-| Technology | Use |
-|---|---|
-| Google Gemini API | Server-side structured generation for chat, interviews, assessments, roadmaps and resume review |
-| FastAPI | Python ML microservice |
-| Sentence-Transformers (`all-MiniLM-L6-v2`) | Semantic resume/job matching, skill ranking and retrieval |
-| BERT NER (`dslim/bert-base-NER`) | Organisation and person entity extraction |
-| FLAN-T5 | Optional local text generation fallback |
-| PyTorch + Transformers | Local model inference |
+1. **Extracts verified evidence:** Parses text-based PDF and DOCX resumes into structured skill, project, education, and experience models.
+2. **Quantifies hiring readiness:** Benchmarks candidate profiles against target industry roles (e.g., Full Stack Engineer, Machine Learning Engineer, Cloud Architect).
+3. **Conducts live video and voice simulations:** Runs realistic turn-based mock interviews with Nexora (AI Interviewer) featuring open webcam preview, microphone audio checks, live face/multi-human proctoring alerts, speech synthesis, and real-time speech transcription.
+4. **Calculates objective ATS scores:** Uses a dedicated NLP engine to evaluate parseability, Google X-Y-Z quantified impact, action verbs, and keyword density.
+5. **Context-Aware Career Advisory:** Provides a 24/7 career coach backed by transparent profile citations that ground advice directly in candidate resume and skill graph data.
 
 ---
 
-## System architecture
+## Core Features
+
+### 1. Live Video & Voice Mock Interview with AI Face Proctoring
+- **Structured 4-Step Interview Workflow:**
+  - **Step 1 (Setup):**
+    - Drag & drop PDF/DOCX resume upload (8 MB limit) or 1-click selection of candidate's verified profile resume.
+    - Role description input field to guide interview questions toward specific job openings.
+    - Selectable interview type: *Technical Interview*, *System Design Interview*, *Behavioral (STAR) Interview*, or *HR & Culture Fit*.
+    - Flexible length selection: *3 questions (Quick Warmup)*, *5 questions (Standard Loop)*, or *8 questions (In-Depth Round)*.
+  - **Step 2 (Introduction & Device Check):**
+    - Live webcam preview with client-side video rendering.
+    - Real-time microphone audio visualizer responding dynamically to candidate voice levels.
+    - **Intelligent Client-Edge Proctoring (BlazeFace Deep Learning):**
+      - **Face Visibility Alert:** If the candidate's face is not visible in the frame, the system displays an immediate warning: `⚠️ Face not detected! Please ensure your face is clearly visible and centered.`
+      - **Multi-Human Detection Alert:** If more than one person appears in the webcam stream, the system displays an alert: `⚠️ Multiple people detected! Only one candidate is allowed during the interview.`
+      - **Single Human Verification:** Displays `✓ Candidate verified (1 person detected) · Ready` when properly framed.
+  - **Step 3 (Live Interview with Voice Agent):**
+    - Dual-tile studio layout: Nexora (Senior AI Interviewer) tile with dynamic speaking audio waveforms alongside the candidate's live webcam video stream.
+    - Spoken questions via Text-to-Speech (TTS) with one-click repeat option.
+    - Live Speech-to-Text (STT) transcription capturing spoken answers in real-time with visual speech wave animations and editable text input.
+    - Background proctoring monitoring that flags interruptions or unverified frames throughout the session.
+  - **Step 4 (Comprehensive Scorecard & Actionable Advice):**
+    - Overall score (0–100) with rating pill (*Strong Hire*, *Hire*, *Needs Practice*).
+    - Multi-dimensional competency breakdown: Technical Depth, Communication & Clarity, Problem Solving & Structure, and Confidence & Delivery.
+    - Proctoring integrity audit summarizing face verification consistency and flags.
+    - Actionable strategic advice and question-by-question critique for interview improvement.
+
+### 2. Dedicated ATS Scoring Engine (v2.0)
+- **Multi-Factor Algorithmic Scoring:**
+  - **Section Parseability:** Confirms presence of standard headers (Contact, Summary, Experience, Education, Skills, Projects, Certifications).
+  - **Quantified Impact (Google X-Y-Z):** Detects measurable metrics, percentages, revenue impact, and scale indicators.
+  - **Action Verb Power:** Validates active voice usage (e.g., *Architected*, *Engineered*, *Optimized*) over passive wording.
+  - **Domain Keyword Overlap:** Employs Sentence-BERT (`all-MiniLM-L6-v2`) and fuzzy token matching against target role job descriptions.
+  - **Layout & Density Validation:** Penalizes resume length anomalies and buzzword stuffing.
+- **Dedicated Interactive UI:** Real-time radial score gauge, factor breakdown progress meters, missing critical keyword chips, and prioritized improvement tips.
+
+### 3. Profile-Grounded AI Career Copilot
+- **Transparent Citations & Grounding:** Cites context pills (Resume Profile, Target Role, Skill Gaps, Roadmap Milestones) so candidates know exactly why advice is given.
+- **Rich Markdown Formatting:** Powered by `react-markdown` and `remark-gfm` with bold typography, code blocks, lists, and callout pills.
+- **Resilient AI Pipeline:** Automatic multi-endpoint failover and deterministic local fallback ensure the coach remains available 24/7.
+
+### 4. Interactive Skill Graph & Gap Engine
+- **Visual Graph Intelligence:** Powered by React Flow with custom nodes, glowing edges, and zoom/pan controls.
+- **Dependency Hierarchy:** Visualizes prerequisites, core technical competencies, and complementary secondary skills.
+- **Role Gap Calculation:** Compares current candidate level (1–5) with target role baseline requirements, prioritizing high-impact missing skills.
+
+### 5. Dynamic Learning Roadmap & Adaptive Assessments
+- **Milestone-Based Roadmaps:** Generates weekly structured roadmaps prioritizing high-severity skill gaps.
+- **Adaptive Practice Lab:** Generates bite-sized micro-lessons and MCQ/open-ended assessment questions calibrated to candidate proficiency.
+
+### 6. Live Job Discovery & Geolocation Intelligence
+- **Live Job Aggregation:** Integrates with job feeds and generates compliant, deep-linked LinkedIn search and application URLs.
+- **IP Geolocation Auto-Detection:** Automatically detects candidate country and city via `ipapi.co` to tailor local job opportunities.
+- **Application Lifecycle Tracking:** Tracks jobs across *Saved*, *Applied*, *Interviewing*, *Offered*, and *Rejected* statuses.
+
+### 7. Automated Cold Email Studio (10-per-Batch Outreach)
+- **Controlled 10-Email Batching:** Protects sender domain reputation and primary inbox placement by enforcing a maximum of 10 targeted leads per batch.
+- **5 Proven Tech Email Strategies:** High-Impact Project Pitch, Direct Value & Scale, Internship & Early Career, Warm Referral, and 4-Day Follow-Up Nudge.
+- **Real-Time Recruiter Injection:** Automatically substitutes `{{hr_name}}`, `{{company}}`, `{{target_role}}`, and personal context per lead.
+- **Live macOS Mail Client Preview:** Dual-pane interactive preview allowing candidates to inspect customized emails across all batched recipients before dispatching.
+- **Deliverability & Spam Auditor:** Real-time deliverability score (optimal length, trigger-word check, verified attachment pills).
+- **Staggered Simulation & Scheduling:** Simulated dispatch engine with anti-spam delay intervals and optimal send-time scheduling (Tue–Thu 9:15 AM IST).
+
+### 8. Modern Obsidian Glassmorphic UI/UX
+- **Aesthetic Excellence:** Deep obsidian canvas with ambient indigo, violet, and emerald accents.
+- **Glassmorphic Design:** `backdrop-blur-xl` panels, micro-borders, and tactile hover states.
+- **Fluid Micro-Animations:** Motion transitions powered by Framer Motion.
+- **Responsive Layout:** Dynamic collapsible navigation sidebar and topbar with global search, streak counter, and readiness indicator.
+
+---
+
+## System Architecture
 
 ```text
-┌─────────────────────────────────────────────────────────┐
-│ React + Vite client                                      │
-│ Dashboard · Resume Studio · Assessments · Roadmap · Chat │
-└───────────────────────────┬─────────────────────────────┘
-                            │ HTTPS / REST API
-┌───────────────────────────▼─────────────────────────────┐
-│ Node.js + Express API                                    │
-│ Auth · Business rules · Resume orchestration · Gemini    │
-└───────────────┬───────────────────────────┬─────────────┘
-                │                           │
-      ┌─────────▼─────────┐       ┌─────────▼─────────────┐
-      │ MongoDB           │       │ Python FastAPI ML      │
-      │ Users, resumes,   │       │ Semantic matching, NER │
-      │ skills, progress  │       │ local AI fallbacks     │
-      └───────────────────┘       └───────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                       Client Tier (React 18 + Vite)                     │
+│  Glassmorphic UI · React Flow · BlazeFace Proctoring · Web Speech Voice │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ HTTPS / JSON / Bearer JWT
+┌────────────────────────────────────▼────────────────────────────────────┐
+│                    Application Tier (Node.js + Express)                 │
+│  Helmet · Rate Limiting · Gzip · Multer · Auth · Context Orchestrator   │
+└───────────────┬────────────────────────────┬────────────────────────────┘
+                │                            │
+      ┌─────────▼─────────┐        ┌─────────▼────────────────────────────┐
+      │   Database Tier   │        │     Python ML Microservice (FastAPI) │
+      │   MongoDB Atlas   │        │  Sentence-BERT · BERT-NER · Flan-T5  │
+      │  Replica Cluster  │        │  Dedicated ATS Engine (ats_scorer.py)│
+      └───────────────────┘        └──────────────────────────────────────┘
                 │
                 ▼
-      Google Gemini API (server-side only)
+      ┌───────────────────────────────────────┐
+      │  Enterprise AI Intelligence Pipeline  │
+      │  Dynamic Adaptive Interview Reasoning │
+      │  Structured JSON Evaluation Engine    │
+      └───────────────────────────────────────┘
 ```
 
-### Design principles
+---
 
-- **API keys remain server-side.** The browser never receives `GEMINI_API_KEY`.
-- **Graceful degradation.** When Gemini or the ML service is unavailable, explainable local rules and safe templates keep core flows operational.
-- **Fact grounding.** Resume generation prompts are instructed to use supplied facts only; users must review generated content before using it.
-- **Modularity.** Front end, Express API and Python ML service can be developed and deployed independently.
+## AI & ML Pipelines
+
+### Live Mock Interview & Face Proctoring Pipeline
+
+```text
+Webcam Stream ──► BlazeFace Deep Learning Model ──► Face Count Evaluator
+                                                           │
+        ┌──────────────────────────────────────────────────┴──────────────────────────────────────┐
+        ▼                                                  ▼                                      ▼
+[0 Faces Detected]                                [1 Face Detected]                      [>1 Faces Detected]
+⚠️ "Face not detected! Center your face."        ✓ "Candidate verified · Ready"         ⚠️ "Multiple people detected! Only 1 allowed."
+(Logs Proctoring Notice)                                                                 (Logs Proctoring Notice)
+
+Candidate Speaks ──► Browser SpeechRecognition (STT) ──► Conversational Turn Engine
+                                                              │
+Speaker Audio ◄── Browser SpeechSynthesis (TTS) ◄── Adaptive Interview Prompt Engine
+                                                              │
+                                                              ▼
+                  Multi-Factor Scorecard (Technical, Communication, Confidence, Advice)
+```
+
+### ATS Scoring Pipeline
+
+```text
+Uploaded Resume (PDF/DOCX)
+       │
+       ▼
+Text Normalization & Header Segmentation
+       │
+       ├─► Contact & Section Parser (Contact, Experience, Education, Skills)
+       ├─► Quantified Metric Extractor (Percentages, Metrics, Google X-Y-Z)
+       ├─► Action Verb Classifier (Strong vs. Passive verbs)
+       └─► Keyword Extraction & Dense Cosine Match (Sentence-BERT vs. Job Description)
+       │
+       ▼
+Weighted Multi-Factor Formula
+       │
+       ▼
+Comprehensive ATS Score (0–100) + Priority Improvement Suggestions
+```
+
+### Profile Grounding & Knowledge Retrieval Pipeline
+
+```text
+User Career Query + User State (Resume, Gaps, Roadmap)
+                       │
+                       ▼
+           Context Chunk Retrieval
+      (BM25 Lexical + Semantic Keywords)
+                       │
+                       ▼
+           Prompt Assembly & Grounding
+                       │
+                       ▼
+         Enterprise Generative Intelligence Core
+                       │ (On Failover)
+                       ▼
+      Deterministic Local Fallback Synthesis
+```
 
 ---
 
-## AI and ML pipeline
+## Technology Stack
 
-### 1. Resume parsing and skill extraction
+### Frontend
+| Technology | Version | Purpose |
+|---|---|---|
+| **React** | `^18.3.1` | Component-based Single Page Application |
+| **Vite** | `^5.4.0` | Build tool and fast HMR development server |
+| **TailwindCSS** | `^3.4.9` | Responsive utility-first design system |
+| **Framer Motion** | `^11.3.24` | Layout animations, slide-overs, and transitions |
+| **TensorFlow.js + BlazeFace** | Latest | Real-time browser face and multi-human proctoring detection |
+| **React Flow** | `^11.11.4` | Interactive node-based Skill Graph visualization |
+| **Recharts** | `^2.12.7` | Readiness metrics, ATS gauges, and radar charts |
+| **React Markdown** | `^10.1.0` | Rich formatting for chatbot answers and lessons |
+| **Web Speech API** | Native | Client-side Speech Recognition (STT) & Synthesis (TTS) |
+| **Lucide React** | `^0.427.0` | Cohesive iconography |
 
-1. Extract text from a PDF or DOCX resume.
-2. Normalise text to reduce line-break and formatting artefacts.
-3. Detect skills using taxonomy aliases, exact matching and fuzzy matching.
-4. Optionally use semantic ranking to find meaning-related skills.
-5. Detect education, experience, projects and certifications.
-6. Persist structured results and merge confirmed skills into the user's profile.
+### Backend API
+| Technology | Version | Purpose |
+|---|---|---|
+| **Node.js + Express** | `^4.19.2` | REST API framework and application service tier |
+| **MongoDB + Mongoose** | `^8.5.0` | Document database for profiles, skills, roadmaps |
+| **JWT + bcryptjs** | `^9.0.2` | Secure token authentication and password hashing |
+| **Helmet** | `^8.3.0` | Production HTTP security headers |
+| **Compression** | `^1.8.2` | High-performance gzip/deflate response compression |
+| **Express Rate Limit** | `^8.7.0` | Global, Auth, and AI endpoint abuse protection |
+| **Multer** | `^1.4.5` | Secure multipart file upload handling |
+| **pdf-parse + Mammoth** | `^1.1.1` | Text extraction from PDF and DOCX files |
 
-### 2. Skill gaps and readiness
-
-The platform compares the user's recorded proficiency with role requirements. A gap is prioritised by skill importance and the difference between current and required level. The resulting information drives the Skill Graph, roadmap and chatbot context.
-
-### 3. Generative AI flows
-
-Gemini is called through the backend for:
-
-- Context-aware career chatbot replies.
-- Short skill lessons and quiz questions.
-- Adaptive mock-interview questions and structured interview scorecards.
-- Roadmap content based on priority skill gaps.
-- ATS review, keyword suggestions and resume drafts.
-
-Structured JSON output is requested and validated before the application displays it. If the configured model is unavailable, the server uses fallback logic instead of exposing an error to the user.
+### Machine Learning Microservice
+| Technology | Version | Purpose |
+|---|---|---|
+| **FastAPI + Uvicorn** | Python 3.10+ | High-performance async ML web framework |
+| **Sentence-Transformers** | `all-MiniLM-L6-v2` | Dense vector embeddings and semantic cosine similarity |
+| **BERT-NER** | `dslim/bert-base-NER` | Named entity recognition for clean resume parsing |
+| **Flan-T5** | `flan-t5-base` | Local generative fallback for offline assessments |
+| **Dedicated ATS Scorer** | Custom | Multi-factor heuristic and semantic ATS engine |
 
 ---
 
-## Project structure
+## Project Directory Structure
 
 ```text
 skillforge-ai/
-├── frontend/                         # React + Vite application
-│   └── src/
-│       ├── components/               # Layout, UI, charts, chat, resume, skills
-│       ├── pages/                    # User and admin screens
-│       ├── services/                 # Axios API clients
-│       ├── context/                  # Auth and application state
-│       └── routes/                   # Protected/admin route guards
-├── backend/                          # Express API
-│   ├── controllers/                  # Request handlers
-│   ├── services/                     # Business logic and AI providers
-│   ├── models/                       # Mongoose schemas
-│   ├── routes/                       # REST endpoint definitions
-│   ├── middleware/                   # Auth, upload and error middleware
-│   ├── data/                         # Skill taxonomy and mock jobs
-│   └── utils/                        # Context builder, logging, token helper
-├── ml-service/                       # FastAPI ML microservice
-│   ├── main.py                       # ML endpoints and model loading
-│   └── requirements.txt
-├── docs/                             # Project documentation and synopsis
-└── README.md
+├── frontend/                         # React 18 + Vite SPA
+│   ├── src/
+│   │   ├── components/               # UI components
+│   │   │   ├── interview/            # LiveMockInterview (Webcam + Voice + Proctoring)
+│   │   │   ├── chat/                 # ChatbotWidget with Markdown & citations
+│   │   │   ├── resume/               # AtsScoreChecker & ResumeStudio components
+│   │   │   ├── layout/               # Modern Sidebar and Topbar navigation
+│   │   │   └── ui/                   # Button, Card, Modal, Input primitives
+│   │   ├── hooks/                    # useFaceDetection (BlazeFace proctoring)
+│   │   ├── pages/                    # Route pages
+│   │   │   ├── Dashboard/            # Analytics and readiness overview
+│   │   │   ├── Assessment/           # Live Mock Interview & Practice Lab
+│   │   │   ├── Resume/               # Resume Studio and ATS Scorer
+│   │   │   ├── Skills/               # Interactive React Flow Skill Graph
+│   │   │   ├── Roadmap/              # Step-by-step career milestones
+│   │   │   ├── Jobs/                 # Job discovery with geolocation sync
+│   │   │   └── Landing/              # Modern obsidian landing page
+│   │   ├── services/                 # Axios API client services
+│   │   └── context/                  # AuthContext and AppState
+├── backend/                          # Node.js + Express API
+│   ├── config/                       # Database and passport configurations
+│   ├── controllers/                  # Handlers for auth, resume, chat, assessments
+│   ├── services/                     # AI reasoning cascade, ML client, resume parser
+│   ├── models/                       # Mongoose schemas (User, Resume, Skill, etc.)
+│   ├── routes/                       # Express REST endpoints
+│   ├── middleware/                   # Rate limiting, auth, upload filters
+│   └── server.js                     # Express app setup and health probes
+├── ml-service/                       # Python FastAPI ML Microservice
+│   ├── main.py                       # FastAPI application and routing
+│   ├── ats_scorer.py                 # Dedicated ATS scoring engine
+│   └── requirements.txt              # PyTorch, Transformers, FastAPI dependencies
+├── docs/                             # Architecture synopsis and documentation
+└── README.md                         # Project documentation
 ```
 
 ---
 
-## Quick start
+## Quick Start Guide
 
 ### Prerequisites
-
-- Node.js 18 or later
-- npm
-- MongoDB Community Edition or a MongoDB Atlas connection string
-- Python 3.10 or later (recommended for ML features)
-- A Gemini API key (recommended for generative AI features)
-
-### 1. Start MongoDB
-
-On macOS with Homebrew:
-
-```bash
-brew services start mongodb-community
-```
-
-Use your own MongoDB service command if you are on Windows or Linux.
-
-### 2. Configure and start the back end
-
-```bash
-cd backend
-npm install
-cp .env.example .env
-```
-
-Set a strong `JWT_SECRET`, correct `MONGO_URI`, and optionally configure Gemini in `backend/.env`:
-
-```env
-GEMINI_API_KEY=your_new_key_here
-GEMINI_MODEL=gemini-3.5-flash
-```
-
-Then run:
-
-```bash
-npm run seed
-npm run dev
-```
-
-Back end health endpoint: `http://localhost:5000/api/health`
-
-### 3. Start the optional ML service
-
-```bash
-cd ml-service
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
-
-ML service health endpoint: `http://localhost:8000/health`
-
-> First launch can download model files. Internet access is required for the initial download. Gemini-powered server features can still work when the Python ML service is unavailable.
-
-### 4. Start the front end
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open `http://localhost:5173`.
-
-### Run all three services
-
-| Terminal | Command | Address |
-|---|---|---|
-| 1 | `cd backend && npm run dev` | `http://localhost:5000` |
-| 2 | `cd ml-service && source venv/bin/activate && uvicorn main:app --reload --port 8000` | `http://localhost:8000` |
-| 3 | `cd frontend && npm run dev` | `http://localhost:5173` |
+- **Node.js** v18+ and **npm**
+- **Python** 3.10+ (for the optional local ML microservice)
+- **MongoDB** local instance or a free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster
+- **AI API Credentials** configured in backend environment
 
 ---
 
-## Environment configuration
+### 1. Backend Setup (Node.js / Express)
 
-Copy [`backend/.env.example`](backend/.env.example) to `backend/.env`. Never commit the actual `.env` file.
+1. Navigate to the backend directory and install dependencies:
+   ```bash
+   cd backend
+   npm install
+   ```
 
-| Variable | Required | Purpose |
-|---|:---:|---|
-| `PORT` | No | Express port; defaults to `5000` |
-| `MONGO_URI` | Yes | MongoDB connection string |
-| `JWT_SECRET` | Yes | Secret used to sign authentication tokens |
-| `JWT_EXPIRES_IN` | No | JWT lifetime; defaults to `7d` |
-| `CLIENT_URL` | Yes | Front-end origin for CORS |
-| `ML_SERVICE_URL` | No | FastAPI service URL; defaults to `http://localhost:8000` |
-| `GEMINI_API_KEY` | Recommended | Server-only Gemini API key |
-| `GEMINI_MODEL` | No | Gemini model identifier; defaults to `gemini-3.5-flash` |
-| OAuth and job-provider variables | Optional | Enable only when authorised credentials are available |
+2. Create your environment configuration file:
+   ```bash
+   cp .env.example .env
+   ```
 
-### Key safety
+3. Configure your `backend/.env`:
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/SkillForgeAI?retryWrites=true&w=majority
+   JWT_SECRET=your_super_secret_jwt_key
+   JWT_EXPIRES_IN=7d
+   CLIENT_URL=http://localhost:5173
+   ML_SERVICE_URL=http://localhost:8000
+   ```
 
-- Put Gemini keys in **`backend/.env` only**.
-- Do not put keys in `frontend/.env`, React code, screenshots or documentation.
-- If a key is accidentally exposed, revoke it in Google AI Studio and create a new key immediately.
-- Keep `.env.example` values blank and non-sensitive.
+4. Seed initial skills, roles, and mock data:
+   ```bash
+   npm run seed
+   ```
 
----
-
-## How to use the platform
-
-1. Register or sign in.
-2. Complete your profile and choose a target role.
-3. Upload a text-based PDF or DOCX resume.
-4. Review detected skills, role gaps and ATS recommendations in **Resume Studio**.
-5. Explore your **Skill Graph** and generate a **Learning Plan**.
-6. Use **Practice Lab** for lessons, assessments or an AI mock interview.
-7. Track applications and open compliant LinkedIn search/apply links.
-8. Check **Progress** to see readiness, assessment history and skill checkpoints.
-
----
-
-## API overview
-
-All protected endpoints require a JWT bearer token after login.
-
-| Area | Base route | Example capabilities |
-|---|---|---|
-| Authentication | `/api/auth` | Register, login, password reset and OAuth placeholders |
-| Resume | `/api/resume` | Upload, latest analysis, ATS review and draft generation |
-| Skills | `/api/skills` | Skill graph, user skills and skill-related data |
-| Assessments | `/api/assessments` | Lessons, quizzes, answer submission and mock interviews |
-| Roadmap | `/api/roadmap` | Generate, retrieve and update roadmap progress |
-| Progress | `/api/progress` | Readiness and analytics aggregates |
-| Jobs | `/api/jobs` | Search/list job data and matching information |
-| Applications | `/api/applications` | Track application status |
-| Chat | `/api/chat` | Context-aware coach messages and history reset |
-| Profile | `/api/profile` | Read/update profile and career preferences |
-| Admin | `/api/admin` | Administrative users, skills, jobs and analytics |
+5. Launch the backend server:
+   ```bash
+   npm run dev
+   ```
+   *Backend will run at `http://localhost:5000` (Health Check: `http://localhost:5000/api/health`).*
 
 ---
 
-## Security and privacy
+### 2. Machine Learning Microservice (FastAPI + PyTorch)
 
-- Passwords are hashed with `bcryptjs`; plaintext passwords are not stored.
-- JWT-protected routes isolate user data by authenticated user ID.
-- Resume uploads are processed by the server; temporary upload files are removed after parsing.
-- Gemini requests are made from the Express service, keeping API credentials away from the browser.
-- The project should be served through HTTPS and use a managed database with access controls in production.
-- Users should review every AI-generated resume bullet and recommendation for correctness.
+> **Note:** The backend has built-in rule-based fallbacks. The Python ML service is recommended for full Sentence-BERT semantic matching and the dedicated ATS scoring engine.
+
+1. Navigate to the ML directory:
+   ```bash
+   cd ml-service
+   ```
+
+2. Create and activate a Python virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate       # On Windows: venv\Scripts\activate
+   ```
+
+3. Install required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Launch the FastAPI server:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
+   *ML Microservice will run at `http://localhost:8000` (Health Check: `http://localhost:8000/health`).*
 
 ---
 
-## Known limitations
+### 3. Frontend Setup (React + Vite)
 
-- ATS scores are estimates, not hiring guarantees.
-- Text extraction quality depends on the source document; image-only/scanned PDFs require OCR support, which is not yet included.
-- Local model downloads can be large and slow on first run.
-- Gemini free-tier models have quotas and model availability varies by account/project.
-- AI answers can be unavailable or imperfect; fallback responses are intentionally shown when a reliable answer cannot be generated.
-- Job listings currently use seeded/mock data unless an authorised job provider is configured.
-- LinkedIn support uses deep links; it does not scrape or directly submit applications.
+1. Navigate to the frontend directory and install dependencies:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   *Frontend will run at `http://localhost:5173`.*
 
 ---
 
-## Future scope
+### Running All Three Services Concurrently
 
-- OCR for scanned resumes and multilingual parsing.
-- Export resume drafts to DOCX and styled PDF.
-- Voice-based interview simulation and feedback.
-- Mentor/college-placement dashboards with consent-based aggregate analytics.
-- Authorised real-time job-provider integration.
-- More target roles, richer skill taxonomies and course-provider integrations.
-- Evaluation datasets for parser quality, assessment quality and AI-answer safety.
-- Background processing, rate limiting, audit logging and cloud deployment automation.
+| Terminal | Path | Command | Local URL |
+|:---:|---|---|---|
+| **1** | `backend/` | `npm run dev` | `http://localhost:5000` |
+| **2** | `ml-service/` | `source venv/bin/activate && uvicorn main:app --reload --port 8000` | `http://localhost:8000` |
+| **3** | `frontend/` | `npm run dev` | `http://localhost:5173` |
+
+---
+
+## Deployment Guide
+
+### Deploying Backend to Render
+
+The Express backend is production-ready for deployment on **Render**:
+
+1. **Create Web Service:** Connect your GitHub repository on Render.
+2. **Configure Settings:**
+   - **Root Directory:** `backend` *(CRITICAL: ensure this points to the backend folder)*
+   - **Environment:** `Node`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+3. **Environment Variables:** Add the following in Render's dashboard:
+   - `NODE_ENV` = `production`
+   - `PORT` = `10000` *(or leave blank for Render default)*
+   - `MONGO_URI` = `mongodb+srv://...`
+   - `JWT_SECRET` = `<your_production_secret>`
+   - `CLIENT_URL` = `https://your-frontend-app.vercel.app`
+4. **Verification:**
+   - Root URL `GET /` returns JSON confirmation: `🚀 SkillForge AI Backend API is live and running!`
+   - Health Probe `GET /api/health` returns database connectivity and memory usage.
+
+### Deploying Frontend to Vercel / Netlify / Render
+
+1. **Build Command:** `npm run build`
+2. **Publish Directory:** `dist`
+3. **Root Directory:** `frontend`
+4. **Environment Variables:**
+   - `VITE_API_URL` = `https://skillforge-ai-1-d3pu.onrender.com/api`
+
+### Configuring MongoDB Atlas
+
+1. Create a free M0 cluster at [MongoDB Atlas](https://www.mongodb.com/atlas).
+2. Add a Database User with read/write privileges.
+3. Under **Network Access**, add `0.0.0.0/0` (Allow Access from Anywhere) to permit connections from cloud hosting platforms (Render, Vercel).
+4. Copy the connection string and paste it into `MONGO_URI`.
+
+---
+
+## Environment Configuration
+
+| Variable | Required | Default | Purpose |
+|---|:---:|:---:|---|
+| `PORT` | No | `5000` | Server listening port |
+| `NODE_ENV` | No | `development` | Environment mode (`development` or `production`) |
+| `MONGO_URI` | **Yes** | — | MongoDB Atlas or local connection URI |
+| `JWT_SECRET` | **Yes** | — | Cryptographic secret for signing auth tokens |
+| `JWT_EXPIRES_IN`| No | `7d` | Token expiration duration |
+| `CLIENT_URL` | **Yes** | `http://localhost:5173` | Allowed CORS origin for frontend |
+| `ML_SERVICE_URL`| No | `http://localhost:8000` | Address of Python FastAPI microservice |
+
+---
+
+## REST API Reference
+
+All protected endpoints require an `Authorization: Bearer <token>` header.
+
+### Authentication (`/api/auth`)
+- `POST /api/auth/register` — Register a new candidate account.
+- `POST /api/auth/login` — Authenticate and obtain JWT token.
+- `GET /api/auth/me` — Retrieve current authenticated user profile.
+
+### Resume Intelligence (`/api/resume`)
+- `POST /api/resume/upload` — Upload and parse PDF/DOCX resume file.
+- `GET /api/resume/latest` — Fetch latest parsed resume data and skills.
+- `POST /api/resume/ats-score` — Run dedicated ATS score check on resume text.
+- `POST /api/resume/review` — Run ATS keyword comparison against a target job description.
+- `POST /api/resume/generate-draft` — Generate fact-grounded ATS-friendly resume draft.
+
+### Skill Intelligence (`/api/skills`)
+- `GET /api/skills/graph` — Retrieve interactive skill graph taxonomy nodes and edges.
+- `GET /api/skills/my-skills` — List user's verified and identified skills.
+- `POST /api/skills/target-role` — Update candidate target role and recalculate gaps.
+
+### Assessments & Live Mock Interview (`/api/assessments`)
+- `GET /api/assessments/lesson/:skillId` — Retrieve AI-generated micro-lesson for a skill.
+- `GET /api/assessments/quiz/:skillId` — Generate adaptive quiz calibrated to skill level.
+- `POST /api/assessments/submit` — Submit quiz answers for scoring and skill level updates.
+- `POST /api/assessments/interview/start` — Initialize a Live AI Mock Interview with Nexora.
+- `POST /api/assessments/interview/continue` — Process conversational turn for voice/text interview.
+- `POST /api/assessments/interview/end` — Finalize interview and generate multidimensional performance report with proctoring audit.
+
+### Career Roadmap (`/api/roadmap`)
+- `GET /api/roadmap` — Retrieve active milestone-based learning roadmap.
+- `POST /api/roadmap/generate` — Generate custom roadmap based on prioritized skill gaps.
+- `PUT /api/roadmap/step/:stepId` — Mark milestone step as completed.
+
+### Career Chatbot (`/api/chat`)
+- `POST /api/chat/message` — Send query to profile-grounded AI Career Coach (returns citations + Markdown).
+- `GET /api/chat/history` — Fetch recent conversational turns.
+- `DELETE /api/chat/history` — Reset career coach conversation session.
+
+### Job Discovery & Automation (`/api/jobs`)
+- `GET /api/jobs` — Retrieve matched jobs with match percentages and LinkedIn deep links.
+- `GET /api/jobs/automation/config` — Fetch candidate's automated search and filtering rules.
+- `POST /api/jobs/automation/config` — Update automated role, salary, location, and negative keyword filters.
+- `POST /api/jobs/automation/run` — Execute multi-platform job aggregation (LinkedIn, Indeed, Naukri, Company Career Pages), hyper-local proximity distance calculation (Haversine km), tailored AI pitch generation, and auto-queuing pipeline (100% free).
+- `GET /api/applications` — Retrieve candidate tracked applications.
+- `POST /api/applications` — Save or update job application status.
+
+---
+
+## Security & Resilience
+
+1. **Zero Client Secret Exposure:** API credentials and database connection secrets are strictly held in backend environment variables and never transmitted to the browser.
+2. **Adaptive Rate Limiting:**
+   - Global rate limit: 300 requests per 15 minutes per IP.
+   - Authentication limiter: 30 attempts per 15 minutes to prevent brute-force attacks.
+   - AI limiter: 80 requests per 10 minutes to protect upstream computational quotas.
+3. **HTTP Hardening:** Helmet manages security headers, and compression optimizes JSON payloads.
+4. **Resilient Fallback Design:** If the FastAPI ML microservice or external AI connections are unreachable, the Node backend automatically degrades to explainable deterministic rules and local models, preventing service outages.
 
 ---
 
 ## Troubleshooting
 
-### Gemini shows “Local AI fallback”
+### 1. AI responses fall back to local template
+- Check health: `curl http://localhost:5000/api/health`
+- Ensure database and environment variables are active.
+- Verify request rates do not exceed configured limits.
 
-1. Confirm the backend is running: `curl http://localhost:5000/api/health`.
-2. Confirm `geminiConfigured` is `true` in the response.
-3. Restart the backend after changing `backend/.env`.
-4. Check backend terminal logs for the Gemini status code:
-   - `401`: invalid/revoked API key.
-   - `403`: permission, API enablement or key restriction issue.
-   - `404`: configured model is unavailable for the project; use an available Flash model.
-   - `429`: free-tier rate limit or quota reached.
-5. Never paste an API key into a chat, issue or screenshot.
+### 2. Frontend shows blank screen or Vite error
+- Verify dependencies are installed: `cd frontend && npm install`
+- Test the production build: `npm run build`
+- Ensure Node version is 18+: `node -v`
 
-### Front end shows a Vite/PostCSS overlay
-
-```bash
-cd frontend
-npm run dev
-```
-
-Read the file and line number in the overlay. After updating the code, Vite normally reloads automatically. Verify the production build with:
-
-```bash
-npm run build
-```
-
-### ML service does not start
-
-```bash
-cd ml-service
-source venv/bin/activate
-uvicorn main:app --reload --port 8000
-```
-
-Check `http://localhost:8000/health`. If model files cannot download, verify the internet connection or run without the optional ML service; the Node back end retains safe fallbacks.
+### 3. ML service fails to download models
+- On the first run, the ML microservice downloads `sentence-transformers/all-MiniLM-L6-v2` (~120MB) and `bert-base-NER` (~400MB). Ensure internet connectivity during initialization.
 
 ---
 
-## Documentation
+## Academic & Production Note
 
-- [Project synopsis](docs/SkillForge_AI_Synopsis.md)
-- [ML service notes](ml-service/README.md)
-- [Backend environment template](backend/.env.example)
-
----
-
-## Academic note
-
-SkillForge AI is an academic full-stack AIML project. It demonstrates practical integration of web engineering, NLP, semantic ML, generative AI and responsible fallback design for career preparation. It is intended to assist users' decisions, not to replace human judgement in recruitment.
+SkillForge AI is an advanced full-stack AI/ML engineering project developed to demonstrate:
+- Practical integration of modern web engineering (React 18, Vite, Node.js, Express, MongoDB Atlas).
+- Real-time client-edge computer vision (BlazeFace deep learning model for candidate face and multi-human proctoring verification).
+- Classical NLP & Modern Transformers (Sentence-BERT, BERT-NER, Flan-T5, Custom ATS heuristics).
+- Edge-Cloud Hybrid Voice Architectures (Browser Web Speech STT/TTS on the client + LLM reasoning on the cloud).
+- Responsible Generative AI with transparent profile citations and deterministic fallback guarantees.

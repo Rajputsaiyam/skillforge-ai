@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ClipboardCheck, BookOpen, Sparkles, ArrowRight, CheckCircle2, XCircle,
   Loader2, MessageSquare, Send, Award, RotateCcw, Mic, MicOff,
-  Volume2, VolumeX, Lightbulb, ChevronRight, Share2, Route as RouteIcon, Target
+  Volume2, VolumeX, Lightbulb, ChevronRight, Share2, Route as RouteIcon, Target, Video
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Card from '../../components/ui/Card';
@@ -11,11 +11,15 @@ import Button from '../../components/ui/Button';
 import ProgressBar from '../../components/ui/ProgressBar';
 import assessmentService from '../../services/assessmentService';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import LiveMockInterview from '../../components/interview/LiveMockInterview';
 
 const STAGES = { SELECT: 'select', LESSON: 'lesson', QUIZ: 'quiz', RESULTS: 'results' };
 
 const AssessmentPage = () => {
+  const { user } = useAuth();
   const { showToast } = useApp();
+  const [showLiveMock, setShowLiveMock] = useState(false);
   const [mode, setMode] = useState('quiz'); // 'quiz' | 'interview'
   const [stage, setStage] = useState(STAGES.SELECT);
   const [availableSkills, setAvailableSkills] = useState([]);
@@ -264,56 +268,125 @@ const AssessmentPage = () => {
         </p>
       </motion.div>
 
-      <div className="flex gap-2 mb-6">
+      {/* Segmented Mode Selector */}
+      <div className="flex p-1.5 rounded-2xl bg-slate-100/90 border border-slate/15 mb-6 shadow-inner">
         <button
           onClick={() => { setMode('quiz'); resetAll(); }}
-          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all ${mode === 'quiz' ? 'bg-primary text-white border-primary shadow-sm' : 'border-slate/20 text-slate hover:bg-slate/5'}`}
+          className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
+            mode === 'quiz'
+              ? 'bg-white text-primary shadow-sm border border-slate/15'
+              : 'text-slate-600 hover:text-navy hover:bg-white/50'
+          }`}
         >
-          Adaptive Learn + Quiz
+          <BookOpen size={16} /> Adaptive Learn + Quiz
         </button>
         <button
           onClick={() => { setMode('interview'); resetAll(); }}
-          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all ${mode === 'interview' ? 'bg-primary text-white border-primary shadow-sm' : 'border-slate/20 text-slate hover:bg-slate/5'}`}
+          className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
+            mode === 'interview'
+              ? 'bg-gradient-to-r from-primary to-accent text-white shadow-md shadow-primary/25'
+              : 'text-slate-600 hover:text-navy hover:bg-white/50'
+          }`}
         >
-          AI Voice & Text Mock Interview
+          <MessageSquare size={16} /> AI Voice & Text Mock Interview
         </button>
       </div>
 
+      {/* Live Video & Voice Mock Interview Hero Banner */}
+      {mode === 'interview' && !interviewId && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-6 rounded-3xl bg-gradient-to-r from-navy via-[#0f274a] to-navy text-white shadow-xl border border-primary/30 relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold mb-2">
+                <Video size={13} /> Live Camera & Audio Simulation
+              </div>
+              <h3 className="text-xl font-black tracking-tight text-white">Live Mock Interview with Nexora</h3>
+              <p className="text-xs text-slate-300 mt-1 max-w-lg leading-relaxed">
+                Take a live mock interview with open webcam, real-time microphone check, AI face & multi-human proctoring warnings, spoken questions, and comprehensive scoring.
+              </p>
+            </div>
+            <Button
+              onClick={() => setShowLiveMock(true)}
+              className="!py-3.5 !px-6 text-xs font-bold !bg-emerald-600 hover:!bg-emerald-700 !text-white rounded-2xl shadow-lg shadow-emerald-600/30 shrink-0 flex items-center gap-2"
+            >
+              <Video size={16} /> Launch Live Interview →
+            </Button>
+          </div>
+        </motion.div>
+      )}
+
       {/* --- SKILL SELECTION --- */}
       {((mode === 'quiz' && stage === STAGES.SELECT) || (mode === 'interview' && !interviewId)) && (
-        <Card>
-          <h3 className="font-bold text-navy mb-1 text-base">Choose focus skills for this session</h3>
-          <p className="text-sm text-slate mb-4">
-            {mode === 'quiz'
-              ? "We'll teach you a focused refresher, then generate an adaptive AI evaluation."
-              : 'The AI interviewer will frame technical and behavioral scenarios around these competencies.'}
-          </p>
-          <div className="flex flex-wrap gap-2 mb-5 max-h-56 overflow-y-auto p-1 border border-slate/10 rounded-xl bg-slate/5">
-            {availableSkills.map((s) => (
-              <button
-                key={s}
-                onClick={() => toggleSkill(s)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                  selectedSkills.includes(s)
-                    ? 'bg-primary text-white border-primary shadow-sm'
-                    : 'bg-white border-slate/20 text-slate hover:border-primary/50'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+        <Card className="border-primary/20 shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-extrabold text-navy text-base">Select Target Focus Skills</h3>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+              {selectedSkills.length} Selected
+            </span>
           </div>
-          {mode === 'quiz' ? (
-            <Button onClick={beginLearning} disabled={loading || selectedSkills.length === 0}>
-              {loading ? <Loader2 className="animate-spin" size={17} /> : <BookOpen size={17} />}
-              Start Guided Learning
-            </Button>
-          ) : (
-            <Button onClick={startInterview} disabled={interviewLoading || selectedSkills.length === 0}>
-              {interviewLoading ? <Loader2 className="animate-spin" size={17} /> : <MessageSquare size={17} />}
-              Start AI Mock Interview
-            </Button>
-          )}
+          <p className="text-xs sm:text-sm text-slate-500 mb-5 leading-relaxed">
+            {mode === 'quiz'
+              ? "We'll teach you a focused refresher, then generate an adaptive AI evaluation calibrated to your performance."
+              : 'The AI interviewer will simulate real hiring loops and technical trade-offs around these competencies.'}
+          </p>
+
+          <div className="flex flex-wrap gap-2 mb-6 max-h-60 overflow-y-auto p-2.5 border border-slate/15 rounded-2xl bg-slate-50/70">
+            {availableSkills.map((s) => {
+              const isSelected = selectedSkills.includes(s);
+              return (
+                <button
+                  key={s}
+                  onClick={() => toggleSkill(s)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-150 flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-primary text-white border-primary shadow-sm shadow-primary/30 scale-[1.02]'
+                      : 'bg-white border-slate/20 text-slate-700 hover:border-primary/40 hover:text-navy'
+                  }`}
+                >
+                  <span>{s}</span>
+                  {isSelected && <CheckCircle2 size={12} className="text-white" />}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between pt-2 border-t border-slate/10 gap-3">
+            <span className="text-xs text-slate-500 font-medium">
+              Pick 1 to 4 skills for best results
+            </span>
+            {mode === 'quiz' ? (
+              <Button
+                onClick={beginLearning}
+                disabled={loading || selectedSkills.length === 0}
+                className="!py-2.5 !px-5 text-xs font-bold"
+              >
+                {loading ? <Loader2 className="animate-spin" size={16} /> : <BookOpen size={16} />}
+                Start Guided Learning
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShowLiveMock(true)}
+                  className="!py-2.5 !px-4 text-xs font-bold !bg-emerald-600 hover:!bg-emerald-700 !text-white"
+                >
+                  <Video size={15} /> Live Video & Voice
+                </Button>
+                <Button
+                  onClick={startInterview}
+                  disabled={interviewLoading || selectedSkills.length === 0}
+                  className="!py-2.5 !px-4 text-xs font-bold !bg-gradient-to-r from-primary to-accent"
+                >
+                  {interviewLoading ? <Loader2 className="animate-spin" size={15} /> : <MessageSquare size={15} />}
+                  Quick Practice
+                </Button>
+              </div>
+            )}
+          </div>
         </Card>
       )}
 
@@ -508,128 +581,184 @@ const AssessmentPage = () => {
 
       {/* --- AI INTERVIEW STAGE --- */}
       {mode === 'interview' && interviewId && (
-        <Card>
-          <div className="flex items-center justify-between mb-3 border-b border-slate/10 pb-3">
-            <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-wide">
-              <MessageSquare size={14} /> AI Mock Interviewer
+        <Card className="border-primary/20 shadow-xl overflow-hidden p-0">
+          {/* Interviewer Top Bar */}
+          <div className="px-5 py-3.5 bg-gradient-to-r from-navy via-darkBlue to-navy text-white flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white shadow-xs">
+                <MessageSquare size={16} />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <h4 className="font-extrabold text-xs text-white uppercase tracking-wider">AI Mock Interviewer</h4>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                </div>
+                <p className="text-[10px] text-slate-300 font-medium">Turn {Math.floor(transcript.length / 2) + 1} · Voice & Context Grounded</p>
+              </div>
             </div>
+
             <div className="flex items-center gap-2">
               <button
                 onClick={() => speakText(transcript[transcript.length - 1]?.content || '')}
-                className="text-xs text-slate hover:text-primary flex items-center gap-1"
+                className="text-xs px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium flex items-center gap-1.5 transition-colors"
                 title="Repeat interviewer question"
               >
-                {isSpeaking ? <VolumeX size={14} className="text-danger" /> : <Volume2 size={14} />}
-                <span>{isSpeaking ? 'Stop voice' : 'Repeat audio'}</span>
+                {isSpeaking ? <VolumeX size={13} className="text-rose-400" /> : <Volume2 size={13} />}
+                <span>{isSpeaking ? 'Stop Voice' : 'Repeat Audio'}</span>
               </button>
-              <span className="text-xs text-slate font-medium">Turn {Math.floor(transcript.length / 2) + 1}</span>
             </div>
           </div>
 
-          <div ref={chatScrollRef} className="space-y-3 max-h-96 overflow-y-auto mb-4 pr-1 p-2 bg-slate/5 rounded-xl border border-slate/10">
-            {transcript.map((t, i) => (
-              <div key={i} className={`flex ${t.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                    t.role === 'user'
-                      ? 'bg-primary text-white rounded-br-sm shadow-sm'
-                      : 'bg-white text-navy rounded-bl-sm border border-slate/15 shadow-xs'
-                  }`}
-                >
-                  <p className="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-70">
-                    {t.role === 'user' ? 'You' : 'Interviewer'}
-                  </p>
-                  {t.content}
+          {/* Conversation Transcript Stream */}
+          <div className="p-5">
+            <div
+              ref={chatScrollRef}
+              className="space-y-3.5 max-h-[380px] overflow-y-auto mb-4 pr-1 p-3 bg-slate-50/70 rounded-2xl border border-slate/15 scrollbar-thin"
+            >
+              {transcript.map((t, i) => (
+                <div key={i} className={`flex ${t.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className={`max-w-[85%] px-4 py-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                      t.role === 'user'
+                        ? 'bg-gradient-to-r from-primary to-accent text-white rounded-tr-xs shadow-md shadow-primary/20 font-medium'
+                        : 'bg-white text-navy rounded-tl-xs border border-slate/15 shadow-xs font-normal'
+                    }`}
+                  >
+                    <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${t.role === 'user' ? 'text-white/80' : 'text-primary'}`}>
+                      {t.role === 'user' ? 'Candidate' : 'Senior Interviewer'}
+                    </p>
+                    <p className="whitespace-pre-wrap">{t.content}</p>
+                  </div>
+                </div>
+              ))}
+              {interviewLoading && (
+                <div className="flex justify-start">
+                  <div className="px-4 py-2.5 rounded-2xl bg-white border border-slate/15 text-xs text-slate-600 flex items-center gap-2 shadow-xs">
+                    <Loader2 className="animate-spin text-primary" size={14} /> AI Interviewer is formulating follow-up...
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {!interviewReport ? (
+              <div className="space-y-2.5">
+                {/* Active Voice Wave indicator when listening */}
+                {isListening && (
+                  <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold animate-pulse">
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-0.5">
+                        <span className="w-1 h-3 bg-rose-500 rounded-full animate-bounce [animation-delay:0.1s]" />
+                        <span className="w-1 h-4 bg-rose-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <span className="w-1 h-2 bg-rose-500 rounded-full animate-bounce [animation-delay:0.3s]" />
+                      </div>
+                      <span>Listening... speak your answer naturally</span>
+                    </div>
+                    <span className="text-[10px] uppercase font-bold text-rose-500">Live Speech-to-Text</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 flex items-center bg-slate-50 rounded-2xl border border-slate/20 focus-within:border-primary focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/10 transition-all px-4 py-2">
+                    <input
+                      value={interviewInput}
+                      onChange={(e) => setInterviewInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && sendInterviewReply()}
+                      placeholder={isListening ? 'Listening to speech...' : 'Type or speak your answer...'}
+                      className="w-full text-xs sm:text-sm bg-transparent text-navy placeholder:text-slate/40 outline-none font-medium"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleVoiceInput(setInterviewInput)}
+                    className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
+                      isListening
+                        ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30 animate-pulse'
+                        : 'bg-slate-100 text-slate-700 hover:text-primary hover:bg-primary/10 border border-slate/15'
+                    }`}
+                    title={isListening ? 'Stop recording' : 'Speak answer (Speech-to-Text)'}
+                  >
+                    {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                  </button>
+
+                  <button
+                    onClick={sendInterviewReply}
+                    disabled={interviewLoading || !interviewInput.trim()}
+                    className="w-11 h-11 rounded-2xl bg-gradient-to-r from-primary to-accent text-white flex items-center justify-center disabled:opacity-30 disabled:hover:opacity-30 transition-all shadow-md shadow-primary/25 shrink-0"
+                    title="Send answer"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+                  <span>Tip: Speak with STAR formula (Situation, Task, Action, Result).</span>
+                  <button
+                    onClick={endInterviewNow}
+                    disabled={interviewLoading}
+                    className="text-rose-600 hover:text-rose-700 font-bold hover:underline transition-colors"
+                  >
+                    End Interview & View Scorecard →
+                  </button>
                 </div>
               </div>
-            ))}
-            {interviewLoading && (
-              <div className="flex justify-start">
-                <div className="px-4 py-2.5 rounded-2xl bg-white border border-slate/15 text-xs text-slate flex items-center gap-2">
-                  <Loader2 className="animate-spin text-primary" size={14} /> AI interviewer is thinking...
+            ) : (
+              <div className="mt-2 p-6 rounded-2xl bg-gradient-to-br from-lightSky/40 to-white border border-primary/20 shadow-md">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-primary/10">
+                  <div>
+                    <h4 className="font-black text-navy text-lg">Mock Interview Assessment Scorecard</h4>
+                    <p className="text-xs text-slate-500">Graded against real industry technical interview benchmarks</p>
+                  </div>
+                  <div className="text-right px-4 py-2 rounded-2xl bg-white border border-primary/20 shadow-xs">
+                    <span className="text-3xl font-black text-primary">{interviewReport.overallScore}</span>
+                    <span className="text-xs text-slate-500 font-bold">/100</span>
+                  </div>
                 </div>
+
+                <div className="p-4 rounded-xl bg-white border border-slate/15 text-xs sm:text-sm text-slate-700 mb-4 leading-relaxed shadow-2xs">
+                  <p className="font-bold text-navy text-xs uppercase tracking-wider mb-1 text-slate-400">Executive Summary</p>
+                  {interviewReport.summary}
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4 text-xs mb-5">
+                  <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
+                    <p className="font-bold text-emerald-700 mb-2 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                      <CheckCircle2 size={13} /> Key Strengths
+                    </p>
+                    <ul className="list-disc list-inside text-emerald-900 space-y-1 font-medium">
+                      {interviewReport.strengths?.map((s, i) => <li key={i}>{s}</li>)}
+                    </ul>
+                  </div>
+
+                  <div className="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                    <p className="font-bold text-amber-700 mb-2 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                      <AlertTriangle size={13} /> Recommended Growth Areas
+                    </p>
+                    <ul className="list-disc list-inside text-amber-900 space-y-1 font-medium">
+                      {interviewReport.improvements?.map((s, i) => <li key={i}>{s}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <button onClick={resetAll} className="btn-primary w-full justify-center !py-3 shadow-lg shadow-primary/25">
+                  <RotateCcw size={15} /> Start Another Mock Interview Session
+                </button>
               </div>
             )}
           </div>
-
-          {!interviewReport ? (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <input
-                  value={interviewInput}
-                  onChange={(e) => setInterviewInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && sendInterviewReply()}
-                  placeholder={isListening ? 'Listening to your speech...' : 'Type or speak your answer...'}
-                  className={`flex-1 text-sm px-4 py-2.5 rounded-xl border focus:outline-none focus:border-primary transition-all ${
-                    isListening ? 'border-danger/60 ring-2 ring-danger/20' : 'border-slate/20'
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => toggleVoiceInput(setInterviewInput)}
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    isListening ? 'bg-danger text-white animate-pulse' : 'bg-slate/10 text-slate hover:text-primary hover:bg-slate/20'
-                  }`}
-                  title={isListening ? 'Stop listening' : 'Speak answer (Speech-to-Text)'}
-                >
-                  {isListening ? <MicOff size={16} /> : <Mic size={16} />}
-                </button>
-                <button
-                  onClick={sendInterviewReply}
-                  disabled={interviewLoading || !interviewInput.trim()}
-                  className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center disabled:opacity-40"
-                  title="Send answer"
-                >
-                  <Send size={16} />
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-xs text-slate pt-1">
-                <span>Tip: Click microphone to speak naturally or type your reply.</span>
-                <button onClick={endInterviewNow} disabled={interviewLoading} className="text-danger font-semibold hover:underline">
-                  End Interview & Generate Scorecard
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-2 p-5 rounded-2xl bg-lightSky/40 border border-primary/20">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h4 className="font-extrabold text-navy text-base">AI Interview Scorecard</h4>
-                  <p className="text-xs text-slate">Evaluated against real tech interview standards</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-2xl font-black text-primary">{interviewReport.overallScore}</span>
-                  <span className="text-xs text-slate font-semibold">/100</span>
-                </div>
-              </div>
-              <p className="text-sm text-slate mb-4 leading-relaxed bg-white/70 p-3 rounded-xl border border-slate/10">
-                {interviewReport.summary}
-              </p>
-              <div className="grid sm:grid-cols-2 gap-4 text-xs mb-4">
-                <div className="bg-white/80 p-3.5 rounded-xl border border-success/20">
-                  <p className="font-bold text-success mb-2 uppercase tracking-wide">Key Strengths</p>
-                  <ul className="list-disc list-inside text-slate space-y-1">
-                    {interviewReport.strengths?.map((s, i) => <li key={i}>{s}</li>)}
-                  </ul>
-                </div>
-                <div className="bg-white/80 p-3.5 rounded-xl border border-warning/20">
-                  <p className="font-bold text-amber-700 mb-2 uppercase tracking-wide">Areas to Improve</p>
-                  <ul className="list-disc list-inside text-slate space-y-1">
-                    {interviewReport.improvements?.map((s, i) => <li key={i}>{s}</li>)}
-                  </ul>
-                </div>
-              </div>
-              <button onClick={resetAll} className="btn-secondary w-full justify-center">
-                <RotateCcw size={15} /> Start Another Mock Interview
-              </button>
-            </div>
-          )}
         </Card>
       )}
 
       {generatedBy && stage !== STAGES.SELECT && (
         <p className="text-[11px] text-slate/60 text-center mt-4">Questions generated dynamically by: {generatedBy}</p>
+      )}
+
+      {/* Live Mock Interview Modal (Webcam + Voice + Proctoring) */}
+      {showLiveMock && (
+        <LiveMockInterview
+          onClose={() => setShowLiveMock(false)}
+          defaultRole={user?.targetRole || 'Full Stack Engineer'}
+        />
       )}
     </div>
   );

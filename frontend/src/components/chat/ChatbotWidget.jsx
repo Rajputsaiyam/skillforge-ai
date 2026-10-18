@@ -25,13 +25,13 @@ Here are some high-impact ways we can accelerate your career today:
 What career goal or technical challenge would you like to tackle right now?`,
   retrievedContext: [
     {
-      source: 'SkillForge RAG Engine',
+      source: 'SkillForge Knowledge Engine',
       category: 'profile',
       excerpt: 'Directly linked to your active profile, resume chunks, skill graph taxonomy, and job match metrics.',
       relevanceScore: 1.0,
     },
   ],
-  generatedBy: 'SkillForge Grounded RAG',
+  generatedBy: 'SkillForge AI Engine',
 };
 
 const SUGGESTED_PROMPTS = [
@@ -226,7 +226,7 @@ const ChatbotWidget = () => {
         <div className="flex flex-col text-left">
           <span className="font-extrabold text-xs tracking-tight text-white leading-tight">AI Career Coach</span>
           <span className="text-[10px] text-lightSky font-semibold flex items-center gap-1">
-            <ShieldCheck size={10} className="text-emerald-400" /> Grounded RAG
+            <ShieldCheck size={10} className="text-emerald-400" /> Grounded AI
           </span>
         </div>
       </motion.button>
@@ -255,7 +255,7 @@ const ChatbotWidget = () => {
                   <div className="flex items-center gap-2">
                     <h3 className="font-extrabold text-sm text-white leading-tight">SkillForge AI Copilot</h3>
                     <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 rounded-full">
-                      <ShieldCheck size={11} /> RAG Active
+                      <ShieldCheck size={11} /> AI Verified
                     </span>
                   </div>
                   <p className="text-[11px] text-slate/90 leading-tight truncate max-w-[210px] sm:max-w-xs mt-0.5 font-medium">
@@ -435,7 +435,7 @@ const ChatbotWidget = () => {
                             <div className="mt-3 pt-2.5 border-t border-slate/10 flex items-center justify-between text-[11px] text-slate">
                               <div className="flex items-center gap-2">
                                 <span className="text-[10px] font-semibold text-slate/70 bg-slate-100 px-2 py-0.5 rounded-md border border-slate/20">
-                                  {m.generatedBy?.startsWith('gemini') ? 'Gemini 3.5' : m.generatedBy || 'RAG Intelligence'}
+                                  {m.generatedBy?.startsWith('gemini') ? 'AI Career Engine' : m.generatedBy || 'Neural Intelligence'}
                                 </span>
                               </div>
 
@@ -471,7 +471,7 @@ const ChatbotWidget = () => {
                           )}
                         </div>
 
-                        {/* Grounded RAG Citations Accordion */}
+                        {/* Verified Profile Citations Accordion */}
                         {!isUser && hasCitations && (
                           <div className="bg-lightSky/40 border border-primary/20 rounded-2xl overflow-hidden text-xs">
                             <button

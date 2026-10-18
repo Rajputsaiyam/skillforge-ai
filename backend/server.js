@@ -117,9 +117,9 @@ app.get('/api/health', (req, res) => {
       rssMB: Math.round(memUsage.rss / 1024 / 1024),
     },
     ai: {
-      geminiConfigured: gemini.isConfigured(),
-      geminiModel: gemini.model,
-      ragEngine: 'Active (Hybrid Semantic + BM25 Lexical with Transparent Citations)',
+      aiConfigured: gemini.isConfigured(),
+      intelligencePipeline: 'Active (Neural Semantic Processing & Profile Grounding)',
+      proctoringEngine: 'Operational',
     },
   });
 });

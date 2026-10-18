@@ -149,6 +149,63 @@ const getJobSources = asyncHandler(async (req, res) => {
   res.json({ sources: jobProviderService.getJobSources(), integrationConnected: await jobProviderService.isProviderConnected() });
 });
 
+// @desc Run the Job Auto-Dispatch & Application Automation Engine (Free)
+const runJobAutomation = asyncHandler(async (req, res) => {
+  const { runJobAutomationForUser } = require('../services/jobAutomationService');
+  const results = await runJobAutomationForUser(req.user._id, req.body);
+  res.json({
+    success: true,
+    message: `Discovered and processed ${results.totalMatched} matching jobs with tailored AI application pitches.`,
+    data: results,
+  });
+});
+
+// @desc Get candidate's automation configuration
+const getJobAutomationConfig = asyncHandler(async (req, res) => {
+  const User = require('../models/User');
+  const user = await User.findById(req.user._id).select('jobAutomation email fullName targetRole location').lean();
+  
+  const defaultConfig = {
+    roles: ['MERN stack developer', 'full stack developer', 'React developer', 'Node.js developer', 'software engineer python'],
+    location: user.location || 'Delhi',
+    subLocality: 'Connaught Place',
+    distanceKm: 60,
+    nearestOnly: true,
+    salaryMin: 400000,
+    maxJobs: 12,
+    skills: ['react', 'node', 'mongodb', 'express', 'mern', 'javascript', 'python', 'flask', 'machine learning', 'full stack', 'fullstack', 'sql', 'tailwind'],
+    excludeTitleWords: ['senior', 'sr.', 'lead', 'manager', 'architect', 'principal', 'trainer', 'php', 'laravel', '.net', 'java developer'],
+    sources: ['linkedin', 'naukri', 'indeed', 'career_page'],
+    emailTo: user.email,
+    adzunaAppId: '',
+    adzunaAppKey: '',
+  };
+
+  res.json({
+    config: {
+      ...defaultConfig,
+      ...(user?.jobAutomation || {}),
+      emailTo: user?.jobAutomation?.emailTo || user.email,
+    },
+  });
+});
+
+// @desc Update candidate's automation configuration
+const updateJobAutomationConfig = asyncHandler(async (req, res) => {
+  const User = require('../models/User');
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    { jobAutomation: req.body },
+    { new: true }
+  ).select('jobAutomation');
+
+  res.json({
+    success: true,
+    message: 'Automation preferences saved successfully.',
+    config: updatedUser.jobAutomation,
+  });
+});
+
 module.exports = {
   searchJobs,
   getJobDetails,
@@ -156,4 +213,7 @@ module.exports = {
   getLinkedInSearchLinks,
   getJobInterviewPrep,
   detectLocation,
+  runJobAutomation,
+  getJobAutomationConfig,
+  updateJobAutomationConfig,
 };

@@ -11,19 +11,37 @@ body { -webkit-font-smoothing: antialiased; }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-blue-gradient text-white font-semibold px-5 py-2.5 shadow-card hover:shadow-cardHover transition-all duration-200 hover:-translate-y-0.5;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-blue-gradient text-white font-semibold px-5 py-2.5 shadow-card hover:shadow-cardHover hover:shadow-primary/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-white text-navy font-semibold px-5 py-2.5 border border-slate/20 hover:border-primary/40 hover:bg-veryLightBlue transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-white/90 backdrop-blur-sm text-navy font-semibold px-5 py-2.5 border border-slate/20 hover:border-primary/40 hover:bg-veryLightBlue hover:text-primary transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
   .card {
-    @apply bg-white rounded-2xl border border-slate/10 shadow-card p-6;
+    @apply bg-white rounded-2xl border border-slate/10 shadow-card p-6 transition-all duration-300;
+  }
+  .card-interactive {
+    @apply card hover:border-primary/35 hover:shadow-cardHover hover:-translate-y-1 cursor-pointer;
+  }
+  .glass-card {
+    @apply bg-white/85 backdrop-blur-xl border border-white/60 shadow-glass rounded-2xl;
+  }
+  .glass-card-dark {
+    @apply bg-navy/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-3xl text-white;
   }
   .input-field {
-    @apply w-full rounded-xl border border-slate/20 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all;
+    @apply w-full rounded-xl border border-slate/20 bg-white/80 px-4 py-2.5 text-sm text-navy focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all duration-200 placeholder:text-slate/40;
   }
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+  .badge-primary {
+    @apply badge bg-primary/10 text-primary border border-primary/20;
+  }
+  .badge-emerald {
+    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+  .badge-sky {
+    @apply badge bg-sky/15 text-sky border border-sky/30;
   }
 
   .sidebar-shell {

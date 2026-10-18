@@ -91,7 +91,7 @@ async function generateJson(options) {
   const result = await generate({ ...options, json: true });
   if (!result) return null;
   const value = parseJson(result.text);
-  return value ? { value, generatedBy: `gemini:${result.model}` } : null;
+  return value ? { value, generatedBy: 'neural-ai-engine' } : null;
 }
 
 async function chat(message, contextChunks = [], history = [], systemInstruction = '') {
@@ -103,7 +103,7 @@ async function chat(message, contextChunks = [], history = [], systemInstruction
     maxOutputTokens: 2500,
     temperature: 0.55,
   });
-  return result ? { reply: result.text, used_context: contextChunks.slice(0, 8), generated_by: `gemini:${result.model}` } : null;
+  return result ? { reply: result.text, used_context: contextChunks.slice(0, 8), generated_by: 'neural-ai-engine' } : null;
 }
 
 module.exports = { generate, generateJson, chat, isConfigured: () => Boolean(key()), model: MODEL_CANDIDATES[0] };

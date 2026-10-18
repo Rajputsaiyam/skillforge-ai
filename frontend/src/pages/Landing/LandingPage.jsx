@@ -50,59 +50,109 @@ const LandingPage = () => (
       </div>
     </header>
 
-    {/* Hero */}
-    <section className="bg-hero-gradient">
-      <div className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
+    {/* Hero Section with Ambient Glow */}
+    <section className="relative overflow-hidden bg-radial-glow pt-12 pb-24 border-b border-slate/10">
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-primary/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
+
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
         <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-          <span className="badge bg-lightSky text-primary mb-5">AI-Powered Career Intelligence</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-navy leading-tight mb-5">
-            Turn Your Skills Into Your Career Roadmap.
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary mb-6 shadow-2xs">
+            <Sparkles size={13} className="text-primary animate-pulse" />
+            <span>Next-Generation Career Intelligence & AI</span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-black text-navy leading-[1.12] tracking-tight mb-6">
+            Turn Your Skills Into Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-sky to-accent">Career Reality.</span>
           </h1>
-          <p className="text-slate text-lg mb-8 max-w-lg">
-            SkillForge AI analyzes your resume, evaluates your skills, matches you with real opportunities, identifies your skill gaps and creates a personalized path to your target career.
+
+          <p className="text-slate-600 text-base sm:text-lg mb-8 max-w-lg leading-relaxed font-normal">
+            SkillForge AI audits your resume for ATS algorithms, benchmarks your skills with Sentence-BERT, maps interactive skill graphs, and guides your mock interview loops with live voice.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/register" className="btn-primary">Analyze My Resume <ArrowRight size={16} /></Link>
-            <Link to="/register" className="btn-secondary">Explore Jobs</Link>
+
+          <div className="flex flex-wrap items-center gap-3.5">
+            <Link to="/register" className="btn-primary !px-6 !py-3 text-sm shadow-lg shadow-primary/25">
+              Launch Career Lab <ArrowRight size={16} />
+            </Link>
+            <Link to="/login" className="btn-secondary !px-6 !py-3 text-sm">
+              Explore Live Demo
+            </Link>
+          </div>
+
+          <div className="mt-8 flex items-center gap-6 text-xs font-semibold text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={15} className="text-emerald-500" /> Profile-Grounded AI Coach
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={15} className="text-emerald-500" /> Workday/Taleo ATS Audit
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 size={15} className="text-emerald-500" /> Real-time Voice Mock
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
+          initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           className="relative"
         >
-          <div className="card !p-5 relative z-10">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-semibold text-slate uppercase">Career Readiness</span>
-              <span className="text-2xl font-extrabold text-primary">78%</span>
+          <div className="glass-card !p-6 sm:!p-8 relative z-10 border border-white/80 shadow-2xl rounded-3xl bg-white/90">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate/10">
+              <div>
+                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Candidate Intelligence</span>
+                <span className="text-sm font-bold text-navy">Full Stack Engineer Benchmark</span>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-black text-primary">82%</span>
+                <span className="text-[11px] font-bold text-emerald-600 block">Job Ready</span>
+              </div>
             </div>
-            <div className="h-2 bg-lightSky rounded-full overflow-hidden mb-5">
-              <motion.div className="h-2 bg-blue-gradient rounded-full" initial={{ width: 0 }} animate={{ width: '78%' }} transition={{ duration: 1.2 }} />
+
+            <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-5 p-0.5">
+              <motion.div
+                className="h-full bg-gradient-to-r from-primary to-accent rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: '82%' }}
+                transition={{ duration: 1.2 }}
+              />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[{ l: 'React', v: 82 }, { l: 'Node.js', v: 74 }].map((s) => (
-                <div key={s.l} className="bg-veryLightBlue rounded-xl p-3">
-                  <p className="text-xs text-slate">{s.l}</p>
-                  <p className="font-bold text-navy">{s.v}%</p>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {[
+                { l: 'React & Ecosystem', v: '91%', tag: 'Verified' },
+                { l: 'Node.js & MongoDB', v: '85%', tag: 'Verified' },
+                { l: 'System Design', v: '68%', tag: 'Target Gap' },
+                { l: 'Docker & CI/CD', v: '60%', tag: 'Target Gap' },
+              ].map((s) => (
+                <div key={s.l} className="bg-slate-50/80 border border-slate/15 rounded-2xl p-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[11px] font-semibold text-slate-600 truncate">{s.l}</span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${s.tag === 'Verified' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>{s.tag}</span>
+                  </div>
+                  <p className="font-extrabold text-navy text-sm">{s.v}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-4 bg-lightSky rounded-xl p-3 flex items-center justify-between">
-              <span className="text-sm font-semibold text-navy">91% Match — Full Stack Developer</span>
-              <CheckCircle2 size={18} className="text-success" />
+
+            <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-transparent border border-primary/20 rounded-2xl p-3.5 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-navy block">ATS Audit Score: 88/100</span>
+                <span className="text-[11px] text-slate-500">Google X-Y-Z Quantified Impact Verified</span>
+              </div>
+              <CheckCircle2 size={20} className="text-emerald-500 shrink-0" />
             </div>
           </div>
+
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -top-6 -right-6 w-16 h-16 rounded-2xl bg-blue-gradient opacity-90 -z-0"
+            className="absolute -top-6 -right-6 w-20 h-20 rounded-3xl bg-blue-gradient opacity-80 blur-xl -z-0"
           />
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -bottom-8 -left-6 w-20 h-20 rounded-full bg-sky/20 -z-0"
+            className="absolute -bottom-8 -left-6 w-24 h-24 rounded-full bg-accent/25 blur-2xl -z-0"
           />
         </motion.div>
       </div>
