@@ -64,13 +64,14 @@ const googleNotConfigured = asyncHandler(async (req, res) => {
 // since an OAuth redirect can't return JSON directly to a fetch/axios call.
 const googleCallback = asyncHandler(async (req, res) => {
   const user = req.user;
+  const clientBase = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/+$/, '');
   if (user.status === 'suspended') {
-    return res.redirect(`${process.env.CLIENT_URL}/login?error=account_suspended`);
+    return res.redirect(`${clientBase}/login?error=account_suspended`);
   }
   const token = generateToken(user._id, user.role);
   const isNewAccount = Date.now() - new Date(user.createdAt).getTime() < 5000;
   await logActivity(user._id, isNewAccount ? 'account_created' : 'login', `${user.fullName} ${isNewAccount ? 'signed up' : 'logged in'} with Google`);
-  res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}`);
+  res.redirect(`${clientBase}/oauth-success?token=${token}`);
 });
 
 // @desc LinkedIn OAuth placeholder — wire real OAuth (passport-linkedin-oauth2) here later

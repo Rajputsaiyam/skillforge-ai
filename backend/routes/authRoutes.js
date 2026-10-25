@@ -13,9 +13,13 @@ router.get('/me', protect, getMe);
 // --- Google OAuth (stateless — no server session, JWT issued in googleCallback) ---
 if (hasGoogleCredentials) {
   router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+  const clientBase = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/+$/, '');
   router.get(
     '/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: `${process.env.CLIENT_URL}/login?error=google_auth_failed` }),
+    passport.authenticate('google', {
+      session: false,
+      failureRedirect: `${clientBase}/login?error=google_auth_failed`,
+    }),
     googleCallback
   );
 } else {

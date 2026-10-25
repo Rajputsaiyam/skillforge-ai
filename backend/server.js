@@ -43,7 +43,27 @@ app.use(compression());
 // CORS configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like curl, health probes, or server-to-server)
+      if (!origin) return callback(null, true);
+      if (process.env.CLIENT_URL) {
+        const cleanClient = process.env.CLIENT_URL.replace(/\/+$/, '');
+        if (origin === cleanClient || origin.startsWith(cleanClient)) {
+          return callback(null, true);
+        }
+      }
+      // Allow localhost, local network, and major deployment platforms (Vercel, Render, Netlify)
+      if (
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com') ||
+        origin.endsWith('.netlify.app')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );

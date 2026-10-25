@@ -16,13 +16,34 @@ const hasGoogleCredentials = Boolean(
   process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
 );
 
+const getGoogleCallbackUrl = () => {
+  const isDeploy =
+    process.env.NODE_ENV === 'production' ||
+    Boolean(process.env.RENDER) ||
+    Boolean(process.env.VERCEL) ||
+    Boolean(process.env.RAILWAY_ENVIRONMENT);
+
+  const envCallback = process.env.GOOGLE_CALLBACK_URL;
+
+  if (isDeploy) {
+    // If deployed, ensure callback URL uses the live domain instead of localhost
+    if (envCallback && !envCallback.includes('localhost') && !envCallback.includes('127.0.0.1')) {
+      return envCallback;
+    }
+    return 'https://skillforge-ai-6.onrender.com/api/auth/google/callback';
+  }
+
+  return envCallback || 'http://localhost:5000/api/auth/google/callback';
+};
+
 if (hasGoogleCredentials) {
   passport.use(
     new GoogleStrategy(
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback',
+        callbackURL: getGoogleCallbackUrl(),
+        proxy: true,
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
