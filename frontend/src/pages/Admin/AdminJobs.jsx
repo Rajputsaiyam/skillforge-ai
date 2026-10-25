@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import adminService from '../../services/adminService';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
@@ -10,10 +9,10 @@ const AdminJobs = () => {
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy">Job Monitoring</h1>
-        <p className="text-slate mt-1">{jobs.length} jobs across all sources</p>
-      </motion.div>
+       <div className="mb-6">
+         <h1 className="text-2xl font-bold text-navy">Job Monitoring</h1>
+         <p className="text-slate mt-1">{jobs.length} jobs across all sources</p>
+       </div>
       <Card className="overflow-x-auto">
         <table className="w-full text-sm min-w-[800px]">
           <thead>

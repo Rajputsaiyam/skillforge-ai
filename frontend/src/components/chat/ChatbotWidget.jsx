@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
-  X, Send, Sparkles, Maximize2, Minimize2, Plus,
-  FileText, ShieldCheck, ChevronDown, ChevronUp, Copy, Check,
+  X, Send, Maximize2, Minimize2, Plus,
+  FileText, ChevronDown, ChevronUp, Copy, Check,
   ThumbsUp, ThumbsDown, Trash2, Bot, User, BookmarkCheck,
   History, Clock, MessageSquare, Compass, ArrowRight, CornerDownLeft
 } from 'lucide-react';
@@ -12,7 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
-  content: `### Welcome to your SkillForge AI Career Copilot! 🚀
+  content: `### Welcome to your SkillForge AI Career Copilot
 
 I am your **Executive AI Career Coach**, grounded directly in your **uploaded resume, verified skills, target role benchmarks, and learning roadmap**.
 
@@ -35,10 +34,10 @@ What career goal or technical challenge would you like to tackle right now?`,
 };
 
 const SUGGESTED_PROMPTS = [
-  { icon: '🎯', label: 'What are my biggest skill gaps?', prompt: 'What are my biggest skill gaps for my target role, and what should I prioritize first?' },
-  { icon: '📄', label: 'Optimize resume for ATS', prompt: 'Analyze my resume and provide concrete bullet-point improvements using Google X-Y-Z formula.' },
-  { icon: '🚀', label: 'Weekly study roadmap', prompt: 'Create an intensive 7-day study plan to close my highest-priority technical gap.' },
-  { icon: '💼', label: '3 Mock interview questions', prompt: 'Give me 3 realistic technical interview questions tailored for my target role, with evaluation criteria.' },
+  { label: 'Review my biggest skill gaps', prompt: 'What are my biggest skill gaps for my target role, and what should I prioritize first?' },
+  { label: 'Optimize my resume for ATS', prompt: 'Analyze my resume and provide concrete bullet-point improvements using Google X-Y-Z formula.' },
+  { label: 'Build a weekly study plan', prompt: 'Create an intensive 7-day study plan to close my highest-priority technical gap.' },
+  { label: 'Give me mock interview questions', prompt: 'Give me 3 realistic technical interview questions tailored for my target role, with evaluation criteria.' },
 ];
 
 const ChatbotWidget = () => {
@@ -209,56 +208,36 @@ const ChatbotWidget = () => {
 
   return (
     <>
-      {/* Floating Trigger Button */}
-      <motion.button
+      {/* Career coach utility tab */}
+      <button
         onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.96 }}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-navy via-darkBlue to-primary text-white shadow-2xl hover:shadow-primary/30 transition-all border border-white/20 group"
+        className="fixed right-0 top-1/2 z-50 flex -translate-y-1/2 items-center gap-2 rounded-l-md border border-r-0 border-navy bg-navy px-3.5 py-2.5 text-white shadow-card transition-colors hover:bg-darkBlue"
         aria-label="Toggle SkillForge AI Career Coach"
       >
-        <div className="relative">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-xs">
-            <Sparkles size={15} className="animate-pulse" />
-          </div>
-          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-navy animate-pulse"></span>
-        </div>
-        <div className="flex flex-col text-left">
-          <span className="font-extrabold text-xs tracking-tight text-white leading-tight">AI Career Coach</span>
-          <span className="text-[10px] text-lightSky font-semibold flex items-center gap-1">
-            <ShieldCheck size={10} className="text-emerald-400" /> Grounded AI
-          </span>
-        </div>
-      </motion.button>
+        <Bot size={15} />
+        <span className="text-xs font-semibold">Career coach</span>
+      </button>
 
       {/* Main Chat Dialog */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.96 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className={`fixed z-50 bg-white/95 backdrop-blur-2xl border border-slate/20 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-navy transition-all duration-300 ${
+      {open && (
+          <div
+            className={`fixed z-50 flex flex-col overflow-hidden rounded-lg border border-slate/20 bg-white text-navy shadow-card ${
               isExpanded
                 ? 'bottom-4 right-4 left-4 top-4 sm:left-auto sm:top-8 sm:bottom-6 sm:right-6 sm:w-[860px] sm:h-[88vh]'
                 : 'bottom-20 right-4 sm:right-6 w-[94vw] sm:w-[480px] h-[78vh] max-h-[700px]'
             }`}
           >
             {/* Header */}
-            <div className="px-5 py-3.5 bg-gradient-to-r from-navy via-[#0d1f3c] to-navy text-white flex items-center justify-between border-b border-white/10 shrink-0">
+            <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-navy px-5 py-3.5 text-white">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shadow-primary/30">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                   <Bot size={20} className="text-white" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-extrabold text-sm text-white leading-tight">SkillForge AI Copilot</h3>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 rounded-full">
-                      <ShieldCheck size={11} /> AI Verified
-                    </span>
+                    <h3 className="text-sm font-bold leading-tight text-white">SkillForge AI Copilot</h3>
                   </div>
-                  <p className="text-[11px] text-slate/90 leading-tight truncate max-w-[210px] sm:max-w-xs mt-0.5 font-medium">
+                  <p className="mt-0.5 max-w-[210px] truncate text-[11px] font-medium leading-tight text-white/70 sm:max-w-xs">
                     {user?.targetRole ? `Target: ${user.targetRole}` : 'Personalized to your resume & skills'}
                   </p>
                 </div>
@@ -271,7 +250,7 @@ const ChatbotWidget = () => {
                   className={`px-2.5 py-1 text-xs rounded-xl font-semibold transition-all border ${
                     showSessionsDrawer
                       ? 'bg-primary text-white border-primary shadow-xs'
-                      : 'bg-white/10 border-white/10 text-white hover:bg-white/15'
+                     : 'bg-white/10 border-white/10 text-white hover:bg-white/15'
                   } hidden sm:flex items-center gap-1`}
                   title="View saved conversation threads"
                 >
@@ -305,13 +284,9 @@ const ChatbotWidget = () => {
             </div>
 
             {/* Collapsible Sessions Drawer (Slide-Over) */}
-            <AnimatePresence>
-              {showSessionsDrawer && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="bg-slate-50 border-b border-slate/20 px-4 py-3 space-y-2 overflow-hidden text-xs shrink-0"
+               {showSessionsDrawer && (
+                 <div
+                   className="bg-slate-50 border-b border-slate/20 px-4 py-3 space-y-2 overflow-hidden text-xs shrink-0"
                 >
                   <div className="flex justify-between items-center text-slate font-bold text-[11px] uppercase tracking-wider">
                     <span>Saved Career Conversations</span>
@@ -352,31 +327,28 @@ const ChatbotWidget = () => {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                 </div>
+               )}
 
             {/* Message Stream */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 bg-gradient-to-b from-slate-50/70 via-white to-slate-50/50">
+             <div className="flex-1 space-y-5 overflow-y-auto bg-[#f7fbff] p-4 sm:p-5">
               {messages.map((m, idx) => {
                 const isUser = m.role === 'user';
                 const hasCitations = m.retrievedContext && m.retrievedContext.length > 0;
                 const isCitationsOpen = expandedCitations[idx];
 
                 return (
-                  <motion.div
+                  <div
                     key={m._id || idx}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
                     className={`flex ${isUser ? 'justify-end' : 'justify-start'} group`}
                   >
                     <div className={`flex gap-3 max-w-[92%] sm:max-w-[85%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                       {/* Avatar */}
                       <div
-                        className={`w-8 h-8 rounded-2xl flex-shrink-0 flex items-center justify-center text-xs font-bold shadow-xs ${
+                        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
                           isUser
                             ? 'bg-primary text-white'
-                            : 'bg-gradient-to-br from-navy to-darkBlue text-white border border-slate/20'
+                            : 'border border-slate/20 bg-navy text-white'
                         }`}
                       >
                         {isUser ? <User size={15} /> : <Bot size={15} />}
@@ -385,10 +357,10 @@ const ChatbotWidget = () => {
                       {/* Bubble */}
                       <div className="space-y-2 min-w-0">
                         <div
-                          className={`p-4 rounded-3xl text-sm leading-relaxed ${
+                          className={`rounded-lg p-4 text-sm leading-relaxed ${
                             isUser
-                              ? 'bg-gradient-to-r from-primary to-accent text-white rounded-tr-xs shadow-md shadow-primary/20 font-medium'
-                              : 'bg-white border border-slate/15 text-slate-800 rounded-tl-xs shadow-xs prose prose-sm max-w-none'
+                            ? 'rounded-lg bg-primary font-medium text-white'
+                            : 'max-w-none rounded-lg border border-slate/20 bg-white text-slate-800 prose prose-sm'
                           }`}
                         >
                           {isUser ? (
@@ -406,7 +378,7 @@ const ChatbotWidget = () => {
                                 strong: ({ node, ...props }) => <strong className="font-bold text-navy" {...props} />,
                                 hr: ({ node, ...props }) => <hr className="my-3 border-slate/20" {...props} />,
                                 blockquote: ({ node, ...props }) => (
-                                  <blockquote className="border-l-4 border-primary/60 bg-primary/5 pl-3 py-1.5 my-2 rounded-r-xl text-slate-700 italic text-xs" {...props} />
+                                  <blockquote className="my-2 rounded-r-lg border-l-4 border-primary/60 bg-primary/5 py-1.5 pl-3 text-xs text-slate-700" {...props} />
                                 ),
                                 table: ({ node, ...props }) => (
                                   <div className="overflow-x-auto my-3 rounded-xl border border-slate/20 shadow-2xs">
@@ -434,7 +406,7 @@ const ChatbotWidget = () => {
                           {!isUser && (
                             <div className="mt-3 pt-2.5 border-t border-slate/10 flex items-center justify-between text-[11px] text-slate">
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-semibold text-slate/70 bg-slate-100 px-2 py-0.5 rounded-md border border-slate/20">
+                                   <span className="rounded-md border border-slate/20 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate/70">
                                   {m.generatedBy?.startsWith('gemini') ? 'AI Career Engine' : m.generatedBy || 'Neural Intelligence'}
                                 </span>
                               </div>
@@ -473,7 +445,7 @@ const ChatbotWidget = () => {
 
                         {/* Verified Profile Citations Accordion */}
                         {!isUser && hasCitations && (
-                          <div className="bg-lightSky/40 border border-primary/20 rounded-2xl overflow-hidden text-xs">
+                           <div className="overflow-hidden rounded-lg border border-slate/20 bg-white text-xs">
                             <button
                               onClick={() => toggleCitationExpand(idx)}
                               className="w-full px-3.5 py-2 flex items-center justify-between text-navy hover:text-primary transition-colors text-[11px] font-semibold"
@@ -485,18 +457,14 @@ const ChatbotWidget = () => {
                               {isCitationsOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                             </button>
 
-                            <AnimatePresence>
                               {isCitationsOpen && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
+                                <div
                                   className="px-3.5 pb-3 pt-1 space-y-2 border-t border-primary/10"
                                 >
                                   {m.retrievedContext.map((c, cIdx) => (
                                     <div
                                       key={cIdx}
-                                      className="p-2.5 rounded-xl bg-white border border-slate/15 space-y-1 shadow-2xs"
+                                       className="space-y-1 border-t border-slate/15 p-2.5"
                                     >
                                       <div className="flex items-center justify-between text-[11px] font-bold text-navy">
                                         <span className="flex items-center gap-1 text-primary">
@@ -513,21 +481,20 @@ const ChatbotWidget = () => {
                                       </p>
                                     </div>
                                   ))}
-                                </motion.div>
+                                </div>
                               )}
-                            </AnimatePresence>
                           </div>
                         )}
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
 
               {/* Thinking Indicator */}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="flex items-center gap-3 bg-white border border-slate/20 px-4 py-3 rounded-3xl rounded-tl-xs shadow-xs">
+                  <div className="flex items-center gap-3 rounded-lg border border-slate/20 bg-white px-4 py-3 shadow-xs">
                     <div className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-accent animate-bounce [animation-delay:0.2s]"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]"></div>
@@ -552,7 +519,6 @@ const ChatbotWidget = () => {
                   disabled={loading}
                   className="shrink-0 text-xs bg-white hover:bg-primary/5 hover:border-primary/40 border border-slate/20 px-3 py-1.5 rounded-xl text-slate-700 hover:text-primary transition-all font-medium shadow-2xs flex items-center gap-1.5"
                 >
-                  <span>{item.icon}</span>
                   <span>{item.label}</span>
                 </button>
               ))}
@@ -575,15 +541,14 @@ const ChatbotWidget = () => {
               <button
                 onClick={() => send()}
                 disabled={loading || !input.trim()}
-                className="w-10 h-10 rounded-2xl bg-gradient-to-r from-primary to-accent hover:opacity-95 disabled:opacity-30 disabled:hover:opacity-30 text-white flex items-center justify-center transition-all shadow-md shadow-primary/20 shrink-0"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-white transition-colors hover:bg-darkBlue disabled:cursor-not-allowed disabled:opacity-30"
                 aria-label="Send message"
               >
                 <Send size={16} />
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 };

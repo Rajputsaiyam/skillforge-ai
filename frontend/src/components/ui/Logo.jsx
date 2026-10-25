@@ -7,7 +7,7 @@ import logo from '../../assets/skillforge-logo.png';
 const Logo = ({ size = 32, className = '' }) => (
   <img
     src={logo}
-    alt="SkillForge AI — Learn, Practise, Grow, Get Hired"
+    alt="SkillForge AI"
     className={`w-auto object-contain ${className}`}
     style={{ height: size }}
   />

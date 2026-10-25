@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ListChecks, Plus, Sparkles, MapPin, Building, ExternalLink,
   Trash2, X, ChevronRight, CheckCircle2, AlertCircle, Loader2,
@@ -232,7 +231,7 @@ const ApplicationsPage = () => {
   return (
     <div className="pb-12">
       {/* Top Header & Search Bar */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-extrabold text-navy flex items-center gap-2">
             <ListChecks className="text-primary" /> Application Pipeline
@@ -267,7 +266,7 @@ const ApplicationsPage = () => {
             <Plus size={15} /> Track Application
           </Button>
         </div>
-      </motion.div>
+       </div>
 
       {/* Kanban Board Columns */}
       <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-thin">
@@ -289,9 +288,8 @@ const ApplicationsPage = () => {
 
               <div className="space-y-3 overflow-y-auto pr-1 flex-1 min-h-[100px]">
                 {colApps.map((a) => (
-                  <motion.div
+                  <div
                     key={a._id}
-                    layout
                     draggable
                     onDragStart={() => setDragId(a._id)}
                     onClick={() => openAppDetails(a)}
@@ -332,12 +330,12 @@ const ApplicationsPage = () => {
                     )}
 
                     <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-slate/10 text-[11px] text-slate">
-                      <span>{a.appliedDate ? new Date(a.appliedDate).toLocaleDateString() : '—'}</span>
+                       <span>{a.appliedDate ? new Date(a.appliedDate).toLocaleDateString() : 'Not dated'}</span>
                       <span className="px-2 py-0.5 rounded-md bg-lightSky text-primary font-bold">
                         {a.matchScore != null ? `${a.matchScore}% Match` : 'Tracked'}
                       </span>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -357,16 +355,9 @@ const ApplicationsPage = () => {
       )}
 
       {/* AI Stage Guidance & App Details Drawer */}
-      <AnimatePresence>
-        {selectedApp && (
-          <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs">
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="w-full max-w-lg bg-white h-full shadow-2xl p-6 overflow-y-auto flex flex-col"
-            >
+      {selectedApp && (
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/40">
+            <div className="flex h-full w-full max-w-lg flex-col overflow-y-auto bg-white p-6 shadow-card">
               <div className="flex items-center justify-between border-b border-slate/15 pb-4 mb-5">
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Application Strategy</span>
@@ -403,7 +394,7 @@ const ApplicationsPage = () => {
 
               {/* Live LinkedIn Intelligence Card in Drawer */}
               {(selectedApp.liveTracking || selectedApp.job?.source === 'linkedin') && (
-                <div className="mb-5 p-4 rounded-2xl bg-gradient-to-br from-[#0A66C2]/10 via-white to-transparent border border-[#0A66C2]/30 space-y-3">
+                 <div className="mb-5 space-y-3 rounded-lg border border-slate/20 bg-veryLightBlue p-4">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1.5 text-xs font-bold text-[#0A66C2]">
                       <Linkedin size={15} /> Live LinkedIn Tracking
@@ -515,22 +506,17 @@ const ApplicationsPage = () => {
                   Practice Interview Questions <ChevronRight size={14} />
                 </Button>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
     </div>
   );
 };
 
 // Sub-component: Manual Application Modal
 const ManualAppModal = ({ form, setForm, onClose, onSubmit, adding }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate/15"
-    >
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div className="w-full max-w-md rounded-lg border border-slate/20 bg-white p-6 shadow-card">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-extrabold text-navy text-lg">Track External Application</h3>
@@ -625,9 +611,8 @@ const ManualAppModal = ({ form, setForm, onClose, onSubmit, adding }) => (
           </Button>
         </div>
       </form>
-    </motion.div>
+    </div>
   </div>
 );
 
 export default ApplicationsPage;
-

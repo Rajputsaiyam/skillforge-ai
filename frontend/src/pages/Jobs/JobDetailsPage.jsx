@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Clock, ExternalLink, Bookmark, Linkedin, Sparkles,
   HelpCircle, ChevronDown, ChevronUp, Loader2, CheckCircle, FileText,
@@ -120,7 +119,7 @@ const JobDetailsPage = () => {
   return (
     <div className="grid lg:grid-cols-3 gap-6 pb-12">
       <div className="lg:col-span-2 space-y-6">
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
+        <div>
           <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider mb-2">
             <span>{job.source === 'manual' ? 'Tracked Role' : 'Active Opportunity'}</span>
             <span>•</span>
@@ -144,7 +143,7 @@ const JobDetailsPage = () => {
           <p className="flex items-center gap-1 text-xs text-slate mt-2">
             <Clock size={12} /> Posted {new Date(job.postedDate).toLocaleDateString()}
           </p>
-        </motion.div>
+        </div>
 
         {/* Primary Action Buttons Bar */}
         <div className="flex flex-wrap items-center gap-3 p-4 rounded-2xl bg-white border border-slate/15 shadow-xs">
@@ -152,7 +151,7 @@ const JobDetailsPage = () => {
             <Button
               onClick={handleApplyOnLinkedIn}
               disabled={saving}
-              className="!bg-[#0A66C2] hover:!brightness-95 text-white flex items-center gap-1.5"
+              className="!px-4 !py-2.5 text-sm flex items-center gap-1.5"
             >
               <Linkedin size={16} /> Apply on LinkedIn & Live Track <ExternalLink size={14} />
             </Button>
@@ -174,14 +173,14 @@ const JobDetailsPage = () => {
           </button>
           <button
             onClick={handleTailorResume}
-            className="px-4 py-2.5 rounded-xl border border-primary/40 bg-lightSky/60 hover:bg-lightSky text-primary text-sm font-semibold flex items-center gap-1.5 transition-colors"
+             className="btn-secondary flex items-center gap-1.5 text-sm"
           >
             <Sparkles size={15} /> Tailor Resume with AI
           </button>
         </div>
 
         {/* AI Interview Questions Predictor */}
-        <Card className="border-primary/30 bg-gradient-to-br from-white via-lightSky/10 to-transparent">
+        <Card className="border-slate/20 bg-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
@@ -213,13 +212,9 @@ const JobDetailsPage = () => {
             </button>
           </div>
 
-          <AnimatePresence>
-            {prepExpanded && interviewPrep && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-5 pt-4 border-t border-slate/15 space-y-4"
+             {prepExpanded && interviewPrep && (
+               <div
+                 className="mt-5 pt-4 border-t border-slate/15 space-y-4"
               >
                 <div>
                   <h4 className="text-xs font-bold text-primary uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -260,9 +255,8 @@ const JobDetailsPage = () => {
                     <MessageSquare size={14} /> Practice in AI Mock Interview <ArrowRight size={14} />
                   </Button>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+               </div>
+             )}
         </Card>
 
         {/* Job Description */}
@@ -324,4 +318,3 @@ const JobDetailsPage = () => {
 };
 
 export default JobDetailsPage;
-

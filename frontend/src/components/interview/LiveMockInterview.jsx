@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, UploadCloud, FileText, CheckCircle2, AlertTriangle, ShieldCheck,
   Video, VideoOff, Mic, MicOff, Volume2, VolumeX, Sparkles, Send,
@@ -391,13 +390,8 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-navy/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate/15 overflow-hidden flex flex-col my-auto max-h-[92vh]"
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-navy/80 p-3 sm:p-6">
+       <div className="my-auto flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-lg border border-slate/20 bg-white shadow-card">
         {/* Top Header Stepper */}
         <div className="px-6 py-4 border-b border-slate/15 bg-slate-50/80 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 sm:gap-6">
@@ -496,7 +490,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
                       onChange={handleFileInputChange}
                       className="hidden"
                     />
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-accent text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-primary/20">
+                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-lg bg-primary text-white">
                       <UploadCloud size={24} />
                     </div>
                     <h4 className="font-extrabold text-navy text-sm mb-1">
@@ -620,36 +614,31 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
                 )}
 
                 {/* Face & Human Count Live Warnings */}
-                <AnimatePresence>
-                  {faceWarning && cameraActive && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-4 left-4 right-4 p-3 rounded-2xl bg-rose-600/95 backdrop-blur-md text-white text-xs font-bold shadow-lg flex items-center gap-2 justify-center"
+                   {faceWarning && cameraActive && (
+                     <div
+                       className="absolute left-4 right-4 top-4 flex items-center justify-center gap-2 rounded-lg bg-danger p-3 text-xs font-bold text-white shadow-card"
                     >
                       <AlertTriangle size={16} className="text-amber-300 shrink-0" />
                       <span>{faceWarning}</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                     </div>
+                   )}
 
                 {/* Verified 1 Face Badge */}
                 {!faceWarning && cameraActive && faceCount === 1 && (
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1.5 shadow-sm">
+                  <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-md bg-success px-3 py-1 text-[11px] font-bold text-white shadow-card">
                     <UserCheck size={13} /> Candidate verified (1 person detected)
                   </div>
                 )}
 
                 {/* Live Mic Volume Level Overlay */}
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-                  <div className="flex items-center gap-2 bg-navy/70 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs">
+                  <div className="flex items-center gap-2 rounded-md bg-navy/90 px-3 py-1.5 text-xs text-white">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span className="text-[11px] font-bold">Camera ready</span>
                   </div>
 
                   {/* Microphone Volume Visualizer */}
-                  <div className="flex items-center gap-2 bg-navy/70 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs">
+                  <div className="flex items-center gap-2 rounded-md bg-navy/90 px-3 py-1.5 text-xs text-white">
                     <Mic size={13} className={audioLevel > 15 ? 'text-emerald-400' : 'text-slate-400'} />
                     <div className="w-16 h-2 bg-white/20 rounded-full overflow-hidden">
                       <div
@@ -735,9 +724,9 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
               {/* Dual Video Grid: Interviewer Tile & Candidate Tile */}
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Nexora (AI Interviewer) Tile */}
-                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-navy via-[#0d1f3c] to-navy p-6 flex flex-col items-center justify-center min-h-[200px] border border-white/10 shadow-lg text-white text-center">
+                <div className="relative flex min-h-[200px] flex-col items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-navy p-6 text-center text-white">
                   <div className="relative mb-3">
-                    <div className={`w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30 ${isAiSpeaking ? 'animate-pulse ring-4 ring-primary/40' : ''}`}>
+                    <div className={`flex h-16 w-16 items-center justify-center rounded-lg bg-primary ${isAiSpeaking ? 'animate-pulse ring-4 ring-primary/40' : ''}`}>
                       <Sparkles size={28} className="text-white" />
                     </div>
                     {isAiSpeaking && (
@@ -780,10 +769,10 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
                   )}
 
                   <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-white text-[10px] font-bold pointer-events-none">
-                    <span className="bg-navy/70 backdrop-blur-md px-2 py-0.5 rounded-md">
+                    <span className="rounded-md bg-navy/90 px-2 py-0.5">
                       Candidate Feed
                     </span>
-                    <div className="flex items-center gap-1.5 bg-navy/70 backdrop-blur-md px-2 py-0.5 rounded-md">
+                    <div className="flex items-center gap-1.5 rounded-md bg-navy/90 px-2 py-0.5">
                       <Mic size={10} className={isCandidateSpeaking ? 'text-rose-400 animate-pulse' : 'text-slate-400'} />
                       <span>{isCandidateSpeaking ? 'Transcribing...' : 'Mic Ready'}</span>
                     </div>
@@ -827,7 +816,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-[11px] text-slate-500">
-                    {isCandidateSpeaking ? '🎙️ Listening... speak clearly into your mic.' : 'Click mic to speak your answer with real-time Speech-to-Text.'}
+                    {isCandidateSpeaking ? 'Listening. Speak clearly into your mic.' : 'Click the mic to speak your answer with real-time speech-to-text.'}
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -870,7 +859,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
               ) : finalReport ? (
                 <div className="space-y-6">
                   {/* Top Score Banner */}
-                  <div className="p-6 rounded-3xl bg-gradient-to-br from-lightSky/50 via-white to-lightSky/30 border border-primary/20 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex flex-col items-center justify-between gap-4 border border-slate/20 bg-white p-6 sm:flex-row">
                     <div>
                       <span className="text-[10px] font-black text-primary uppercase tracking-widest block mb-1">
                         PERFORMANCE EVALUATION · {interviewType.toUpperCase()}
@@ -996,7 +985,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
             </div>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

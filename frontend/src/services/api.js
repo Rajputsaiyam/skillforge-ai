@@ -7,8 +7,9 @@ import axios from 'axios';
  * - If accessed from any deployed / non-localhost domain, routes to deployed backend: https://skillforge-ai-7.onrender.com/api
  */
 export const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_BASE_URL) {
-    const custom = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+  const envUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    const custom = envUrl.replace(/\/+$/, '');
     return custom.endsWith('/api') ? custom : `${custom}/api`;
   }
 

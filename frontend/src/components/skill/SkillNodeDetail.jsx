@@ -40,7 +40,7 @@ const SkillNodeDetail = ({ skill, onClose }) => {
           <h3 className="font-bold text-xl text-navy flex items-center gap-2">
             {skill.name}
             {skill.source === 'ai-detected' && (
-              <span title="Discovered automatically by AI from your resume — not part of the default skill list">
+              <span title="Discovered automatically by AI from your resume, not part of the default skill list">
                 <Badge variant="primary"><Sparkles size={11} className="inline mr-0.5" /> AI-detected</Badge>
               </span>
             )}

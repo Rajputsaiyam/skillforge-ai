@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   AlertTriangle, Sparkles, Zap, ArrowRight, X, Calendar, CheckCircle2,
   Loader2, Filter, Target, ShieldCheck
@@ -81,7 +80,7 @@ const SkillGapPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-extrabold text-navy">Skill Gap Engine</h1>
           <p className="text-slate mt-1 text-sm">
@@ -92,16 +91,16 @@ const SkillGapPage = () => {
         <Button
           onClick={handleGenerateStrategy}
           disabled={strategyLoading}
-          className="!bg-gradient-to-r from-primary to-accent text-white font-bold flex items-center gap-2 shadow-lg shadow-primary/20"
+           className="!px-4 !py-2.5 text-xs"
         >
           {strategyLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
           Generate AI 30-Day Strategy
         </Button>
-      </motion.div>
+       </div>
 
       {/* Top Gap Alert Banner */}
       {biggestOpportunity && (
-        <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+         <Card className="flex flex-col justify-between gap-4 border-slate/20 bg-white p-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0">
               <AlertTriangle size={20} />
@@ -204,16 +203,10 @@ const SkillGapPage = () => {
       </Card>
 
       {/* AI 30-Day Strategy Modal */}
-      <AnimatePresence>
-        {showStrategyModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden border border-slate/10"
-            >
-              <div className="p-5 bg-gradient-to-r from-navy to-darkBlue text-white flex items-center justify-between">
+       {showStrategyModal && (
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/60 p-4">
+             <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-slate/20 bg-white shadow-card">
+               <div className="flex items-center justify-between bg-navy p-5 text-white">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-primary/30 flex items-center justify-center">
                     <Sparkles size={18} className="text-sky" />
@@ -274,10 +267,9 @@ const SkillGapPage = () => {
                 <span className="text-xs text-slate">Grounds learning milestones into your personal roadmap</span>
                 <Button onClick={() => setShowStrategyModal(false)}>Got It</Button>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+             </div>
+           </div>
+       )}
     </div>
   );
 };

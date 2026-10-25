@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import ResumeUploader from '../../components/resume/ResumeUploader';
 import ResumeAnalysis from '../../components/resume/ResumeAnalysis';
 import AtsScoreChecker from '../../components/resume/AtsScoreChecker';
@@ -113,10 +112,10 @@ const ResumePage = () => {
 
   return (
     <div className="pb-12">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy">AI Resume & ATS Studio</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-navy">AI Resume and ATS Studio</h1>
         <p className="text-slate mt-1">Upload your resume to extract skills, analyze ATS match score, and power up bullet points with Google's X-Y-Z formula.</p>
-      </motion.div>
+      </div>
 
       <div className="max-w-2xl mx-auto mb-8">
         <ResumeUploader onFileSelected={handleFileSelected} uploading={uploading} progress={progress} />
@@ -148,7 +147,7 @@ const ResumePage = () => {
       )}
 
       {/* AI Google X-Y-Z Bullet Point Power Rewriter */}
-      <Card className="max-w-4xl mx-auto mt-8 border-primary/30 bg-gradient-to-br from-white via-lightSky/10 to-transparent">
+      <Card className="mx-auto mt-8 max-w-4xl border-slate/20 bg-white">
         <div className="flex items-center gap-2 mb-2">
 
 
@@ -188,11 +187,7 @@ const ResumePage = () => {
           </div>
 
           {rewrittenBulletResult && (
-            <motion.div
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-4 rounded-xl bg-white border border-primary/30 shadow-xs space-y-3"
-            >
+            <div className="space-y-3 rounded-lg border border-slate/20 bg-veryLightBlue p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-primary block mb-1">
@@ -224,7 +219,7 @@ const ResumePage = () => {
                   </span>
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
         </div>
       </Card>
@@ -309,7 +304,7 @@ const ResumeDraft = ({ draft, onPrint }) => (
         <Section title="Experience">
           {draft.experience.map((item, i) => (
             <div key={i} className="mb-3">
-              <p className="font-bold text-navy">{item.title} {item.company ? `— ${item.company}` : ''}</p>
+               <p className="font-bold text-navy">{item.title} {item.company ? `at ${item.company}` : ''}</p>
               <p className="text-xs">{item.duration}</p>
               <ul className="list-disc list-outside ml-4">{item.bullets?.map((bullet, j) => <li key={j}>{bullet}</li>)}</ul>
             </div>
@@ -330,7 +325,7 @@ const ResumeDraft = ({ draft, onPrint }) => (
       {draft.education?.length > 0 && (
         <Section title="Education">
           {draft.education.map((item, i) => (
-            <p key={i}><span className="font-bold text-navy">{item.school}</span> — {item.degree} {item.year && `(${item.year})`}</p>
+             <p key={i}><span className="font-bold text-navy">{item.school}</span>, {item.degree} {item.year && `(${item.year})`}</p>
           ))}
         </Section>
       )}
@@ -347,4 +342,3 @@ const Section = ({ title, children }) => (
 );
 
 export default ResumePage;
-

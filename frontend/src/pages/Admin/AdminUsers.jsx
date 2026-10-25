@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import adminService from '../../services/adminService';
 import UsersTable from '../../components/admin/UsersTable';
 import { useApp } from '../../context/AppContext';
@@ -20,10 +19,10 @@ const AdminUsers = () => {
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy">User Management</h1>
-        <p className="text-slate mt-1">{users.length} registered users</p>
-      </motion.div>
+       <div className="mb-6">
+         <h1 className="text-2xl font-bold text-navy">User Management</h1>
+         <p className="text-slate mt-1">{users.length} registered users</p>
+       </div>
       <UsersTable users={users} onSuspend={handleSuspend} onActivate={handleActivate} onDelete={handleDelete} />
     </div>
   );

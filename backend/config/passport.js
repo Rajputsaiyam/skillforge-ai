@@ -21,7 +21,8 @@ const getGoogleCallbackUrl = () => {
     process.env.NODE_ENV === 'production' ||
     Boolean(process.env.RENDER) ||
     Boolean(process.env.VERCEL) ||
-    Boolean(process.env.RAILWAY_ENVIRONMENT);
+    Boolean(process.env.RAILWAY_ENVIRONMENT) ||
+    Boolean(process.env.PORT && process.env.PORT !== '5000');
 
   const envCallback = process.env.GOOGLE_CALLBACK_URL;
 

@@ -22,36 +22,25 @@ const JobCard = ({ job, onSave, onApply, saved, applied, delay = 0 }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 flex-wrap">
           {isLinkedIn ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#0A66C2]/10 text-[#0A66C2] border border-[#0A66C2]/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <Linkedin size={11} /> Live LinkedIn
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+              <Linkedin size={11} /> Live LinkedIn listing
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate/10 text-slate">
-              Verified Opportunity
-            </span>
+            <span className="text-[11px] font-medium text-slate">Verified opportunity</span>
           )}
 
           {(job.employmentType === 'Internship' || /intern/i.test(job.title)) ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-800 border border-purple-300">
-              🎓 Internship
-            </span>
+            <span className="text-xs font-semibold text-slate">Internship</span>
           ) : (
             <span className="text-xs text-slate">{job.employmentType || 'Full-time'}</span>
           )}
 
-          <span className="text-xs text-slate">• {job.workMode || 'Remote'}</span>
+          <span className="text-xs text-slate">{job.workMode || 'Remote'}</span>
         </div>
 
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] text-slate font-medium uppercase tracking-wider">AI Match</span>
-          <span className={`text-base font-extrabold px-2 py-0.5 rounded-lg ${
-            match.overallMatchPct >= 75
-              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-              : match.overallMatchPct >= 50
-              ? 'bg-amber-50 text-amber-600 border border-amber-200'
-              : 'bg-slate/10 text-slate'
-          }`}>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-slate">AI match</span>
+          <span className="text-base font-bold text-primary">
             {match.overallMatchPct ?? '--'}%
           </span>
         </div>
@@ -67,7 +56,7 @@ const JobCard = ({ job, onSave, onApply, saved, applied, delay = 0 }) => {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         ) : (
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20 text-primary flex items-center justify-center font-bold text-base shrink-0 border border-primary/20">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-slate/20 bg-lightSky text-base font-bold text-primary">
             {job.company?.charAt(0) || 'J'}
           </div>
         )}
@@ -83,11 +72,11 @@ const JobCard = ({ job, onSave, onApply, saved, applied, delay = 0 }) => {
       {/* Location & Metadata */}
       <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate">
         <span className="flex items-center gap-1"><MapPin size={12} className="text-slate/70" /> {job.location || 'Remote'}</span>
-        <span>•</span>
+           <span>/</span>
         <span>{job.experienceRequired || '1-3 years'}</span>
         {job.employmentType && (
           <>
-            <span>•</span>
+             <span>/</span>
             <span>{job.employmentType}</span>
           </>
         )}

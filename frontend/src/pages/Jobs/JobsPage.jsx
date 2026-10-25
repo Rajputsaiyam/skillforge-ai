@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Briefcase, Linkedin, ExternalLink, RefreshCw, Radio, CheckCircle, Sparkles, Zap } from 'lucide-react';
 import JobFilters from '../../components/jobs/JobFilters';
 import JobCard from '../../components/jobs/JobCard';
@@ -126,7 +125,7 @@ const JobsPage = () => {
   return (
     <div className="pb-12">
       {/* Page Title & Live Connection Status */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-extrabold text-navy">Live LinkedIn Job Search</h1>
           <p className="text-slate mt-1">Real-time jobs matched to your target role & skills, with live application tracking.</p>
@@ -135,17 +134,16 @@ const JobsPage = () => {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowAutomation(true)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white text-xs font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+            className="btn-secondary !px-3.5 !py-2 text-xs"
             title="Auto-search, AI pitch generation & 1-click batch application"
           >
-            <Zap size={14} className="fill-white" />
+            <Zap size={14} className="text-primary" />
             <span>Job Auto-Apply Bot</span>
-            <span className="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-md font-mono uppercase tracking-wider">Free</span>
+            <span className="text-[10px] uppercase tracking-wider text-slate">Free</span>
           </button>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <Linkedin size={13} className="text-[#0A66C2]" /> LinkedIn Live API Connected
+          <div className="flex items-center gap-2 text-xs font-semibold text-success">
+            <Linkedin size={13} /> LinkedIn connection active
           </div>
 
           <button
@@ -157,18 +155,18 @@ const JobsPage = () => {
             <RefreshCw size={15} className={refreshing ? 'animate-spin text-primary' : ''} />
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* IP Geolocation Context Banner */}
       {detectedLocation && (
-        <div className="mb-4 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-blue-50/80 via-lightSky/40 to-transparent border border-blue-200/60 flex flex-wrap items-center justify-between gap-3 text-xs text-navy">
+         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-slate/20 bg-white px-4 py-2.5 text-xs text-navy">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+             <span className="h-2 w-2 rounded-full bg-success"></span>
             <span className="font-semibold text-primary">IP Geolocation Detected:</span>
             <span className="text-navy font-bold">
               {detectedLocation.city ? `${detectedLocation.city}, ` : ''}{detectedLocation.country}
             </span>
-            <span className="text-slate hidden sm:inline">— Auto-localizing verified jobs & internships for your region</span>
+             <span className="text-slate hidden sm:inline">Auto-localizing verified jobs and internships for your region</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -201,7 +199,7 @@ const JobsPage = () => {
 
       {/* Target Role Guidance Pill */}
       {user?.targetRole && (
-        <div className="mb-5 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-lightSky via-primary/5 to-transparent border border-primary/20 flex items-center justify-between gap-3 text-xs text-navy">
+         <div className="mb-5 flex items-center justify-between gap-3 border border-slate/20 bg-white px-4 py-2.5 text-xs text-navy">
           <span className="flex items-center gap-1.5 font-medium">
             <Sparkles size={14} className="text-primary" />
             Showing real opportunities automatically tailored for your target role: <strong className="font-bold text-primary">{user.targetRole}</strong>
@@ -212,8 +210,8 @@ const JobsPage = () => {
 
       {/* LinkedIn Search Direct Links */}
       {linkedInLinks.length > 0 && (
-        <div className="mb-5 p-3.5 rounded-2xl bg-[#0A66C2]/5 border border-[#0A66C2]/20 flex flex-wrap items-center gap-2.5">
-          <span className="flex items-center gap-1.5 text-xs font-semibold text-[#0A66C2] mr-1">
+         <div className="mb-5 flex flex-wrap items-center gap-2.5 border border-slate/20 bg-white p-3.5">
+           <span className="mr-1 flex items-center gap-1.5 text-xs font-semibold text-primary">
             <Linkedin size={15} /> Quick LinkedIn searches:
           </span>
           {linkedInLinks.map((l) => (
@@ -222,7 +220,7 @@ const JobsPage = () => {
               href={l.url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1 text-xs font-medium bg-white border border-[#0A66C2]/30 text-[#0A66C2] px-2.5 py-1 rounded-lg hover:bg-[#0A66C2]/10 transition-colors shadow-2xs"
+               className="flex items-center gap-1 rounded-md border border-slate/20 bg-white px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-veryLightBlue"
             >
               {l.label} <ExternalLink size={11} />
             </a>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Users, UserCheck, FileText, ClipboardCheck, Eye, ListChecks } from 'lucide-react';
 import adminService from '../../services/adminService';
 import StatsCard from '../../components/admin/StatsCard';
@@ -14,10 +13,10 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy">Admin Dashboard</h1>
-        <p className="text-slate mt-1">Platform-wide analytics and monitoring.</p>
-      </motion.div>
+       <div className="mb-6">
+         <h1 className="text-2xl font-bold text-navy">Admin Dashboard</h1>
+         <p className="text-slate mt-1">Platform-wide analytics and monitoring.</p>
+       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
         <StatsCard label="Total Users" value={stats.totalUsers} icon={Users} />

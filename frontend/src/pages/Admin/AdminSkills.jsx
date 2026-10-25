@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Plus, Trash2 } from 'lucide-react';
 import adminService from '../../services/adminService';
 import Card from '../../components/ui/Card';
@@ -33,13 +32,13 @@ const AdminSkills = () => {
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex items-center justify-between">
+       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-navy">Skill Management</h1>
+           <h1 className="text-2xl font-bold text-navy">Skill Management</h1>
           <p className="text-slate mt-1">{skills.length} skills in the taxonomy</p>
         </div>
         <Button onClick={() => setModalOpen(true)}><Plus size={16} /> Add Skill</Button>
-      </motion.div>
+       </div>
 
       <Card className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]">
@@ -58,7 +57,7 @@ const AdminSkills = () => {
                 <td className="py-3 font-semibold text-navy">{s.name}</td>
                 <td className="py-3 text-slate">{s.category}</td>
                 <td className="py-3 text-slate">{s.difficulty}</td>
-                <td className="py-3 text-slate">{s.prerequisites?.join(', ') || '—'}</td>
+                 <td className="py-3 text-slate">{s.prerequisites?.join(', ') || 'None listed'}</td>
                 <td className="py-3 text-right">
                   <button onClick={() => handleDelete(s._id)} className="p-1.5 text-slate hover:text-danger"><Trash2 size={16} /></button>
                 </td>

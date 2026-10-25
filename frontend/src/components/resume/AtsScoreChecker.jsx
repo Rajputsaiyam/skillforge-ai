@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck, AlertTriangle, CheckCircle2, Sparkles, Loader2,
   TrendingUp, FileText, ArrowRight, Tag, Zap, ChevronRight, RefreshCw
@@ -130,7 +129,7 @@ const AtsScoreChecker = ({ resume, defaultRole = 'Full Stack Developer', onScore
 
           <div className="flex-1">
             <label className="text-[11px] font-bold text-navy uppercase tracking-wider block mb-1">
-              Job Description (Optional — for semantic tailoring)
+               Job Description (Optional, for semantic tailoring)
             </label>
             <input
               type="text"
@@ -173,11 +172,8 @@ const AtsScoreChecker = ({ resume, defaultRole = 'Full Stack Developer', onScore
       </div>
 
       {/* Audit Report View */}
-      <AnimatePresence>
         {report && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+          <div
             className="pt-5 border-t border-slate/15 space-y-6"
           >
             {/* Top Score Banner */}
@@ -310,9 +306,8 @@ const AtsScoreChecker = ({ resume, defaultRole = 'Full Stack Developer', onScore
                 </div>
               )}
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </Card>
   );
 };

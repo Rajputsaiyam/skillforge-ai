@@ -4,7 +4,7 @@ import Button from './Button';
 const EmptyState = ({ icon: Icon, title, description, ctaLabel, onCta }) => (
   <div className="flex flex-col items-center justify-center text-center py-16 px-6">
     {Icon && (
-      <div className="w-14 h-14 rounded-2xl bg-lightSky flex items-center justify-center mb-4">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-slate/20 bg-white">
         <Icon size={26} className="text-primary" />
       </div>
     )}

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
   Settings, Bot, Sparkles, Download, RefreshCw, Shield,
   CheckCircle2, Bell, User, Clock, Trash2, LogOut
@@ -82,14 +81,14 @@ const SettingsPage = () => {
 
   return (
     <div className="max-w-2xl mx-auto pb-12">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy flex items-center gap-2">
+      <div className="mb-6">
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-navy">
           <Settings className="text-primary" /> Settings & AI Preferences
         </h1>
         <p className="text-slate mt-1 text-sm">
           Customize your AI coaching persona, study velocity, audio tools, and export your career data.
         </p>
-      </motion.div>
+      </div>
 
       {/* AI Coaching Persona */}
       <Card className="mb-6">
@@ -238,4 +237,3 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
-

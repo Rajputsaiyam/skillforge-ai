@@ -17,8 +17,8 @@ const ITEMS = [
 ];
 
 const AdminSidebar = () => (
-  <aside className="hidden md:flex flex-col w-64 border-r border-slate/10 bg-navy text-white h-screen sticky top-0">
-    <div className="h-20 flex items-center justify-center px-4 border-b border-white/10 bg-white">
+  <aside className="hidden md:flex flex-col w-64 border-r border-slate/20 bg-white text-navy h-screen sticky top-0">
+    <div className="h-20 flex items-center justify-center px-4 border-b border-slate/20 bg-white">
       <Logo size={64} className="max-w-[138px]" />
     </div>
     <nav className="p-3 space-y-1 flex-1">
@@ -28,7 +28,7 @@ const AdminSidebar = () => (
           to={to}
           className={({ isActive }) =>
             `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-              isActive ? 'bg-white/10 text-sky' : 'text-white/70 hover:bg-white/5 hover:text-white'
+              isActive ? 'bg-lightSky text-primary' : 'text-slate hover:bg-veryLightBlue hover:text-navy'
             }`
           }
         >

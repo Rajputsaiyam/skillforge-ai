@@ -16,7 +16,7 @@ const AdminUserDetail = () => {
   return (
     <div>
       <h1 className="text-2xl font-extrabold text-navy mb-1">{user.fullName}</h1>
-      <p className="text-slate mb-6">{user.email} · Target role: {user.targetRole || '—'}</p>
+       <p className="text-slate mb-6">{user.email} · Target role: {user.targetRole || 'Not set'}</p>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
@@ -34,13 +34,13 @@ const AdminUserDetail = () => {
         <Card>
           <h3 className="font-bold text-navy mb-3">Assessments ({assessments.length})</h3>
           {assessments.map((a) => (
-            <p key={a._id} className="text-sm text-slate">{a.skillsAssessed.join(', ')} — {a.status}</p>
+             <p key={a._id} className="text-sm text-slate">{a.skillsAssessed.join(', ')} · {a.status}</p>
           ))}
         </Card>
         <Card>
           <h3 className="font-bold text-navy mb-3">Applications ({applications.length})</h3>
           {applications.map((a) => (
-            <p key={a._id} className="text-sm text-slate">{a.job?.title} — {a.status}</p>
+             <p key={a._id} className="text-sm text-slate">{a.job?.title} · {a.status}</p>
           ))}
         </Card>
       </div>

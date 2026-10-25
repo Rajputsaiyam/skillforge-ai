@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ClipboardCheck, BookOpen, Sparkles, ArrowRight, CheckCircle2, XCircle,
   Loader2, MessageSquare, Send, Award, RotateCcw, Mic, MicOff,
@@ -259,14 +258,14 @@ const AssessmentPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto pb-10">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy flex items-center gap-2">
+      <div className="mb-6">
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-navy">
           <ClipboardCheck className="text-primary" /> AI Assessment & Mock Interview
         </h1>
         <p className="text-slate mt-1">
           Every question and interview prompt is dynamically generated and scored by AI in real-time, calibrated to your target career role.
         </p>
-      </motion.div>
+      </div>
 
       {/* Segmented Mode Selector */}
       <div className="flex p-1.5 rounded-2xl bg-slate-100/90 border border-slate/15 mb-6 shadow-inner">
@@ -284,7 +283,7 @@ const AssessmentPage = () => {
           onClick={() => { setMode('interview'); resetAll(); }}
           className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
             mode === 'interview'
-              ? 'bg-gradient-to-r from-primary to-accent text-white shadow-md shadow-primary/25'
+              ? 'bg-primary text-white'
               : 'text-slate-600 hover:text-navy hover:bg-white/50'
           }`}
         >
@@ -294,39 +293,32 @@ const AssessmentPage = () => {
 
       {/* Live Video & Voice Mock Interview Hero Banner */}
       {mode === 'interview' && !interviewId && (
-        <motion.div
-          initial={{ opacity: 0, y: -6 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-6 rounded-3xl bg-gradient-to-r from-navy via-[#0f274a] to-navy text-white shadow-xl border border-primary/30 relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="mb-6 rounded-lg border border-navy bg-navy p-6 text-white">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold mb-2">
-                <Video size={13} /> Live Camera & Audio Simulation
-              </div>
-              <h3 className="text-xl font-black tracking-tight text-white">Live Mock Interview with Nexora</h3>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-sky"><Video size={13} className="mr-1 inline" /> Live camera and audio simulation</p>
+              <h3 className="text-xl font-bold tracking-tight text-white">Live mock interview with Nexora</h3>
               <p className="text-xs text-slate-300 mt-1 max-w-lg leading-relaxed">
                 Take a live mock interview with open webcam, real-time microphone check, AI face & multi-human proctoring warnings, spoken questions, and comprehensive scoring.
               </p>
             </div>
             <Button
               onClick={() => setShowLiveMock(true)}
-              className="!py-3.5 !px-6 text-xs font-bold !bg-emerald-600 hover:!bg-emerald-700 !text-white rounded-2xl shadow-lg shadow-emerald-600/30 shrink-0 flex items-center gap-2"
+              className="!px-6 !py-3.5 text-xs font-bold"
             >
-              <Video size={16} /> Launch Live Interview →
+              <Video size={16} /> Launch live interview <ArrowRight size={15} />
             </Button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* --- SKILL SELECTION --- */}
       {((mode === 'quiz' && stage === STAGES.SELECT) || (mode === 'interview' && !interviewId)) && (
-        <Card className="border-primary/20 shadow-lg">
+        <Card className="border-slate/20">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-extrabold text-navy text-base">Select Target Focus Skills</h3>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-              {selectedSkills.length} Selected
+            <span className="text-xs font-semibold text-primary">
+              {selectedSkills.length} selected
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 mb-5 leading-relaxed">
@@ -344,7 +336,7 @@ const AssessmentPage = () => {
                   onClick={() => toggleSkill(s)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-150 flex items-center gap-1.5 ${
                     isSelected
-                      ? 'bg-primary text-white border-primary shadow-sm shadow-primary/30 scale-[1.02]'
+                       ? 'bg-primary text-white border-primary'
                       : 'bg-white border-slate/20 text-slate-700 hover:border-primary/40 hover:text-navy'
                   }`}
                 >
@@ -379,7 +371,7 @@ const AssessmentPage = () => {
                 <Button
                   onClick={startInterview}
                   disabled={interviewLoading || selectedSkills.length === 0}
-                  className="!py-2.5 !px-4 text-xs font-bold !bg-gradient-to-r from-primary to-accent"
+                   className="!px-4 !py-2.5 text-xs font-bold"
                 >
                   {interviewLoading ? <Loader2 className="animate-spin" size={15} /> : <MessageSquare size={15} />}
                   Quick Practice
@@ -419,7 +411,7 @@ const AssessmentPage = () => {
             ) : (
               <Button onClick={startQuiz} disabled={loading}>
                 {loading ? <Loader2 className="animate-spin" size={17} /> : <ClipboardCheck size={17} />}
-                I'm Ready — Start Quiz
+                 I'm ready to start the quiz
               </Button>
             )}
           </div>
@@ -459,13 +451,11 @@ const AssessmentPage = () => {
               {showHint ? 'Hide AI Hint' : 'Need an AI concept hint?'}
             </button>
             {showHint && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mt-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed"
+               <div
+                 className="mt-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed"
               >
                 <strong>Concept Hint:</strong> Focus on core trade-offs, standard patterns, and edge cases related to {currentQuestion.skill}.
-              </motion.div>
+               </div>
             )}
           </div>
 
@@ -505,7 +495,7 @@ const AssessmentPage = () => {
                   {isListening ? <MicOff size={16} /> : <Mic size={16} />}
                 </button>
               </div>
-              <p className="text-[11px] text-slate mt-1 mb-3">Graded by AI using semantic similarity — focus on explaining the core reasoning.</p>
+               <p className="text-[11px] text-slate mt-1 mb-3">Graded by AI using semantic similarity. Focus on explaining the core reasoning.</p>
               <Button onClick={() => submitCurrentAnswer(null)} disabled={!textDraft.trim() || loading}>
                 {loading ? <Loader2 className="animate-spin" size={17} /> : null}
                 {qIndex + 1 < questions.length ? 'Next Question' : 'Finish & Calculate Score'}
@@ -581,11 +571,11 @@ const AssessmentPage = () => {
 
       {/* --- AI INTERVIEW STAGE --- */}
       {mode === 'interview' && interviewId && (
-        <Card className="border-primary/20 shadow-xl overflow-hidden p-0">
+         <Card className="overflow-hidden border-slate/20 p-0">
           {/* Interviewer Top Bar */}
-          <div className="px-5 py-3.5 bg-gradient-to-r from-navy via-darkBlue to-navy text-white flex items-center justify-between">
+          <div className="flex items-center justify-between bg-navy px-5 py-3.5 text-white">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white shadow-xs">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
                 <MessageSquare size={16} />
               </div>
               <div>
@@ -620,7 +610,7 @@ const AssessmentPage = () => {
                   <div
                     className={`max-w-[85%] px-4 py-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                       t.role === 'user'
-                        ? 'bg-gradient-to-r from-primary to-accent text-white rounded-tr-xs shadow-md shadow-primary/20 font-medium'
+                        ? 'rounded-lg bg-primary font-medium text-white'
                         : 'bg-white text-navy rounded-tl-xs border border-slate/15 shadow-xs font-normal'
                     }`}
                   >
@@ -684,7 +674,7 @@ const AssessmentPage = () => {
                   <button
                     onClick={sendInterviewReply}
                     disabled={interviewLoading || !interviewInput.trim()}
-                    className="w-11 h-11 rounded-2xl bg-gradient-to-r from-primary to-accent text-white flex items-center justify-center disabled:opacity-30 disabled:hover:opacity-30 transition-all shadow-md shadow-primary/25 shrink-0"
+                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary text-white transition-colors disabled:cursor-not-allowed disabled:opacity-30"
                     title="Send answer"
                   >
                     <Send size={16} />
@@ -703,7 +693,7 @@ const AssessmentPage = () => {
                 </div>
               </div>
             ) : (
-              <div className="mt-2 p-6 rounded-2xl bg-gradient-to-br from-lightSky/40 to-white border border-primary/20 shadow-md">
+              <div className="mt-2 border border-slate/20 bg-white p-6">
                 <div className="flex items-center justify-between mb-4 pb-3 border-b border-primary/10">
                   <div>
                     <h4 className="font-black text-navy text-lg">Mock Interview Assessment Scorecard</h4>
@@ -765,4 +755,3 @@ const AssessmentPage = () => {
 };
 
 export default AssessmentPage;
-

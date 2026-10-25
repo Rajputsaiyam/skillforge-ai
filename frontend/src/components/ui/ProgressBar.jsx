@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const colorFor = (value) => {
   if (value >= 75) return 'bg-success';
@@ -17,10 +16,8 @@ const ProgressBar = ({ value = 0, label, showValue = true, colorClass, height = 
       </div>
     )}
     <div className={`w-full ${height} bg-lightSky rounded-full overflow-hidden`}>
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: `${Math.min(100, Math.max(0, value))}%` }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+      <div
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
         className={`${height} rounded-full ${colorClass || colorFor(value)}`}
       />
     </div>

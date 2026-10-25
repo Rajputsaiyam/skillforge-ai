@@ -3,17 +3,17 @@ import { Search, MapPin, Briefcase, Clock, SlidersHorizontal, X, Compass, Sparkl
 
 const WORK_MODES = [
   { value: '', label: 'All Work Modes' },
-  { value: 'Remote', label: '🏠 Remote' },
-  { value: 'Hybrid', label: '🏢 Hybrid' },
-  { value: 'On-site', label: '📍 On-site' },
+  { value: 'Remote', label: 'Remote' },
+  { value: 'Hybrid', label: 'Hybrid' },
+  { value: 'On-site', label: 'On-site' },
 ];
 
 const WORK_TIMES = [
   { value: '', label: 'All Job Types' },
-  { value: 'Internship', label: '🎓 Internship' },
-  { value: 'Full-time', label: '💼 Full-time' },
-  { value: 'Part-time', label: '⏱️ Part-time' },
-  { value: 'Contract', label: '📝 Contract' },
+  { value: 'Internship', label: 'Internship' },
+  { value: 'Full-time', label: 'Full-time' },
+  { value: 'Part-time', label: 'Part-time' },
+  { value: 'Contract', label: 'Contract' },
 ];
 
 const POPULAR_LOCATIONS = [
@@ -196,7 +196,7 @@ const JobFilters = ({ filters, setFilters, onSearch, detectedLocation }) => {
                 : 'bg-slate/5 hover:bg-slate/10 text-slate border-slate/20'
             }`}
           >
-            💼 Full-time
+             Full-time
           </button>
 
           {/* Quick Remote Toggle */}
@@ -208,7 +208,7 @@ const JobFilters = ({ filters, setFilters, onSearch, detectedLocation }) => {
                 : 'bg-slate/5 hover:bg-slate/10 text-slate border-slate/20'
             }`}
           >
-            🏠 Remote Only
+             Remote only
           </button>
 
           {/* Auto-detected Country Button */}
@@ -235,7 +235,7 @@ const JobFilters = ({ filters, setFilters, onSearch, detectedLocation }) => {
                 : 'bg-slate/5 hover:bg-slate/10 text-slate border-slate/20'
             }`}
           >
-            🌐 Global Remote
+             Global remote
           </button>
         </div>
 

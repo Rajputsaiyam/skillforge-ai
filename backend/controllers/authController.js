@@ -64,7 +64,52 @@ const googleNotConfigured = asyncHandler(async (req, res) => {
 // since an OAuth redirect can't return JSON directly to a fetch/axios call.
 const googleCallback = asyncHandler(async (req, res) => {
   const user = req.user;
-  const clientBase = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/+$/, '');
+
+  // 1. Prioritize clientBase attached directly by route middleware
+  let clientBase = req.clientBase;
+
+  // 2. Fallback to state parameter decode if needed
+  if (!clientBase && req.query.state) {
+    try {
+      const normalized = String(req.query.state).trim().replace(/ /g, '+');
+      const jsonStr = Buffer.from(normalized, 'base64').toString('utf8');
+      const parsed = JSON.parse(jsonStr);
+      if (parsed?.returnTo) {
+        const u = new URL(parsed.returnTo);
+        clientBase = `${u.protocol}//${u.host}`;
+      }
+    } catch (_) {}
+  }
+
+  // 3. Fallback to cookie
+  if (!clientBase && req.headers.cookie) {
+    const match = req.headers.cookie.match(/sf_oauth_origin=([^;]+)/);
+    if (match) {
+      try {
+        const u = new URL(decodeURIComponent(match[1]));
+        clientBase = `${u.protocol}//${u.host}`;
+      } catch (_) {}
+    }
+  }
+
+  // 4. Fallback to CLIENT_URL
+  if (!clientBase && process.env.CLIENT_URL) {
+    try {
+      const u = new URL(process.env.CLIENT_URL);
+      clientBase = `${u.protocol}//${u.host}`;
+    } catch (_) {}
+  }
+
+  if (!clientBase) {
+    clientBase = 'http://localhost:5173';
+  }
+
+  // Clear fallback cookie
+  res.setHeader(
+    'Set-Cookie',
+    'sf_oauth_origin=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'
+  );
+
   if (user.status === 'suspended') {
     return res.redirect(`${clientBase}/login?error=account_suspended`);
   }

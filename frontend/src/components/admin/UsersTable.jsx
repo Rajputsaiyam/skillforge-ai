@@ -23,7 +23,7 @@ const UsersTable = ({ users, onSuspend, onActivate, onDelete }) => (
               <p className="font-semibold text-navy">{u.fullName}</p>
               <p className="text-xs text-slate">{u.email}</p>
             </td>
-            <td className="py-3 text-slate">{u.targetRole || '—'}</td>
+             <td className="py-3 text-slate">{u.targetRole || 'Not set'}</td>
             <td className="py-3 text-slate">{u.resumeStatus}</td>
             <td className="py-3 text-slate">{u.applicationsCount}</td>
             <td className="py-3">

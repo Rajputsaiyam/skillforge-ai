@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail, Send, Sparkles, FileText, CheckCircle2, ShieldCheck,
   Copy, Check, Trash2, Plus, Upload, X, AtSign, Building2,
@@ -19,7 +18,7 @@ const SENDER_EMAIL = 'saiyamrajput71@gmail.com';
 const OUTREACH_TEMPLATES = [
   {
     id: 'project-pitch',
-    label: '🚀 High-Impact Pitch',
+     label: 'High-impact pitch',
     name: 'High-Impact Project Pitch',
     subject: 'Full Stack Engineer (MERN) – Application & Project Showcase',
     body: `Hi Hiring Team,
@@ -39,7 +38,7 @@ Portfolio: {{portfolio_url}}`,
   },
   {
     id: 'internship',
-    label: '🎯 SWE Internship',
+     label: 'SWE internship',
     name: 'SWE Internship & Early Career',
     subject: 'Application: Software Engineering Intern – {{candidate_name}}',
     body: `Dear Engineering Team,
@@ -58,7 +57,7 @@ Portfolio: {{portfolio_url}}`,
   },
   {
     id: 'general-opp',
-    label: '💼 General Application',
+     label: 'General application',
     name: 'General Developer Application',
     subject: 'Full Stack Developer Application – {{candidate_name}}',
     body: `Hi Hiring Team,
@@ -78,7 +77,7 @@ Warm regards,
   },
   {
     id: 'follow-up',
-    label: '🔄 4-Day Follow-Up',
+     label: '4-day follow-up',
     name: '4-Day Follow-Up Nudge',
     subject: 'Following up on Full Stack Developer Application – {{candidate_name}}',
     body: `Hi Hiring Team,
@@ -352,12 +351,12 @@ export default function ColdEmailPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate/15 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+             <span className="h-2 w-2 rounded-full bg-success" />
             <span className="text-[11px] font-extrabold uppercase tracking-widest text-primary">
               Bulk Cold Outreach Studio
             </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              Backend Connected
+             <span className="text-[10px] font-semibold text-success">
+               Backend connected
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-navy tracking-tight">
@@ -399,7 +398,7 @@ export default function ColdEmailPage() {
           <button
             onClick={handleDispatchBatch}
             disabled={emailList.length === 0 || isSendingBatch}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary via-blue-600 to-accent text-white text-xs font-extrabold shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/35 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+             className="btn-primary !px-5 !py-2.5 text-xs disabled:pointer-events-none"
           >
             {isSendingBatch ? (
               <>
@@ -787,12 +786,8 @@ export default function ColdEmailPage() {
       {/* BULK PASTE EMAILS MODAL (PASTE ONLY EMAILS) */}
       {/* ========================================================================= */}
       {showBulkModal && (
-        <div className="fixed inset-0 z-50 bg-navy/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate/15 overflow-hidden"
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/80 p-4">
+          <div className="w-full max-w-lg overflow-hidden rounded-lg border border-slate/20 bg-white shadow-card">
             <div className="px-5 py-3.5 bg-navy text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Upload size={16} className="text-primary" />
@@ -805,7 +800,7 @@ export default function ColdEmailPage() {
 
             <div className="p-5 space-y-3">
               <p className="text-xs text-slate-500 leading-relaxed">
-                Paste your raw email list below. You don't need any names or company fields — just paste the emails separated by newlines, commas, or spaces:
+                 Paste your raw email list below. You don't need any names or company fields. Paste the emails separated by newlines, commas, or spaces:
               </p>
 
               <textarea
@@ -834,7 +829,7 @@ export default function ColdEmailPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

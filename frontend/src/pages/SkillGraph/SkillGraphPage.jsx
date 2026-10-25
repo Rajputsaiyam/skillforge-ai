@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Filter, Layers, Sparkles } from 'lucide-react';
 import SkillGraphCanvas from '../../components/skill/SkillGraphCanvas';
 import SkillNodeDetail from '../../components/skill/SkillNodeDetail';
@@ -8,11 +7,11 @@ import { useAuth } from '../../context/AuthContext';
 import Card from '../../components/ui/Card';
 
 const LEGEND = [
-  { label: 'Strong', color: '#10B981' },
-  { label: 'Current', color: '#2563EB' },
-  { label: 'Needs Improvement', color: '#F59E0B' },
-  { label: 'Missing', color: '#EF4444' },
-  { label: 'Recommended', color: '#8B5CF6' },
+  { label: 'Strong', color: '#2F6F5E' },
+  { label: 'Current', color: '#2F617C' },
+  { label: 'Needs Improvement', color: '#A96B2E' },
+  { label: 'Missing', color: '#A14D4D' },
+  { label: 'Recommended', color: '#B56E4F' },
 ];
 
 const SkillGraphPage = () => {
@@ -52,7 +51,7 @@ const SkillGraphPage = () => {
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-navy">Interactive Skill Graph</h1>
           <p className="text-slate mt-1 text-sm">
@@ -67,7 +66,7 @@ const SkillGraphPage = () => {
             </span>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Filter Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate/15 shadow-sm">

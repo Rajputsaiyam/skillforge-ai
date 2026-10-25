@@ -3,25 +3,25 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Share2, ClipboardCheck, Target, Briefcase,
   ListChecks, Route as RouteIcon, TrendingUp, User, Settings, ChevronLeft, ChevronRight,
-  Sparkles, Mail,
+  Mail,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import Logo from '../ui/Logo';
 
 const WORKSPACE_ITEMS = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { to: '/resume', label: 'Resume Studio', icon: FileText, badge: 'ATS' },
+  { to: '/resume', label: 'Resume Studio', icon: FileText },
   { to: '/skill-graph', label: 'Skill Graph', icon: Share2 },
-  { to: '/assessment', label: 'Practice Lab', icon: ClipboardCheck, badge: 'AI' },
+  { to: '/assessment', label: 'Practice Lab', icon: ClipboardCheck },
 ];
 
 const CAREER_ITEMS = [
   { to: '/skill-gaps', label: 'Skill Gaps', icon: Target },
   { to: '/roadmap', label: 'Learning Plan', icon: RouteIcon },
-  { to: '/progress', label: 'Progress', icon: TrendingUp, hasDot: true },
+  { to: '/progress', label: 'Progress', icon: TrendingUp },
   { to: '/jobs', label: 'Jobs', icon: Briefcase },
   { to: '/applications', label: 'Applications', icon: ListChecks },
-  { to: '/cold-email', label: 'Cold Email', icon: Mail, badge: '10 Max' },
+  { to: '/cold-email', label: 'Cold Email', icon: Mail },
 ];
 
 const NavItem = ({ item, collapsed }) => {
@@ -32,35 +32,23 @@ const NavItem = ({ item, collapsed }) => {
       to={item.to}
       title={collapsed ? item.label : undefined}
       className={({ isActive }) =>
-        `relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-200 group ${
+        `relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 group ${
           isActive
-            ? 'bg-gradient-to-r from-primary/10 via-primary/5 to-transparent text-primary font-bold shadow-xs'
-            : 'text-slate-600 hover:bg-veryLightBlue hover:text-navy'
+            ? 'bg-sky-50/90 text-primary font-bold shadow-xs border border-sky-200/80'
+            : 'text-slate hover:bg-[#f0f7ff]/80 hover:text-navy border border-transparent'
         }`
       }
     >
       {({ isActive }) => (
         <>
-          {isActive && (
-            <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-primary shadow-glow" />
-          )}
-          <div
-            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 ${
-              isActive ? 'bg-primary text-white shadow-xs shadow-primary/30' : 'text-slate group-hover:text-primary'
-            }`}
-          >
-            <Icon size={16} strokeWidth={isActive ? 2.3 : 2} />
+          <div className={`flex w-5 shrink-0 items-center justify-center transition-colors ${isActive ? 'text-primary' : 'text-slate'}`}>
+            <Icon size={17} strokeWidth={isActive ? 2.4 : 1.9} />
           </div>
           {!collapsed && (
-            <span className="truncate flex-1 tracking-tight text-[13px]">{item.label}</span>
+            <span className="truncate flex-1">{item.label}</span>
           )}
-          {!collapsed && item.badge && (
-            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-primary/10 text-primary border border-primary/20 shrink-0">
-              {item.badge}
-            </span>
-          )}
-          {!collapsed && item.hasDot && (
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-auto" />
+          {isActive && !collapsed && (
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           )}
         </>
       )}
@@ -88,13 +76,13 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`hidden md:flex flex-col shrink-0 sticky top-0 h-screen bg-white/95 backdrop-blur-xl border-r border-slate/15 transition-[width] duration-300 ease-out z-20 ${
+      className={`hidden md:flex flex-col shrink-0 sticky top-0 h-screen bg-white border-r border-slate/20 transition-[width] duration-150 z-20 ${
         sidebarCollapsed ? 'w-[76px]' : 'w-[264px]'
       }`}
     >
       <div>
         <div
-          className={`flex items-center border-b border-slate/10 ${
+            className={`flex items-center border-b border-slate/20 ${
             sidebarCollapsed ? 'h-[76px] justify-center px-3' : 'h-[84px] justify-between px-5'
           }`}
         >
@@ -109,13 +97,13 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      <div className={`mt-auto border-t border-slate/10 ${sidebarCollapsed ? 'p-2.5' : 'p-3.5'} space-y-1`}>
+      <div className={`mt-auto border-t border-slate/20 ${sidebarCollapsed ? 'p-2.5' : 'p-3.5'} space-y-1`}>
         <NavLink
           to="/profile"
           title={sidebarCollapsed ? 'Profile' : undefined}
           className={({ isActive }) =>
             `relative flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
-              isActive ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 hover:bg-veryLightBlue hover:text-navy'
+              isActive ? 'bg-lightSky text-primary font-semibold' : 'text-slate hover:bg-veryLightBlue hover:text-navy'
             }`
           }
         >
@@ -128,7 +116,7 @@ const Sidebar = () => {
           title={sidebarCollapsed ? 'Settings' : undefined}
           className={({ isActive }) =>
             `relative flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
-              isActive ? 'bg-primary/10 text-primary font-bold' : 'text-slate-600 hover:bg-veryLightBlue hover:text-navy'
+              isActive ? 'bg-lightSky text-primary font-semibold' : 'text-slate hover:bg-veryLightBlue hover:text-navy'
             }`
           }
         >

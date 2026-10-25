@@ -4,7 +4,7 @@ import AdminSidebar from './AdminSidebar';
 import Topbar from './Topbar';
 
 const AdminLayout = () => (
-  <div className="flex min-h-screen bg-veryLightBlue/40">
+  <div className="flex min-h-screen bg-[#f7fbff]">
     <AdminSidebar />
     <div className="flex-1 flex flex-col min-w-0">
       <Topbar />

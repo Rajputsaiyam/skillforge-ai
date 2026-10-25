@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import authService from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 
 // Google (and later LinkedIn) redirect the browser here with ?token=<jwt> after
 // backend/controllers/authController.js -> googleCallback issues the token.
-// This page just stores the token, fetches the user, and hands off to the app —
+// This page stores the token, fetches the user, and hands off to the app.
 // no manual redirect wiring needed anywhere else.
 const OAuthSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -38,8 +37,8 @@ const OAuthSuccess = () => {
   }, [searchParams]); // eslint-disable-line
 
   return (
-    <div className="min-h-screen bg-hero-gradient flex items-center justify-center px-4">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card text-center max-w-sm">
+    <div className="flex min-h-screen items-center justify-center bg-[#f7fbff] px-4">
+      <div className="card max-w-sm text-center">
         {error ? (
           <>
             <p className="text-danger font-semibold mb-3">{error}</p>
@@ -51,7 +50,7 @@ const OAuthSuccess = () => {
             <p className="text-navy font-medium">Signing you in with Google...</p>
           </>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };

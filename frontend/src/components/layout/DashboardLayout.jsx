@@ -6,7 +6,7 @@ import MobileNav from './MobileNav';
 import ChatbotWidget from '../chat/ChatbotWidget';
 
 const DashboardLayout = () => (
-  <div className="flex min-h-screen bg-veryLightBlue/40">
+  <div className="flex min-h-screen bg-[#f7fbff]">
     <Sidebar />
     <div className="flex-1 flex flex-col min-w-0">
       <Topbar />

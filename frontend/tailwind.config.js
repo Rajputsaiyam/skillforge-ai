@@ -1,52 +1,73 @@
+import colors from 'tailwindcss/colors';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
       colors: {
-        primary: '#2563EB',
-        sky: '#38BDF8',
+        primary: '#0284C7',
+        sky: {
+          ...colors.sky,
+          DEFAULT: '#38BDF8',
+        },
         lightSky: '#E0F2FE',
         veryLightBlue: '#F0F9FF',
-        navy: '#0F172A',
-        darkBlue: '#172554',
-        accent: '#06B6D4',
+        navy: '#090D16',
+        slateNavy: '#0F172A',
+        darkBlue: '#0369A1',
+        royalBlue: '#2563EB',
+        accent: '#0EA5E9',
         slate: '#475569',
-        success: '#10B981',
-        warning: '#F59E0B',
-        danger: '#EF4444',
+        slateMuted: '#64748B',
+        success: '#059669',
+        warning: '#D97706',
+        danger: '#B91C1C',
+        green: '#059669',
+        studio: {
+          bg: '#F8FBFF',
+          surface: '#FFFFFF',
+          card: '#FFFFFF',
+          border: '#E0EEF8',
+          borderHover: '#BAE6FD',
+          pill: '#0284C7',
+        },
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
-        card: '0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 6px 20px -4px rgba(15, 23, 42, 0.07)',
-        cardHover: '0 16px 36px -8px rgba(37, 99, 235, 0.18), 0 2px 8px -2px rgba(15, 23, 42, 0.05)',
-        glass: '0 8px 32px 0 rgba(15, 23, 42, 0.08)',
-        glow: '0 0 24px -2px rgba(37, 99, 235, 0.35)',
-        glowEmerald: '0 0 24px -2px rgba(16, 185, 129, 0.35)',
-      },
-      backgroundImage: {
-        'blue-gradient': 'linear-gradient(135deg, #2563EB 0%, #38BDF8 100%)',
-        'purple-gradient': 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
-        'dark-gradient': 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
-        'hero-gradient': 'linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 60%)',
-        'radial-glow': 'radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15), transparent 70%)',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-6px)' },
-        },
-        shimmer: {
-          '100%': { transform: 'translateX(100%)' },
-        },
+        card: '0 1px 3px rgba(15, 23, 42, 0.04), 0 10px 24px -12px rgba(2, 132, 199, 0.08)',
+        cardHover: '0 20px 40px -15px rgba(2, 132, 199, 0.16), 0 2px 6px rgba(15, 23, 42, 0.04)',
+        glass: '0 8px 32px 0 rgba(2, 132, 199, 0.08)',
+        glow: '0 0 25px rgba(56, 189, 248, 0.35)',
+        glowPill: '0 10px 25px -4px rgba(2, 132, 199, 0.45)',
+        glowEmerald: '0 8px 20px -4px rgba(5, 150, 105, 0.35)',
+        studioFloat: '0 30px 60px -15px rgba(2, 132, 199, 0.14)',
       },
       animation: {
-        float: 'float 3.5s ease-in-out infinite',
-        shimmer: 'shimmer 2s infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float-slow': 'floatSlow 6s ease-in-out infinite',
+        'shine-sweep': 'shineSweep 2.5s ease-in-out infinite',
+        'marquee': 'marquee 30s linear infinite',
+      },
+      keyframes: {
+        floatSlow: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        shineSweep: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(200%)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
     },
   },
   plugins: [],
 };
+

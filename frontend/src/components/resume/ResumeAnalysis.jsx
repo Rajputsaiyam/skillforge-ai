@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Sparkles,
   TrendingUp, FileText, ArrowRight, Tag, Zap, ChevronRight,
@@ -36,7 +35,7 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
   const atsReport = resume.atsReport;
   const overallScore = atsReport?.overallScore ?? resume.resumeScore ?? 75;
   const grade = atsReport?.grade || (overallScore >= 90 ? 'A+' : overallScore >= 80 ? 'A' : overallScore >= 70 ? 'B' : overallScore >= 55 ? 'C' : 'Needs Work');
-  const status = atsReport?.status || (overallScore >= 80 ? 'Strong Match — High Recruiter Pass Rate' : overallScore >= 65 ? 'Competitive — Minor Keyword Optimization Needed' : 'Borderline — At Risk of Automated ATS Filtering');
+  const status = atsReport?.status || (overallScore >= 80 ? 'Strong Match: high recruiter pass rate' : overallScore >= 65 ? 'Competitive: minor keyword optimization needed' : 'Borderline: at risk of automated ATS filtering');
 
   const dimensions = atsReport?.dimensions || {
     parseability: { score: 85, weight: '20%', label: 'Formatting & Parseability' },
@@ -138,7 +137,6 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
       {/* 1. HERO ATS SCORE COMMAND CARD                                            */}
       {/* ========================================================================= */}
       <Card className={`relative overflow-hidden border ${theme.border} ${theme.glow} transition-all duration-300`}>
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
 
         <div className="grid lg:grid-cols-12 gap-6 items-center">
           {/* Radial Circular Progress Gauge */}
@@ -237,9 +235,8 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
           const dimScore = dim.score;
           const dimTheme = getScoreTheme(dimScore);
           return (
-            <motion.div
+            <div
               key={key}
-              whileHover={{ y: -2 }}
               className="p-3.5 rounded-2xl bg-white border border-slate/15 shadow-xs flex flex-col justify-between"
             >
               <div>
@@ -269,7 +266,7 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
                   <span>{dimScore}/100</span>
                 </p>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>
@@ -323,14 +320,10 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
       {/* ========================================================================= */}
       {/* TAB CONTENT                                                               */}
       {/* ========================================================================= */}
-      <AnimatePresence mode="wait">
         {/* TAB 1: ACTIONABLE FIXES & STRENGTHS */}
         {activeTab === 'insights' && (
-          <motion.div
+          <div
             key="insights"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
             className="space-y-4"
           >
             <div className="grid md:grid-cols-2 gap-4">
@@ -398,16 +391,13 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
                 </div>
               </Card>
             )}
-          </motion.div>
+          </div>
         )}
 
         {/* TAB 2: DETECTED SKILLS & KEYWORDS */}
         {activeTab === 'skills' && (
-          <motion.div
+          <div
             key="skills"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
             className="space-y-4"
           >
             {/* Missing Keywords To Boost Score */}
@@ -454,16 +444,13 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
                 Skills tagged "AI Match" were detected by dense semantic vector similarity (Sentence-BERT) even if phrased differently in your raw text.
               </p>
             </Card>
-          </motion.div>
+          </div>
         )}
 
         {/* TAB 3: WORK HISTORY & PROJECTS */}
         {activeTab === 'experience' && (
-          <motion.div
+          <div
             key="experience"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
             className="space-y-4"
           >
             {resume.experience?.length > 0 ? (
@@ -502,23 +489,20 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
                       <GraduationCap size={18} className="text-primary shrink-0" />
                       <div className="text-xs">
                         <span className="font-bold text-navy">{edu.school}</span>
-                        {edu.degree && <span className="text-slate ml-2">— {edu.degree}</span>}
+                         {edu.degree && <span className="ml-2 text-slate">{edu.degree}</span>}
                       </div>
                     </div>
                   ))}
                 </div>
               </Card>
             )}
-          </motion.div>
+          </div>
         )}
 
         {/* TAB 4: RE-SCORE FOR ANOTHER ROLE */}
         {activeTab === 'simulate' && (
-          <motion.div
+          <div
             key="simulate"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
           >
             <Card className="border-primary/20">
               <h3 className="font-bold text-navy text-base mb-1">Target Role & Job Simulation</h3>
@@ -559,9 +543,8 @@ const ResumeAnalysis = ({ resume, onScoreUpdated }) => {
                 </div>
               </div>
             </Card>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 };

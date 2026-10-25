@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import {
-  Target, Sparkles, Briefcase, ListChecks, Zap, MessageSquare,
+  Target, BarChart3, Briefcase, ListChecks, Zap, MessageSquare,
   FileText, Route, ArrowRight, ShieldCheck, ChevronRight
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -66,18 +65,14 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Executive Header Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-      >
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-navy tracking-tight">
-              {greeting}, {user?.fullName?.split(' ')[0]} 👋
+            <h1 className="text-2xl font-bold tracking-tight text-navy sm:text-3xl">
+              {greeting}, {user?.fullName?.split(' ')[0]}
             </h1>
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-              <ShieldCheck size={12} className="text-emerald-500" /> Career AI Live
+            <span className="text-xs font-semibold text-success">
+              <ShieldCheck size={13} className="mr-1 inline" /> Profile synced
             </span>
           </div>
           <p className="text-slate-500 text-sm mt-1">
@@ -98,76 +93,58 @@ const Dashboard = () => {
             <Zap size={14} /> Practice Lab
           </Link>
         </div>
-      </motion.div>
+      </div>
 
       {/* Daily AI Career Briefing Card */}
       {briefing && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.05 }}
-        >
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-navy via-darkBlue to-[#0f244a] p-6 sm:p-8 text-white shadow-2xl border border-white/15">
-            {/* Ambient Background Glows */}
-            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-primary/25 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-            <div className="absolute bottom-0 left-1/3 -mb-10 w-48 h-48 bg-accent/20 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-3 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold text-sky backdrop-blur-md">
-                  <Sparkles size={13} className="text-sky animate-pulse" />
-                  <span>Daily AI Intelligence Briefing</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-snug">
+        <div className="border border-slate/20 border-l-4 border-l-primary bg-white p-6 sm:p-8">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+              <div className="max-w-2xl space-y-3">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Daily career briefing</p>
+                <h2 className="text-xl font-bold leading-snug tracking-tight text-navy sm:text-2xl">
                   {briefing.headline}
                 </h2>
-                <p className="text-sm text-slate-200 leading-relaxed font-normal">
+                <p className="text-sm leading-relaxed text-slate">
                   {briefing.advice}
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-3.5 flex-shrink-0">
-                <div className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-right">
-                  <span className="text-[10px] text-slate-300 block uppercase font-bold tracking-wider">Estimated Impact</span>
-                  <span className="text-2xl font-black text-emerald-400">+{briefing.expectedReadinessGain}% Readiness</span>
+              <div className="flex shrink-0 flex-col items-start gap-3.5 md:items-end">
+                <div className="border border-slate/20 bg-veryLightBlue px-4 py-2.5 text-right">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-slate">Estimated impact</span>
+                  <span className="text-2xl font-bold text-primary">+{briefing.expectedReadinessGain}% readiness</span>
                 </div>
                 <Button
                   onClick={() => handleActionClick(briefing)}
-                  className="!bg-gradient-to-r from-primary to-accent hover:opacity-95 text-white font-bold shadow-lg shadow-primary/30 text-xs !py-3 !px-5"
+                  className="!px-5 !py-3 text-xs"
                 >
                   {briefing.recommendedAction} <ArrowRight size={15} />
                 </Button>
               </div>
             </div>
           </div>
-        </motion.div>
       )}
 
       {/* Top Stat Metric Cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           { label: 'Career Readiness', value: readiness.overall || 0, icon: Target, isProgress: true, color: 'text-primary' },
-          { label: 'Verified Skill Strength', value: skillStrength, icon: Sparkles, isProgress: true, color: 'text-accent' },
-          { label: 'Active Job Matches', value: jobsCount, icon: Briefcase, isCount: true, badge: 'Live sync' },
-          { label: 'Tracked Applications', value: appsCount, icon: ListChecks, isCount: true, badge: 'Active' },
+          { label: 'Verified Skill Strength', value: skillStrength, icon: BarChart3, isProgress: true, color: 'text-primary' },
+          { label: 'Active Job Matches', value: jobsCount, icon: Briefcase, isCount: true },
+          { label: 'Tracked Applications', value: appsCount, icon: ListChecks, isCount: true },
         ].map((k, i) => (
           <Card
             key={k.label}
             delay={i * 0.05}
-            className="hover:shadow-cardHover hover:border-primary/30 transition-all p-5 flex flex-col justify-between"
+             className="p-5 flex flex-col justify-between"
           >
-            {k.isCount ? (
-              <div className="text-center py-2">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 text-primary shadow-2xs">
+              {k.isCount ? (
+              <div className="py-2 text-center">
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-slate/20 bg-veryLightBlue text-primary">
                   <k.icon size={22} />
                 </div>
-                <div className="text-3xl font-black text-navy tracking-tight">{k.value}</div>
-                <div className="text-xs font-semibold text-slate-500 mt-1">{k.label}</div>
-                {k.badge && (
-                  <span className="inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate/15">
-                    {k.badge}
-                  </span>
-                )}
+                <div className="text-3xl font-bold tracking-tight text-navy">{k.value}</div>
+                <div className="mt-1 text-xs font-semibold text-slate">{k.label}</div>
               </div>
             ) : (
               <div className="py-1">
@@ -195,13 +172,13 @@ const Dashboard = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             to="/assessment"
-            className="card hover:border-primary/50 hover:shadow-cardHover hover:-translate-y-1 transition-all p-5 flex flex-col justify-between group"
+            className="card p-5 flex flex-col justify-between group"
           >
             <div>
-              <div className="w-11 h-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-3.5 group-hover:bg-primary group-hover:text-white transition-all shadow-2xs">
+              <div className="mb-3.5 flex h-10 w-10 items-center justify-center rounded-lg border border-slate/20 bg-veryLightBlue text-primary">
                 <Zap size={20} />
               </div>
-              <h4 className="font-bold text-navy text-sm mb-1.5 group-hover:text-primary transition-colors">Adaptive AI Quiz</h4>
+              <h4 className="mb-1.5 text-sm font-bold text-navy">Adaptive AI Quiz</h4>
               <p className="text-xs text-slate-500 leading-relaxed font-normal">
                 Calibrated dynamically to your target competencies and verified skill levels.
               </p>
@@ -214,18 +191,18 @@ const Dashboard = () => {
 
           <Link
             to="/assessment"
-            className="card hover:border-cyan-500/50 hover:shadow-cardHover hover:-translate-y-1 transition-all p-5 flex flex-col justify-between group"
+            className="card p-5 flex flex-col justify-between group"
           >
             <div>
-              <div className="w-11 h-11 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center mb-3.5 group-hover:bg-cyan-500 group-hover:text-white transition-all shadow-2xs">
+              <div className="mb-3.5 flex h-10 w-10 items-center justify-center rounded-lg border border-slate/20 bg-veryLightBlue text-primary">
                 <MessageSquare size={20} />
               </div>
-              <h4 className="font-bold text-navy text-sm mb-1.5 group-hover:text-cyan-600 transition-colors">AI Voice Mock Interview</h4>
+              <h4 className="mb-1.5 text-sm font-bold text-navy">AI Voice Mock Interview</h4>
               <p className="text-xs text-slate-500 leading-relaxed font-normal">
                 Practice realistic technical & architectural questions with browser speech-to-text.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate/10 flex items-center justify-between text-xs font-bold text-cyan-600">
+            <div className="mt-4 flex items-center justify-between border-t border-slate/10 pt-3 text-xs font-bold text-primary">
               <span>Start Interview</span>
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </div>
@@ -233,18 +210,18 @@ const Dashboard = () => {
 
           <Link
             to="/resume"
-            className="card hover:border-emerald-500/50 hover:shadow-cardHover hover:-translate-y-1 transition-all p-5 flex flex-col justify-between group"
+            className="card p-5 flex flex-col justify-between group"
           >
             <div>
-              <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3.5 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-2xs">
+              <div className="mb-3.5 flex h-10 w-10 items-center justify-center rounded-lg border border-slate/20 bg-veryLightBlue text-primary">
                 <FileText size={20} />
               </div>
-              <h4 className="font-bold text-navy text-sm mb-1.5 group-hover:text-emerald-600 transition-colors">ATS Resume Studio</h4>
+              <h4 className="mb-1.5 text-sm font-bold text-navy">ATS Resume Studio</h4>
               <p className="text-xs text-slate-500 leading-relaxed font-normal">
                 Audit keyword coverage and rewrite bullets with the Google X-Y-Z formula.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate/10 flex items-center justify-between text-xs font-bold text-emerald-600">
+            <div className="mt-4 flex items-center justify-between border-t border-slate/10 pt-3 text-xs font-bold text-primary">
               <span>Audit Resume</span>
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </div>
@@ -252,18 +229,18 @@ const Dashboard = () => {
 
           <Link
             to="/roadmap"
-            className="card hover:border-violet-500/50 hover:shadow-cardHover hover:-translate-y-1 transition-all p-5 flex flex-col justify-between group"
+            className="card p-5 flex flex-col justify-between group"
           >
             <div>
-              <div className="w-11 h-11 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center mb-3.5 group-hover:bg-violet-500 group-hover:text-white transition-all shadow-2xs">
+              <div className="mb-3.5 flex h-10 w-10 items-center justify-center rounded-lg border border-slate/20 bg-veryLightBlue text-primary">
                 <Route size={20} />
               </div>
-              <h4 className="font-bold text-navy text-sm mb-1.5 group-hover:text-violet-600 transition-colors">30-Day Learning Plan</h4>
+              <h4 className="mb-1.5 text-sm font-bold text-navy">30-Day Learning Plan</h4>
               <p className="text-xs text-slate-500 leading-relaxed font-normal">
                 Weekly milestones with hands-on projects and AI micro-lessons.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate/10 flex items-center justify-between text-xs font-bold text-violet-600">
+            <div className="mt-4 flex items-center justify-between border-t border-slate/10 pt-3 text-xs font-bold text-primary">
               <span>View Roadmap</span>
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </div>
@@ -303,7 +280,7 @@ const Dashboard = () => {
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-navy text-base">Role Match Score</h3>
-              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+               <span className="text-xs font-semibold text-success">
                 {readiness.overall >= 70 ? 'Job Ready' : 'In Progress'}
               </span>
             </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import adminService from '../../services/adminService';
 import LineChartCard from '../../components/charts/LineChartCard';
 import BarChartCard from '../../components/charts/BarChartCard';
@@ -18,9 +17,9 @@ const AdminAnalytics = () => {
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-extrabold text-navy">Platform Analytics</h1>
-      </motion.div>
+       <div className="mb-6">
+         <h1 className="text-2xl font-bold text-navy">Platform Analytics</h1>
+       </div>
       <div className="grid lg:grid-cols-2 gap-6">
         <LineChartCard title="User Growth" data={stats.userGrowth} dataKey="count" xKey="date" />
         <BarChartCard title="Platform Activity Summary" data={summaryBars} dataKey="value" xKey="name" />

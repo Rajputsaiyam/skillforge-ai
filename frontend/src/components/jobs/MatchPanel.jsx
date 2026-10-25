@@ -14,7 +14,7 @@ const MatchPanel = ({ match }) => {
         <ProgressBar value={match.skillMatchPct} label="Skill Match" colorClass="bg-primary" />
         <ProgressBar value={match.experienceMatchPct} label="Experience Match" colorClass="bg-sky" />
         {hasSemanticScore ? (
-          <ProgressBar value={match.semanticMatchPct} label="Semantic Match (AI)" colorClass="bg-gradient-to-r from-primary to-sky" />
+           <ProgressBar value={match.semanticMatchPct} label="Semantic Match (AI)" colorClass="bg-primary" />
         ) : (
           <div className="flex items-center gap-2 text-xs text-slate bg-veryLightBlue rounded-lg px-3 py-2">
             <Sparkles size={13} className="text-primary flex-shrink-0" />

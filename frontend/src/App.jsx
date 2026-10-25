@@ -39,12 +39,11 @@ const AdminActivity = lazy(() => import('./pages/Admin/AdminActivity'));
 const AdminSettings = lazy(() => import('./pages/Admin/AdminSettings'));
 
 const PageLoader = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-navy/90 text-white">
-    <div className="relative flex items-center justify-center">
-      <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
-      <div className="absolute w-4 h-4 rounded-full bg-accent animate-pulse"></div>
+  <div className="flex min-h-screen flex-col items-center justify-center bg-[#f7fbff] text-navy">
+    <div className="h-1 w-40 overflow-hidden rounded-full bg-slate/15">
+      <div className="h-full w-1/2 bg-primary" />
     </div>
-    <p className="mt-4 text-xs tracking-wider uppercase font-semibold text-slate/80">Loading SkillForge...</p>
+    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-slate">Loading SkillForge</p>
   </div>
 );
 

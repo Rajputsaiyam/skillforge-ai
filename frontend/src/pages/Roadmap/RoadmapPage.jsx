@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Route as RouteIcon, Sparkles, BookOpen, CheckCircle2, Clock,
   ExternalLink, RotateCcw, X, Loader2, Zap, Check, AlertCircle, Copy
@@ -109,7 +108,7 @@ const RoadmapPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-extrabold text-navy">Learning Roadmap</h1>
           <p className="text-slate mt-1 text-sm">
@@ -120,10 +119,10 @@ const RoadmapPage = () => {
           {generating ? <Loader2 size={14} className="animate-spin" /> : <RotateCcw size={14} />}
           {generating ? 'Regenerating...' : 'Regenerate Roadmap'}
         </Button>
-      </motion.div>
+       </div>
 
       {/* Progress Bar Banner */}
-      <Card className="p-4 bg-gradient-to-r from-veryLightBlue to-lightSky/40 border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+       <Card className="flex flex-col items-center justify-between gap-4 border-slate/20 bg-white p-4 sm:flex-row">
         <div className="space-y-1 w-full sm:max-w-md">
           <div className="flex justify-between text-xs font-bold text-navy">
             <span>Overall Roadmap Completion</span>
@@ -225,16 +224,10 @@ const RoadmapPage = () => {
       </div>
 
       {/* AI Study Guide Modal */}
-      <AnimatePresence>
         {activeGuide && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden border border-slate/10"
-            >
-              <div className="p-5 bg-gradient-to-r from-navy to-darkBlue text-white flex items-center justify-between">
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/60 p-4">
+            <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-slate/20 bg-white shadow-card">
+               <div className="flex items-center justify-between bg-navy p-5 text-white">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-primary/30 flex items-center justify-center">
                     <BookOpen size={18} className="text-sky" />
@@ -324,10 +317,9 @@ const RoadmapPage = () => {
                   Close
                 </Button>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
     </div>
   );
 };

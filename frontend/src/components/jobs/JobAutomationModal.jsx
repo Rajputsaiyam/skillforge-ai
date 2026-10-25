@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Zap, CheckCircle2, AlertTriangle, ShieldCheck, ExternalLink,
   Copy, Check, Loader2, Sparkles, Sliders, MapPin, DollarSign,
@@ -208,17 +207,12 @@ export default function JobAutomationModal({ onClose, onAppliedUpdated }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-navy/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate/15 overflow-hidden flex flex-col my-auto max-h-[92vh]"
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-navy/80 p-3 sm:p-6">
+       <div className="my-auto flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-lg border border-slate/20 bg-white shadow-card">
         {/* Modal Top Bar */}
-        <div className="px-6 py-4 border-b border-slate/15 bg-gradient-to-r from-navy via-[#0d1f3c] to-navy text-white flex items-center justify-between shrink-0">
+        <div className="flex shrink-0 items-center justify-between border-b border-slate/15 bg-navy px-6 py-4 text-white">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-primary to-accent flex items-center justify-center text-white shadow-md shadow-primary/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-white">
               <Compass size={22} />
             </div>
             <div>
@@ -247,7 +241,7 @@ export default function JobAutomationModal({ onClose, onAppliedUpdated }) {
         {/* Modal Content */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
           {/* Multi-Platform Sources Selector */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-lightSky/40 via-blue-50/60 to-transparent border border-primary/20 space-y-2.5">
+          <div className="space-y-2.5 rounded-lg border border-slate/20 bg-veryLightBlue p-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-navy flex items-center gap-1.5">
                 <Layers size={14} className="text-primary" /> Active Job Apps & Aggregation Sources:
@@ -406,7 +400,7 @@ export default function JobAutomationModal({ onClose, onAppliedUpdated }) {
                     className="w-4 h-4 text-primary rounded accent-primary cursor-pointer"
                   />
                   <span className="text-xs font-bold text-navy">
-                    📍 Prioritize Nearest Jobs First (Sort by Proximity Distance to My Location)
+                    Prioritize nearest jobs first (sort by proximity to my location)
                   </span>
                 </label>
                 <span className="text-[11px] text-emerald-600 font-semibold hidden sm:inline">
@@ -452,7 +446,7 @@ export default function JobAutomationModal({ onClose, onAppliedUpdated }) {
               <Button
                 onClick={handleRunAutomation}
                 disabled={running}
-                className="!py-3 !px-7 text-xs font-bold !bg-gradient-to-r from-amber-500 via-primary to-accent !text-white rounded-xl shadow-lg shadow-primary/25 shrink-0 flex items-center gap-2 cursor-pointer"
+                className="btn-primary !px-7 !py-3 text-xs shrink-0"
               >
                 {running ? <Loader2 className="animate-spin" size={16} /> : <Zap size={16} />}
                 {running ? 'Running Automation...' : 'Run Job Automation Now'}
@@ -566,7 +560,7 @@ export default function JobAutomationModal({ onClose, onAppliedUpdated }) {
                               <span>{copiedIndex === idx ? 'Copied' : 'Copy Pitch'}</span>
                             </button>
                           </div>
-                          <p className="italic text-slate-700 leading-relaxed font-sans">
+                          <p className="text-slate-700 leading-relaxed font-sans">
                             "{job.tailoredPitch}"
                           </p>
                         </div>
@@ -585,7 +579,7 @@ export default function JobAutomationModal({ onClose, onAppliedUpdated }) {
             </div>
           )}
         </div>
-      </motion.div>
+       </div>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { UploadCloud, FileText } from 'lucide-react';
 
 const ResumeUploader = ({ onFileSelected, uploading, progress }) => {
@@ -21,7 +20,7 @@ const ResumeUploader = ({ onFileSelected, uploading, progress }) => {
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={() => setDragging(false)}
       onDrop={handleDrop}
-      className={`rounded-2xl border-2 border-dashed p-10 text-center transition-colors ${
+      className={`rounded-lg border-2 border-dashed p-10 text-center transition-colors ${
         dragging ? 'border-primary bg-lightSky' : 'border-slate/25 bg-veryLightBlue'
       }`}
     >
@@ -37,7 +36,7 @@ const ResumeUploader = ({ onFileSelected, uploading, progress }) => {
           <FileText className="mx-auto text-primary mb-3 animate-pulse" size={40} />
           <p className="font-semibold text-navy mb-2">Analyzing your resume...</p>
           <div className="w-full max-w-xs mx-auto h-2 bg-lightSky rounded-full overflow-hidden">
-            <motion.div className="h-2 bg-blue-gradient" animate={{ width: `${progress}%` }} />
+            <div className="h-2 bg-primary" style={{ width: `${progress}%` }} />
           </div>
         </div>
       ) : (

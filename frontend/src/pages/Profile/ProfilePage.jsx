@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Copy, Check, Loader2, MessageSquare, Linkedin,
   FileText, Tag, User, MapPin, Briefcase, ExternalLink
@@ -74,7 +73,7 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-3xl mx-auto pb-12">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-navy">Profile & Personal Brand</h1>
           <p className="text-slate text-sm mt-0.5">Manage your career identity and generate AI professional pitches.</p>
@@ -87,11 +86,11 @@ const ProfilePage = () => {
             <Button onClick={handleSave}>Save Changes</Button>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* User Header Card */}
       <Card className="mb-6 flex flex-col sm:flex-row items-center sm:items-start gap-4">
-        <div className="w-20 h-20 rounded-full bg-blue-gradient flex items-center justify-center text-white text-2xl font-bold shrink-0 shadow-md">
+        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-primary text-2xl font-bold text-white">
           {profile.fullName?.charAt(0)}
         </div>
         <div className="text-center sm:text-left flex-1">
@@ -132,7 +131,7 @@ const ProfilePage = () => {
                 {TARGET_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             ) : (
-              <p className="text-navy font-semibold mt-1">{profile.targetRole || '—'}</p>
+               <p className="text-navy font-semibold mt-1">{profile.targetRole || 'Not set'}</p>
             )}
           </div>
           <div>
@@ -145,7 +144,7 @@ const ProfilePage = () => {
                 placeholder="e.g. San Francisco / Remote"
               />
             ) : (
-              <p className="text-navy font-semibold mt-1">{profile.location || '—'}</p>
+               <p className="text-navy font-semibold mt-1">{profile.location || 'Not set'}</p>
             )}
           </div>
         </div>
@@ -177,7 +176,7 @@ const ProfilePage = () => {
                       {profile.socialLinks[key].replace(/^https?:\/\//, '')} <ExternalLink size={11} />
                     </a>
                   ) : (
-                    '—'
+                    'Not set'
                   )}
                 </p>
               )}
@@ -187,7 +186,7 @@ const ProfilePage = () => {
       </Card>
 
       {/* AI Bio & Elevator Pitch Studio */}
-      <Card className="border-primary/30 bg-gradient-to-br from-white via-lightSky/10 to-transparent">
+      <Card className="border-slate/20 bg-white">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="text-primary" size={20} />
@@ -208,11 +207,7 @@ const ProfilePage = () => {
         </p>
 
         {pitchData && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4 pt-3 border-t border-slate/15"
-          >
+          <div className="space-y-4 border-t border-slate/15 pt-3">
             {/* 30-second elevator pitch */}
             <div className="p-4 rounded-xl bg-white border border-slate/15 shadow-xs">
               <div className="flex items-center justify-between mb-2">
@@ -286,7 +281,7 @@ const ProfilePage = () => {
                 ))}
               </div>
             )}
-          </motion.div>
+          </div>
         )}
       </Card>
     </div>
@@ -294,4 +289,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
