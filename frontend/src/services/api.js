@@ -4,11 +4,12 @@ import axios from 'axios';
  * Resolves API Base URL:
  * - If VITE_API_BASE_URL is set in environment, uses it.
  * - If on localhost / 127.0.0.1, routes to local backend: http://localhost:5000/api
- * - If accessed from any deployed / non-localhost domain, routes to deployed backend: https://skillforge-ai-1-d3pu.onrender.com/api
+ * - If accessed from any deployed / non-localhost domain, routes to deployed backend: https://skillforge-ai-4.onrender.com/api
  */
 export const getApiBaseUrl = () => {
   if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+    const custom = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+    return custom.endsWith('/api') ? custom : `${custom}/api`;
   }
 
   if (typeof window !== 'undefined') {
@@ -24,7 +25,7 @@ export const getApiBaseUrl = () => {
     }
   }
 
-  return 'https://skillforge-ai-1-d3pu.onrender.com/api';
+  return 'https://skillforge-ai-4.onrender.com/api';
 };
 
 export const API_BASE_URL = getApiBaseUrl();

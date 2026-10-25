@@ -45,8 +45,8 @@ SkillForge AI turns a candidate's resume, target role, and active learning perfo
 
 ## Live Demo & Deployment
 
-- **Backend API (Render):** `https://skillforge-ai-1-d3pu.onrender.com`
-- **Backend Health Check:** `https://skillforge-ai-1-d3pu.onrender.com/api/health`
+- **Backend API (Render):** `https://skillforge-ai-4.onrender.com`
+- **Backend Health Check:** `https://skillforge-ai-4.onrender.com/api/health`
 - **Database:** MongoDB Atlas Cloud Cluster (Replica Set)
 - **AI Core:** Enterprise Multi-Model Intelligence Pipeline
 
@@ -449,7 +449,7 @@ The Express backend is production-ready for deployment on **Render**:
 2. **Publish Directory:** `dist`
 3. **Root Directory:** `frontend`
 4. **Environment Variables:**
-   - `VITE_API_URL` = `https://skillforge-ai-1-d3pu.onrender.com/api`
+   - `VITE_API_URL` = `https://skillforge-ai-4.onrender.com/api`
 
 ### Configuring MongoDB Atlas
 
