@@ -30,7 +30,7 @@ const getGoogleCallbackUrl = () => {
     if (envCallback && !envCallback.includes('localhost') && !envCallback.includes('127.0.0.1')) {
       return envCallback;
     }
-    return 'https://skillforge-ai-6.onrender.com/api/auth/google/callback';
+    return 'https://skillforge-ai-7.onrender.com/api/auth/google/callback';
   }
 
   return envCallback || 'http://localhost:5000/api/auth/google/callback';
