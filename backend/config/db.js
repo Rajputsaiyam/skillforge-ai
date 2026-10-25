@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const CLOUD_MONGO_URI =
-  'mongodb+srv://saiyamrajput71:S%40aiyam11@cluster0.ebjm6v5.mongodb.net/skillforge?retryWrites=true&w=majority';
+  'mongodb+srv://saiyamrajput71:S%40aiyam11@cluster0.oohxd.mongodb.net/skillforge?retryWrites=true&w=majority';
 const LOCAL_MONGO_URI = 'mongodb://localhost:27017/SkillForgeAI';
 
 /**
@@ -20,17 +20,17 @@ const resolveMongoUri = () => {
     Boolean(process.env.FLY_APP_NAME) ||
     Boolean(process.env.HEROKU_APP_NAME);
 
-  const envUri = process.env.MONGO_URI;
+  const envUri = process.env.MONGO_URI || process.env.MONGODB_URI;
 
   if (isDeploy) {
-    // In production/deployment: use explicit cloud MONGO_URI if valid remote URI, otherwise default to Cloud Atlas URI
+    // In production/deployment: use explicit cloud MONGO_URI / MONGODB_URI if valid remote URI, otherwise default to Cloud Atlas URI
     if (envUri && !envUri.includes('localhost') && !envUri.includes('127.0.0.1')) {
       return envUri;
     }
     return CLOUD_MONGO_URI;
   }
 
-  // Local development: use MONGO_URI if provided, otherwise default to local MongoDB
+  // Local development: use MONGO_URI / MONGODB_URI if provided, otherwise default to local MongoDB
   return envUri || LOCAL_MONGO_URI;
 };
 
