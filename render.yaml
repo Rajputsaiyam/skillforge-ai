@@ -1,0 +1,23 @@
+services:
+  - type: web
+    runtime: python
+    name: skillforge-ml-service
+    plan: free
+    repo: https://github.com/Rajputsaiyam/skillforge-ai.git
+    branch: main
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.14.8"
+      - key: TORCH_NUM_THREADS
+        value: "1"
+      - key: TORCH_INTEROP_THREADS
+        value: "1"
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
+      - key: ML_SERVICE_API_KEY
+        sync: false

@@ -50,12 +50,22 @@ from typing import List, Optional
 
 import requests
 import torch
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer, util
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
 app = FastAPI(title="SkillGraph AI — ML Service", version="2.0.0")
+
+# Keep the free Render instance from allocating a large CPU thread pool. The
+# model remains the same; this only controls inference parallelism.
+try:
+    torch.set_num_threads(int(os.environ.get("TORCH_NUM_THREADS", "1")))
+    torch.set_num_interop_threads(int(os.environ.get("TORCH_INTEROP_THREADS", "1")))
+except RuntimeError:
+    # Torch may already be initialized in some local reload/test environments.
+    pass
 
 # ---------------------------------------------------------------------------
 # Model loading (each wrapped so one missing/failed model never crashes the
@@ -67,9 +77,7 @@ model = SentenceTransformer(MODEL_NAME)
 print("[ML Service] Sentence-BERT model loaded.")
 
 NER_MODEL_NAME = "dslim/bert-base-NER"
-print(f"[ML Service] Loading pretrained model: {NER_MODEL_NAME} ...")
-ner_pipeline = pipeline("ner", model=NER_MODEL_NAME, aggregation_strategy="simple")
-print("[ML Service] NER model loaded.")
+ner_pipeline = None
 
 GEN_MODEL_NAME = "google/flan-t5-base"
 # Transformers v5 no longer registers the old "text2text-generation" pipeline
@@ -77,18 +85,60 @@ GEN_MODEL_NAME = "google/flan-t5-base"
 # v5 and avoids silently losing local generation on newer environments.
 generator_model = None
 generator_tokenizer = None
-try:
-    print(f"[ML Service] Loading pretrained model: {GEN_MODEL_NAME} ...")
-    generator_tokenizer = AutoTokenizer.from_pretrained(GEN_MODEL_NAME)
-    generator_model = AutoModelForSeq2SeqLM.from_pretrained(GEN_MODEL_NAME)
-    generator_model.eval()
-    print("[ML Service] flan-t5-base generation model loaded.")
-except Exception as e:  # pragma: no cover - environment dependent
-    print(f"[ML Service] WARNING: could not load {GEN_MODEL_NAME} ({e}). "
-          f"Falling back to template-based generation for questions/lessons/chat.")
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+ML_SERVICE_API_KEY = os.environ.get("ML_SERVICE_API_KEY", "").strip()
+
+
+def load_ner_pipeline():
+    """Load the heavier NER model only when entity extraction is requested."""
+    global ner_pipeline
+    if ner_pipeline is not None:
+        return ner_pipeline
+    if os.environ.get("DISABLE_NER", "").lower() in {"1", "true", "yes"}:
+        return None
+    try:
+        print(f"[ML Service] Loading pretrained model on demand: {NER_MODEL_NAME} ...")
+        ner_pipeline = pipeline("ner", model=NER_MODEL_NAME, aggregation_strategy="simple")
+        print("[ML Service] NER model loaded.")
+    except Exception as e:  # pragma: no cover - environment dependent
+        print(f"[ML Service] WARNING: could not load {NER_MODEL_NAME} ({e}).")
+        ner_pipeline = None
+    return ner_pipeline
+
+
+def load_generator():
+    """Load the local generator only when a generation request needs it."""
+    global generator_model, generator_tokenizer
+    if generator_model is not None and generator_tokenizer is not None:
+        return generator_tokenizer, generator_model
+    if os.environ.get("DISABLE_LOCAL_GENERATOR", "").lower() in {"1", "true", "yes"}:
+        return None, None
+    try:
+        print(f"[ML Service] Loading pretrained model on demand: {GEN_MODEL_NAME} ...")
+        generator_tokenizer = AutoTokenizer.from_pretrained(GEN_MODEL_NAME)
+        generator_model = AutoModelForSeq2SeqLM.from_pretrained(GEN_MODEL_NAME)
+        generator_model.eval()
+        print(f"[ML Service] {GEN_MODEL_NAME} generation model loaded.")
+    except Exception as e:  # pragma: no cover - environment dependent
+        print(f"[ML Service] WARNING: could not load {GEN_MODEL_NAME} ({e}).")
+        generator_model = None
+        generator_tokenizer = None
+    return generator_tokenizer, generator_model
+
+
+@app.middleware("http")
+async def protect_service(request: Request, call_next):
+    """Keep hosting probes public while protecting inference endpoints in deployment."""
+    public_paths = {"/", "/health", "/docs", "/openapi.json", "/redoc", "/favicon.ico"}
+    if request.method == "OPTIONS" or request.url.path in public_paths or not ML_SERVICE_API_KEY:
+        return await call_next(request)
+
+    if request.headers.get("x-ml-service-key") != ML_SERVICE_API_KEY:
+        return JSONResponse(status_code=401, content={"detail": "Unauthorized ML service request"})
+
+    return await call_next(request)
 
 
 def clamp01(x: float) -> float:
@@ -153,20 +203,21 @@ def llm_generate(prompt: str, max_tokens: int = 300) -> Optional[str]:
         out = _call_anthropic(prompt, max_tokens)
         if out:
             return out
-    if generator_model is not None and generator_tokenizer is not None:
+    local_tokenizer, local_model = load_generator()
+    if local_model is not None and local_tokenizer is not None:
         try:
-            inputs = generator_tokenizer(
+            inputs = local_tokenizer(
                 prompt, return_tensors="pt", truncation=True, max_length=512
             )
             with torch.inference_mode():
-                output_ids = generator_model.generate(
+                output_ids = local_model.generate(
                     **inputs,
                     max_new_tokens=max_tokens,
                     do_sample=True,
                     temperature=0.7,
                     top_p=0.9,
                 )
-            text = generator_tokenizer.decode(output_ids[0], skip_special_tokens=True).strip()
+            text = local_tokenizer.decode(output_ids[0], skip_special_tokens=True).strip()
             return text or None
         except Exception as e:
             print(f"[ML Service] Local flan-t5 generation failed: {e}")
@@ -179,17 +230,20 @@ def llm_provider_name() -> str:
         return "openai"
     if ANTHROPIC_API_KEY:
         return "anthropic"
+    if os.environ.get("DISABLE_LOCAL_GENERATOR", "").lower() in {"1", "true", "yes"}:
+        return "template-fallback"
     if generator_model is not None:
-        return "flan-t5-base (local)"
-    return "template-fallback"
+        return f"{GEN_MODEL_NAME} (local)"
+    return f"{GEN_MODEL_NAME} (local, lazy)"
 
 
 @app.get("/health")
 def health():
     return {
         "status": "ok",
-        "models": [MODEL_NAME, NER_MODEL_NAME, GEN_MODEL_NAME if generator_model else f"{GEN_MODEL_NAME} (unavailable)"],
+        "models": [MODEL_NAME, f"{NER_MODEL_NAME} (lazy)", f"{GEN_MODEL_NAME} (lazy)"],
         "llm_provider": llm_provider_name(),
+        "auth_enabled": bool(ML_SERVICE_API_KEY),
     }
 
 
@@ -308,7 +362,10 @@ class EntityExtractResponse(BaseModel):
 
 @app.post("/extract-entities", response_model=EntityExtractResponse)
 def extract_entities(payload: EntityExtractRequest):
-    raw_entities = ner_pipeline(payload.text[:3000])
+    active_ner = load_ner_pipeline()
+    if active_ner is None:
+        return {"organizations": [], "persons": [], "all_entities": []}
+    raw_entities = active_ner(payload.text[:3000])
     organizations, persons, all_entities = [], [], []
     for ent in raw_entities:
         group = ent["entity_group"]
@@ -746,4 +803,3 @@ def check_ats_score(payload: AtsScoreRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-

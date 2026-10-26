@@ -443,6 +443,37 @@ The Express backend is production-ready for deployment on **Render**:
    - Root URL `GET /` returns JSON confirmation: `🚀 SkillForge AI Backend API is live and running!`
    - Health Probe `GET /api/health` returns database connectivity and memory usage.
 
+### Deploying the ML Service to Render
+
+The repository includes a `render.yaml` Blueprint for the FastAPI service. You can
+either create it from **New → Blueprint** in Render or create a Web Service with
+these settings:
+
+1. **Repository:** `Rajputsaiyam/skillforge-ai`
+2. **Root Directory:** `ml-service`
+3. **Runtime:** `Python`
+4. **Build Command:** `pip install -r requirements.txt`
+5. **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+6. **Health Check Path:** `/health`
+7. **Environment Variables:**
+   - `PYTHON_VERSION` = `3.14.8`
+   - `ML_SERVICE_API_KEY` = a long random secret shared only with the backend
+
+After the ML service deploys, set these variables on the existing backend Render
+service:
+
+```env
+ML_SERVICE_URL=https://<your-ml-service>.onrender.com
+ML_SERVICE_API_KEY=<the-same-secret-as-the-ml-service>
+```
+
+The ML service leaves `/health` public for Render probes but requires the
+`x-ml-service-key` header for inference endpoints. Sentence-BERT loads at startup;
+BERT-NER and Flan-T5 load lazily only when their endpoints are used, which keeps
+the Free instance startup lighter. Free Render services still have tight memory
+and cold-start limits, so heavy NER/generation requests may fall back or require
+an upgrade if the service is killed for memory.
+
 ### Deploying Frontend to Vercel / Netlify / Render
 
 1. **Build Command:** `npm run build`

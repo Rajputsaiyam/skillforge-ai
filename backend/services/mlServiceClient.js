@@ -16,7 +16,15 @@ const axios = require('axios');
 const gemini = require('./geminiService');
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
+const ML_SERVICE_API_KEY = process.env.ML_SERVICE_API_KEY || '';
 const TIMEOUT_MS = 5000;
+
+function requestConfig(timeout = TIMEOUT_MS) {
+  return {
+    timeout,
+    ...(ML_SERVICE_API_KEY ? { headers: { 'x-ml-service-key': ML_SERVICE_API_KEY } } : {}),
+  };
+}
 
 let warnedOnce = false;
 function warnUnavailable(err) {
@@ -36,7 +44,7 @@ async function getSemanticMatch(resumeText, jobDescription) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/semantic-match`,
       { resume_text: resumeText, job_description: jobDescription },
-      { timeout: TIMEOUT_MS }
+      requestConfig()
     );
     return data.semantic_similarity; // 0..1
   } catch (err) {
@@ -52,7 +60,7 @@ async function getSemanticMatchBatch(resumeText, jobDescriptions) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/semantic-match-batch`,
       { resume_text: resumeText, job_descriptions: jobDescriptions },
-      { timeout: TIMEOUT_MS }
+      requestConfig()
     );
     return data.scores; // array of 0..1, same order as input
   } catch (err) {
@@ -70,7 +78,7 @@ async function rankSkillsSemantic(text, candidateSkills) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/rank-skills`,
       { text, candidate_skills: candidateSkills },
-      { timeout: TIMEOUT_MS }
+      requestConfig()
     );
     return data.results; // [{ skill, score }], sorted descending
   } catch (err) {
@@ -87,7 +95,7 @@ async function extractEntities(text) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/extract-entities`,
       { text },
-      { timeout: TIMEOUT_MS }
+      requestConfig()
     );
     return data; // { organizations: [...], persons: [...], all_entities: [...] }
   } catch (err) {
@@ -105,7 +113,7 @@ async function extractDynamicSkills(text, knownVocabulary, alreadyDetected = [])
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/extract-dynamic-skills`,
       { text, known_vocabulary: knownVocabulary, already_detected: alreadyDetected },
-      { timeout: 15000 }
+      requestConfig(15000)
     );
     return data.matches; // [{ skill, score, origin: 'vocabulary' | 'novel' }]
   } catch (err) {
@@ -121,7 +129,7 @@ async function generateQuestions(skill, level, count = 3, questionType = 'mixed'
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/generate-questions`,
       { skill, level, count, question_type: questionType },
-      { timeout: 30000 }
+      requestConfig(30000)
     );
     return data; // { questions: [...], generated_by }
   } catch (err) {
@@ -136,7 +144,7 @@ async function gradeOpenAnswer(question, modelAnswer, userAnswer) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/grade-open-answer`,
       { question, model_answer: modelAnswer, user_answer: userAnswer },
-      { timeout: 15000 }
+      requestConfig(15000)
     );
     return data; // { score, semantic_similarity, keyword_coverage, feedback }
   } catch (err) {
@@ -151,7 +159,7 @@ async function generateLesson(skill, level) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/generate-lesson`,
       { skill, level },
-      { timeout: 20000 }
+      requestConfig(20000)
     );
     return data; // { title, content, generated_by }
   } catch (err) {
@@ -171,7 +179,7 @@ async function chatWithAI(message, contextChunks = [], history = [], systemPromp
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/chat`,
       { message, context_chunks: contextChunks, history, system_prompt: systemPrompt },
-      { timeout: 25000 }
+      requestConfig(25000)
     );
     return data; // { reply, used_context, generated_by }
   } catch (err) {
@@ -187,7 +195,7 @@ async function getEmbeddings(texts) {
     const { data } = await axios.post(
       `${ML_SERVICE_URL}/embed`,
       { texts },
-      { timeout: TIMEOUT_MS }
+      requestConfig()
     );
     return data.embeddings; // List[List[float]]
   } catch (err) {
@@ -207,7 +215,7 @@ async function checkAtsScore(resumeText, targetRole, jobDescription) {
         target_role: targetRole,
         job_description: jobDescription,
       },
-      { timeout: 12000 }
+      requestConfig(12000)
     );
     return data;
   } catch (err) {
@@ -229,4 +237,3 @@ module.exports = {
   chatWithAI,
   checkAtsScore,
 };
-

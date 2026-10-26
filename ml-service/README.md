@@ -42,6 +42,10 @@ Verify it's running:
 curl http://localhost:8000/health
 ```
 
+For a public deployment, set `ML_SERVICE_API_KEY` on the ML service and set the
+same value on the Node backend. The service keeps `/health` public for hosting
+probes and requires the `x-ml-service-key` header for inference endpoints.
+
 ## How the backend uses it
 `backend/services/mlServiceClient.js` calls this service via HTTP
 (`ML_SERVICE_URL` in `backend/.env`, default `http://localhost:8000`). Every function
