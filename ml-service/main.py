@@ -72,9 +72,7 @@ except RuntimeError:
 # whole service — every endpoint below degrades gracefully).
 # ---------------------------------------------------------------------------
 MODEL_NAME = "all-MiniLM-L6-v2"
-print(f"[ML Service] Loading pretrained model: {MODEL_NAME} ...")
-model = SentenceTransformer(MODEL_NAME)
-print("[ML Service] Sentence-BERT model loaded.")
+model = None
 
 NER_MODEL_NAME = "dslim/bert-base-NER"
 ner_pipeline = None
@@ -89,6 +87,17 @@ generator_tokenizer = None
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "").strip()
 ML_SERVICE_API_KEY = os.environ.get("ML_SERVICE_API_KEY", "").strip()
+
+
+def load_embedding_model():
+    """Load Sentence-BERT on the first inference request, after the port is live."""
+    global model
+    if model is not None:
+        return model
+    print(f"[ML Service] Loading pretrained model on demand: {MODEL_NAME} ...")
+    model = SentenceTransformer(MODEL_NAME)
+    print("[ML Service] Sentence-BERT model loaded.")
+    return model
 
 
 def load_ner_pipeline():
@@ -241,7 +250,7 @@ def llm_provider_name() -> str:
 def health():
     return {
         "status": "ok",
-        "models": [MODEL_NAME, f"{NER_MODEL_NAME} (lazy)", f"{GEN_MODEL_NAME} (lazy)"],
+        "models": [f"{MODEL_NAME} (lazy)", f"{NER_MODEL_NAME} (lazy)", f"{GEN_MODEL_NAME} (lazy)"],
         "llm_provider": llm_provider_name(),
         "auth_enabled": bool(ML_SERVICE_API_KEY),
     }
@@ -274,7 +283,7 @@ class MatchResponse(BaseModel):
 
 @app.post("/semantic-match", response_model=MatchResponse)
 def semantic_match(payload: MatchRequest):
-    embeddings = model.encode([payload.resume_text, payload.job_description], convert_to_tensor=True, show_progress_bar=False)
+    embeddings = load_embedding_model().encode([payload.resume_text, payload.job_description], convert_to_tensor=True, show_progress_bar=False)
     score = util.cos_sim(embeddings[0], embeddings[1]).item()
     return {"semantic_similarity": round(clamp01(score), 4)}
 
@@ -292,8 +301,8 @@ class BatchMatchResponse(BaseModel):
 def semantic_match_batch(payload: BatchMatchRequest):
     if not payload.job_descriptions:
         return {"scores": []}
-    resume_emb = model.encode(payload.resume_text, convert_to_tensor=True, show_progress_bar=False)
-    job_embs = model.encode(payload.job_descriptions, convert_to_tensor=True, show_progress_bar=False)
+    resume_emb = load_embedding_model().encode(payload.resume_text, convert_to_tensor=True, show_progress_bar=False)
+    job_embs = load_embedding_model().encode(payload.job_descriptions, convert_to_tensor=True, show_progress_bar=False)
     sims = util.cos_sim(resume_emb, job_embs)[0]
     return {"scores": [round(clamp01(s.item()), 4) for s in sims]}
 
@@ -310,7 +319,7 @@ class EmbedResponse(BaseModel):
 def embed_texts(payload: EmbedRequest):
     if not payload.texts:
         return {"embeddings": []}
-    embs = model.encode(payload.texts, convert_to_numpy=True, show_progress_bar=False)
+    embs = load_embedding_model().encode(payload.texts, convert_to_numpy=True, show_progress_bar=False)
     return {"embeddings": embs.tolist()}
 
 
@@ -333,8 +342,8 @@ class SkillRankResponse(BaseModel):
 
 @app.post("/rank-skills", response_model=SkillRankResponse)
 def rank_skills(payload: SkillRankRequest):
-    text_emb = model.encode(payload.text, convert_to_tensor=True, show_progress_bar=False)
-    skill_embs = model.encode(payload.candidate_skills, convert_to_tensor=True, show_progress_bar=False)
+    text_emb = load_embedding_model().encode(payload.text, convert_to_tensor=True, show_progress_bar=False)
+    skill_embs = load_embedding_model().encode(payload.candidate_skills, convert_to_tensor=True, show_progress_bar=False)
     sims = util.cos_sim(text_emb, skill_embs)[0]
     results = [{"skill": s, "score": round(clamp01(sims[i].item()), 4)} for i, s in enumerate(payload.candidate_skills)]
     results.sort(key=lambda r: r["score"], reverse=True)
@@ -458,8 +467,8 @@ def extract_dynamic_skills(payload: DynamicSkillRequest):
 
     # (a) score the remaining part of the (possibly large) known vocabulary
     if remaining_vocab:
-        text_emb = model.encode(payload.text, convert_to_tensor=True, show_progress_bar=False)
-        vocab_embs = model.encode(remaining_vocab, convert_to_tensor=True, show_progress_bar=False)
+        text_emb = load_embedding_model().encode(payload.text, convert_to_tensor=True, show_progress_bar=False)
+        vocab_embs = load_embedding_model().encode(remaining_vocab, convert_to_tensor=True, show_progress_bar=False)
         sims = util.cos_sim(text_emb, vocab_embs)[0]
         for i, s in enumerate(remaining_vocab):
             score = clamp01(sims[i].item())
@@ -470,8 +479,8 @@ def extract_dynamic_skills(payload: DynamicSkillRequest):
     # then filter with the zero-shot-style anchor similarity check
     novel_terms = mine_novel_terms(payload.text, known_lower)
     if novel_terms:
-        anchor_emb = model.encode(SKILL_ANCHOR_TEXT, convert_to_tensor=True, show_progress_bar=False)
-        term_embs = model.encode(novel_terms, convert_to_tensor=True, show_progress_bar=False)
+        anchor_emb = load_embedding_model().encode(SKILL_ANCHOR_TEXT, convert_to_tensor=True, show_progress_bar=False)
+        term_embs = load_embedding_model().encode(novel_terms, convert_to_tensor=True, show_progress_bar=False)
         sims = util.cos_sim(anchor_emb, term_embs)[0]
         for i, term in enumerate(novel_terms):
             score = clamp01(sims[i].item())
@@ -650,7 +659,7 @@ def grade_open_answer(payload: GradeAnswerRequest):
         return {"score": 0.0, "semantic_similarity": 0.0, "keyword_coverage": 0.0,
                 "feedback": "No answer was provided."}
 
-    embs = model.encode([payload.model_answer, payload.user_answer], convert_to_tensor=True, show_progress_bar=False)
+    embs = load_embedding_model().encode([payload.model_answer, payload.user_answer], convert_to_tensor=True, show_progress_bar=False)
     sim = clamp01(util.cos_sim(embs[0], embs[1]).item())
 
     model_keywords = set(_extract_keywords(payload.model_answer))
@@ -737,8 +746,8 @@ class ChatResponse(BaseModel):
 def _retrieve_relevant_chunks(query: str, chunks: List[str], top_k: int = 4) -> List[str]:
     if not chunks:
         return []
-    query_emb = model.encode(query, convert_to_tensor=True, show_progress_bar=False)
-    chunk_embs = model.encode(chunks, convert_to_tensor=True, show_progress_bar=False)
+    query_emb = load_embedding_model().encode(query, convert_to_tensor=True, show_progress_bar=False)
+    chunk_embs = load_embedding_model().encode(chunks, convert_to_tensor=True, show_progress_bar=False)
     sims = util.cos_sim(query_emb, chunk_embs)[0]
     ranked = sorted(zip(chunks, sims.tolist()), key=lambda x: x[1], reverse=True)
     return [c for c, s in ranked[:top_k] if s > 0.15]
@@ -796,7 +805,7 @@ def check_ats_score(payload: AtsScoreRequest):
         resume_text=payload.resume_text,
         target_role=payload.target_role,
         job_description=payload.job_description,
-        sentence_bert_model=model,
+        sentence_bert_model=load_embedding_model(),
     )
 
 

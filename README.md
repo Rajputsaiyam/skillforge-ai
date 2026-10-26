@@ -468,11 +468,11 @@ ML_SERVICE_API_KEY=<the-same-secret-as-the-ml-service>
 ```
 
 The ML service leaves `/health` public for Render probes but requires the
-`x-ml-service-key` header for inference endpoints. Sentence-BERT loads at startup;
-BERT-NER and Flan-T5 load lazily only when their endpoints are used, which keeps
-the Free instance startup lighter. Free Render services still have tight memory
-and cold-start limits, so heavy NER/generation requests may fall back or require
-an upgrade if the service is killed for memory.
+`x-ml-service-key` header for inference endpoints. Sentence-BERT, BERT-NER, and
+Flan-T5 now load lazily only when their endpoints are used, so the web server can
+bind its Render port before model initialization. Free Render services still
+have tight memory and cold-start limits, so heavy NER/generation requests may
+fall back or require an upgrade if the service is killed for memory.
 
 ### Deploying Frontend to Vercel / Netlify / Render
 
