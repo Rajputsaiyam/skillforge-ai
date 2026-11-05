@@ -297,7 +297,7 @@ const AssessmentPage = () => {
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-sky"><Video size={13} className="mr-1 inline" /> Live camera and audio simulation</p>
-              <h3 className="text-xl font-bold tracking-tight text-white">Live mock interview with Nexora</h3>
+              <h3 className="text-xl font-bold tracking-tight text-white">Live mock interview with ForgeAI</h3>
               <p className="text-xs text-slate-300 mt-1 max-w-lg leading-relaxed">
                 Take a live mock interview with open webcam, real-time microphone check, AI face & multi-human proctoring warnings, spoken questions, and comprehensive scoring.
               </p>

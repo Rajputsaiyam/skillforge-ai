@@ -12,6 +12,7 @@ Evaluates resumes across 5 rigorous dimensions:
 """
 
 import re
+import math
 from typing import Dict, List, Optional, Any
 
 
@@ -97,6 +98,31 @@ ROLE_KEYWORD_TAXONOMY = {
         "Docker", "Kubernetes", "AWS", "Terraform", "CI/CD", "GitHub Actions",
         "Linux", "Bash", "Prometheus", "Grafana", "Ansible", "Helm", "CloudFormation",
         "Site Reliability", "Networking", "Security"
+    ],
+    "mobile": [
+        "React Native", "Flutter", "Swift", "Kotlin", "iOS", "Android",
+        "Xcode", "Gradle", "App Store", "Play Store", "Firebase",
+        "Push Notifications", "Responsive Design", "REST APIs"
+    ],
+    "machine learning": [
+        "Python", "PyTorch", "TensorFlow", "Scikit-Learn", "NumPy", "Pandas",
+        "Deep Learning", "Neural Networks", "NLP", "Computer Vision",
+        "Feature Engineering", "Model Deployment", "MLOps", "Hugging Face"
+    ],
+    "security": [
+        "Penetration Testing", "OWASP", "Security Auditing", "OAuth",
+        "JWT", "SSL/TLS", "Encryption", "IAM", "SIEM", "SOC",
+        "Vulnerability Assessment", "Network Security"
+    ],
+    "qa": [
+        "Selenium", "Cypress", "Jest", "Playwright", "Postman",
+        "Test Automation", "CI/CD", "Performance Testing", "API Testing",
+        "Unit Testing", "Integration Testing", "BDD", "TDD"
+    ],
+    "product manager": [
+        "Agile", "Scrum", "Jira", "Product Roadmap", "A/B Testing",
+        "User Research", "KPIs", "OKRs", "Sprint Planning", "Stakeholder Management",
+        "Competitive Analysis", "Go-to-Market"
     ],
 }
 
@@ -294,17 +320,10 @@ class AtsScoringEngine:
                 samples.append(val.strip())
 
         metrics_count = len(samples)
-        # 1-2 metrics: 40-60, 3-4 metrics: 75, 5+ metrics: 90-100
         if metrics_count == 0:
-            score = 25
-        elif metrics_count <= 2:
-            score = 55
-        elif metrics_count <= 4:
-            score = 75
-        elif metrics_count <= 7:
-            score = 90
+            score = 20
         else:
-            score = 100
+            score = min(100, int(20 + 80 * (1 - math.exp(-0.4 * metrics_count))))
 
         return {
             "score": score,
@@ -330,15 +349,9 @@ class AtsScoringEngine:
         weak_count = len(weak_found)
 
         if strong_count == 0:
-            base_score = 30
-        elif strong_count <= 2:
-            base_score = 55
-        elif strong_count <= 4:
-            base_score = 78
-        elif strong_count <= 7:
-            base_score = 90
+            base_score = 25
         else:
-            base_score = 98
+            base_score = min(100, int(25 + 75 * (1 - math.exp(-0.3 * strong_count))))
 
         score = base_score - (weak_count * 8)
         score = max(20, min(100, score))
@@ -367,8 +380,13 @@ class AtsScoringEngine:
             r = target_role.lower()
             if "front" in r: role_key = "frontend"
             elif "back" in r: role_key = "backend"
+            elif "mobile" in r or "ios" in r or "android" in r or "flutter" in r: role_key = "mobile"
+            elif "ml" in r or "machine" in r or "ai " in r or "artificial" in r: role_key = "machine learning"
+            elif "security" in r or "cyber" in r or "pentest" in r or "infosec" in r: role_key = "security"
+            elif "qa" in r or "test" in r or "quality" in r or "sdet" in r: role_key = "qa"
+            elif "product" in r and "manager" in r or "product owner" in r: role_key = "product manager"
             elif "data" in r or "ml" in r or "machine" in r: role_key = "data science"
-            elif "devops" in r or "cloud" in r: role_key = "devops"
+            elif "devops" in r or "cloud" in r or "sre" in r or "platform" in r: role_key = "devops"
 
         expected_keywords = ROLE_KEYWORD_TAXONOMY.get(role_key, ROLE_KEYWORD_TAXONOMY["full stack"])
         matched = []
@@ -394,7 +412,10 @@ class AtsScoringEngine:
                 sim = float(util.cos_sim(embeddings[0], embeddings[1])[0][0])
                 semantic_sim = round(max(0.0, min(1.0, sim)), 3)
                 # Blend keyword score with semantic similarity
-                base_score = round((base_score * 0.5) + (semantic_sim * 100 * 0.5))
+                if job_description:
+                    base_score = round((base_score * 0.30) + (semantic_sim * 100 * 0.70))
+                else:
+                    base_score = round((base_score * 0.50) + (semantic_sim * 100 * 0.50))
             except Exception as e:
                 pass
 

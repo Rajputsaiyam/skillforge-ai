@@ -24,7 +24,17 @@ const getGoogleCallbackUrl = () => {
     Boolean(process.env.RAILWAY_ENVIRONMENT) ||
     Boolean(process.env.PORT && process.env.PORT !== '5000');
 
-  const envCallback = process.env.GOOGLE_CALLBACK_URL;
+  let envCallback = (process.env.GOOGLE_CALLBACK_URL || '').trim();
+
+  // Validate URL format so typos or invalid characters in .env never break OAuth
+  try {
+    if (envCallback) {
+      new URL(envCallback);
+    }
+  } catch {
+    console.warn(`[Google OAuth] Invalid GOOGLE_CALLBACK_URL '${envCallback}'. Using default localhost:5000.`);
+    envCallback = '';
+  }
 
   if (isDeploy) {
     // If deployed, ensure callback URL uses the live domain instead of localhost

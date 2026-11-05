@@ -72,7 +72,7 @@ SkillForge AI functions as an intelligent career decision-support system:
 
 1. **Extracts verified evidence:** Parses text-based PDF and DOCX resumes into structured skill, project, education, and experience models.
 2. **Quantifies hiring readiness:** Benchmarks candidate profiles against target industry roles (e.g., Full Stack Engineer, Machine Learning Engineer, Cloud Architect).
-3. **Conducts live video and voice simulations:** Runs realistic turn-based mock interviews with Nexora (AI Interviewer) featuring open webcam preview, microphone audio checks, live face/multi-human proctoring alerts, speech synthesis, and real-time speech transcription.
+3. **Conducts live video and voice simulations:** Runs realistic turn-based mock interviews with ForgeAI (SkillForge AI Interviewer) featuring open webcam preview, microphone audio checks, live face/multi-human proctoring alerts, speech synthesis, and real-time speech transcription.
 4. **Calculates objective ATS scores:** Uses a dedicated NLP engine to evaluate parseability, Google X-Y-Z quantified impact, action verbs, and keyword density.
 5. **Context-Aware Career Advisory:** Provides a 24/7 career coach backed by transparent profile citations that ground advice directly in candidate resume and skill graph data.
 
@@ -95,7 +95,7 @@ SkillForge AI functions as an intelligent career decision-support system:
       - **Multi-Human Detection Alert:** If more than one person appears in the webcam stream, the system displays an alert: `⚠️ Multiple people detected! Only one candidate is allowed during the interview.`
       - **Single Human Verification:** Displays `✓ Candidate verified (1 person detected) · Ready` when properly framed.
   - **Step 3 (Live Interview with Voice Agent):**
-    - Dual-tile studio layout: Nexora (Senior AI Interviewer) tile with dynamic speaking audio waveforms alongside the candidate's live webcam video stream.
+    - Dual-tile studio layout: ForgeAI (Senior AI Interviewer) tile with dynamic speaking audio waveforms alongside the candidate's live webcam video stream.
     - Spoken questions via Text-to-Speech (TTS) with one-click repeat option.
     - Live Speech-to-Text (STT) transcription capturing spoken answers in real-time with visual speech wave animations and editable text input.
     - Background proctoring monitoring that flags interruptions or unverified frames throughout the session.
@@ -530,7 +530,7 @@ All protected endpoints require an `Authorization: Bearer <token>` header.
 - `GET /api/assessments/lesson/:skillId` — Retrieve AI-generated micro-lesson for a skill.
 - `GET /api/assessments/quiz/:skillId` — Generate adaptive quiz calibrated to skill level.
 - `POST /api/assessments/submit` — Submit quiz answers for scoring and skill level updates.
-- `POST /api/assessments/interview/start` — Initialize a Live AI Mock Interview with Nexora.
+- `POST /api/assessments/interview/start` — Initialize a Live AI Mock Interview with ForgeAI.
 - `POST /api/assessments/interview/continue` — Process conversational turn for voice/text interview.
 - `POST /api/assessments/interview/end` — Finalize interview and generate multidimensional performance report with proctoring audit.
 

@@ -248,7 +248,7 @@ const submitAssessment = asyncHandler(async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// AI Mock Interview Engine — Live Video & Voice Interview with Nexora
+// AI Mock Interview Engine — Live Video & Voice Interview with ForgeAI
 // ---------------------------------------------------------------------------
 
 // @desc Start an AI mock interview for a target role, resume, job description, and type
@@ -270,12 +270,12 @@ const startInterview = asyncHandler(async (req, res) => {
   const contextChunks = await buildUserContextChunks(req.user._id);
 
   const systemPrompt =
-    `You are Nexora, an experienced Senior Technical Interviewer and Talent Lead conducting a live mock ${type} for the role of ${role}.\n` +
+    `You are ForgeAI, an experienced Senior Technical Interviewer and Talent Lead from SkillForge AI conducting a live mock ${type} for the role of ${role}.\n` +
     (jobDescription ? `Target Job Description: ${jobDescription.slice(0, 1500)}\n` : '') +
     (candidateResumeContext ? `Candidate Resume Highlights: ${candidateResumeContext.slice(0, 1500)}\n` : '') +
     (focusSkills.length ? `Primary competencies to evaluate: ${focusSkills.join(', ')}.\n` : '') +
     `Session structure: exactly ${totalQuestions} questions. This is Question 1.\n` +
-    'Introduce yourself warmly as Nexora in 1 concise sentence, state the interview focus, and ask your first specific question. Keep the opening under 65 words.';
+    'Introduce yourself warmly as ForgeAI from SkillForge AI in 1 concise sentence, state the interview focus, and ask your first specific question. Keep the opening under 65 words.';
 
   const aiOpening = await aiService.generate({
     prompt: `Begin the ${type} session for the candidate targeting ${role}. Welcome them briefly and ask Question 1 of ${totalQuestions}.`,
@@ -286,7 +286,7 @@ const startInterview = asyncHandler(async (req, res) => {
 
   const firstMessage =
     aiOpening?.text ||
-    `Hello! I'm Nexora, your interviewer today. We'll be conducting your ${type} for the ${role} position. To kick things off, could you introduce yourself and walk me through the most technically challenging project you've built, highlighting the architecture and key trade-offs?`;
+    `Hello! I'm ForgeAI, your SkillForge AI interviewer today. We'll be conducting your ${type} for the ${role} position. To kick things off, could you introduce yourself and walk me through the most technically challenging project you've built, highlighting the architecture and key trade-offs?`;
 
   const assessment = await Assessment.create({
     user: req.user._id,
@@ -302,12 +302,12 @@ const startInterview = asyncHandler(async (req, res) => {
     message: firstMessage,
     targetRole: role,
     interviewType: type,
-    interviewerName: 'Nexora',
+    interviewerName: 'ForgeAI',
     questionCount: totalQuestions,
   });
 });
 
-// @desc Process the candidate's answer and get Nexora's next question or complete session
+// @desc Process the candidate's answer and get ForgeAI's next question or complete session
 const continueInterview = asyncHandler(async (req, res) => {
   const { assessmentId, message, questionCount = 3, interviewType = 'Technical Interview' } = req.body;
   const assessment = await Assessment.findOne({ _id: assessmentId, user: req.user._id, mode: 'interview' });
@@ -331,7 +331,7 @@ const continueInterview = asyncHandler(async (req, res) => {
   } else {
     const nextQNum = candidateTurns + 1;
     const systemPrompt =
-      `You are Nexora, conducting a ${interviewType} for ${role}.\n` +
+      `You are ForgeAI from SkillForge AI, conducting a ${interviewType} for ${role}.\n` +
       `Progress: Candidate just answered Question ${candidateTurns} of ${totalQuestions}.\n` +
       `Now ask Question ${nextQNum} of ${totalQuestions}.\n` +
       'Briefly acknowledge the candidate\'s answer with 1 sentence of constructive observation, then ask the next clear, realistic interview question. Keep total response under 65 words.';
@@ -370,7 +370,7 @@ const endInterview = asyncHandler(async (req, res) => {
     throw new Error('Interview session not found');
   }
 
-  const transcriptText = assessment.transcript.map((t) => `${t.role === 'assistant' ? 'Nexora' : 'Candidate'}: ${t.content}`).join('\n\n');
+  const transcriptText = assessment.transcript.map((t) => `${t.role === 'assistant' ? 'ForgeAI' : 'Candidate'}: ${t.content}`).join('\n\n');
   const role = req.user.targetRole || 'Full Stack Engineer';
 
   const reportPrompt =
@@ -469,7 +469,7 @@ const endInterview = asyncHandler(async (req, res) => {
     );
   }
 
-  await logActivity(req.user._id, 'assessment_completed', `${req.user.fullName} completed a Live AI Mock Interview with Nexora`, {
+  await logActivity(req.user._id, 'assessment_completed', `${req.user.fullName} completed a Live AI Mock Interview with ForgeAI`, {
     skillsAssessed: assessment.skillsAssessed,
     overallScore: report.overallScore,
   });

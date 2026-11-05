@@ -39,6 +39,9 @@ const BUZZWORDS = [
   /\bteam player\b/i,
   /\bthink outside the box\b/i,
   /\bresults-oriented\b/i,
+  /\bdetail-oriented\b/i,
+  /\bproactive individual\b/i,
+  /\bseasoned professional\b/i,
   /\bthought leader\b/i,
   /\bself-starter\b/i,
 ];
@@ -49,6 +52,11 @@ const ROLE_KEYWORDS = {
   'full stack': ['React', 'Node.js', 'TypeScript', 'Next.js', 'PostgreSQL', 'MongoDB', 'REST APIs', 'GraphQL', 'Docker', 'AWS', 'Git', 'CI/CD'],
   'data science': ['Python', 'SQL', 'Pandas', 'NumPy', 'Scikit-Learn', 'PyTorch', 'TensorFlow', 'Machine Learning', 'Data Visualization', 'A/B Testing'],
   devops: ['Docker', 'Kubernetes', 'AWS', 'Terraform', 'CI/CD', 'GitHub Actions', 'Linux', 'Bash', 'Prometheus', 'Grafana'],
+  mobile: ['React Native', 'Flutter', 'Swift', 'Kotlin', 'iOS', 'Android', 'Xcode', 'Firebase', 'Push Notifications', 'REST APIs', 'App Store', 'Responsive Design'],
+  'machine learning': ['Python', 'PyTorch', 'TensorFlow', 'Scikit-Learn', 'NumPy', 'Pandas', 'Deep Learning', 'Neural Networks', 'NLP', 'Computer Vision', 'Feature Engineering', 'MLOps', 'Hugging Face'],
+  security: ['Penetration Testing', 'OWASP', 'Security Auditing', 'OAuth', 'JWT', 'SSL/TLS', 'Encryption', 'IAM', 'SIEM', 'SOC', 'Vulnerability Assessment', 'Network Security'],
+  qa: ['Selenium', 'Cypress', 'Jest', 'Playwright', 'Postman', 'Test Automation', 'CI/CD', 'Performance Testing', 'API Testing', 'Unit Testing', 'Integration Testing', 'BDD', 'TDD'],
+  'product manager': ['Agile', 'Scrum', 'Jira', 'Product Roadmap', 'A/B Testing', 'User Research', 'KPIs', 'OKRs', 'Sprint Planning', 'Stakeholder Management', 'Competitive Analysis'],
 };
 
 function runNodeFallbackAtsScore(resumeText, targetRole = 'Full Stack Developer', jobDescription = '') {
@@ -72,18 +80,19 @@ function runNodeFallbackAtsScore(resumeText, targetRole = 'Full Stack Developer'
   const secCount = Object.values(sections).filter(Boolean).length;
   let parseScore = (hasEmail ? 20 : 0) + (hasPhone ? 15 : 0) + (hasLinkedin || hasGithub ? 15 : 0) + (secCount * 8);
   if (wordCount >= 400 && wordCount <= 1100) parseScore += 10;
+  else if (wordCount >= 250 && wordCount <= 1400) parseScore += 5;
   parseScore = Math.min(100, Math.max(25, parseScore));
 
-  // 2. Metrics & Google X-Y-Z
+  // 2. Metrics & Google X-Y-Z (Continuous Logarithmic Curve)
   const metricRegex = /(\b\d+(\.\d+)?%|\$\s?\d+([,\.]\d+)?\s?[kKmMbB]?|\b\d+\s?(k|K|M|B|x|X)\b|\b\d{2,}\+?\s?(users|clients|requests|ms|seconds|teams|engineers|endpoints)\b)/gi;
   const metricsFound = Array.from(new Set(text.match(metricRegex) || [])).slice(0, 10);
   const metricsCount = metricsFound.length;
-  let impactScore = 25;
-  if (metricsCount >= 5) impactScore = 95;
-  else if (metricsCount >= 3) impactScore = 78;
-  else if (metricsCount >= 1) impactScore = 55;
+  let impactScore = 20;
+  if (metricsCount > 0) {
+    impactScore = Math.min(100, Math.round(20 + 80 * (1 - Math.exp(-0.4 * metricsCount))));
+  }
 
-  // 3. Action Verbs
+  // 3. Action Verbs (Continuous Logarithmic Curve)
   const lowerWords = words.map((w) => w.toLowerCase().replace(/[^a-z]/g, ''));
   const strongVerbsFound = Array.from(new Set(lowerWords.filter((w) => STRONG_VERBS.has(w))));
   let weakPhrasesCount = 0;
@@ -91,10 +100,10 @@ function runNodeFallbackAtsScore(resumeText, targetRole = 'Full Stack Developer'
     const m = text.match(wp);
     if (m) weakPhrasesCount += m.length;
   });
-  let actionScore = 40;
-  if (strongVerbsFound.length >= 7) actionScore = 92;
-  else if (strongVerbsFound.length >= 4) actionScore = 80;
-  else if (strongVerbsFound.length >= 2) actionScore = 60;
+  let actionScore = 25;
+  if (strongVerbsFound.length > 0) {
+    actionScore = Math.min(100, Math.round(25 + 75 * (1 - Math.exp(-0.3 * strongVerbsFound.length))));
+  }
   actionScore = Math.max(20, Math.min(100, actionScore - (weakPhrasesCount * 8)));
 
   // 4. Role Keywords
@@ -102,8 +111,13 @@ function runNodeFallbackAtsScore(resumeText, targetRole = 'Full Stack Developer'
   const rLower = (targetRole || '').toLowerCase();
   if (rLower.includes('front')) roleKey = 'frontend';
   else if (rLower.includes('back')) roleKey = 'backend';
+  else if (rLower.includes('mobile') || rLower.includes('ios') || rLower.includes('android') || rLower.includes('flutter')) roleKey = 'mobile';
+  else if (rLower.includes('machine') || rLower.includes(' ml') || rLower.includes('ai ') || rLower.includes('artificial')) roleKey = 'machine learning';
+  else if (rLower.includes('security') || rLower.includes('cyber') || rLower.includes('infosec')) roleKey = 'security';
+  else if (rLower.includes('qa') || rLower.includes('test') || rLower.includes('quality') || rLower.includes('sdet')) roleKey = 'qa';
+  else if (rLower.includes('product') && rLower.includes('manager')) roleKey = 'product manager';
   else if (rLower.includes('data') || rLower.includes('ml')) roleKey = 'data science';
-  else if (rLower.includes('devops') || rLower.includes('cloud')) roleKey = 'devops';
+  else if (rLower.includes('devops') || rLower.includes('cloud') || rLower.includes('sre') || rLower.includes('platform')) roleKey = 'devops';
 
   const expected = ROLE_KEYWORDS[roleKey] || ROLE_KEYWORDS['full stack'];
   const matchedKeywords = expected.filter((kw) => new RegExp(`\\b${kw}\\b`, 'i').test(text));

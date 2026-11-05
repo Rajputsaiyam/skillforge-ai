@@ -29,11 +29,12 @@ const tokenizer = new natural.WordTokenizer();
 const SEMANTIC_SKILL_THRESHOLD = 0.5; // cosine similarity cutoff for "this skill is present"
 
 const SECTION_HEADERS = {
-  education: /^\s*(education|academic background|academics?|qualifications?)\s*$/i,
-  experience: /^\s*(experience|work experience|professional experience|employment|work history|career history)\s*$/i,
-  projects: /^\s*(projects|personal projects|academic projects|selected projects)\s*$/i,
-  certifications: /^\s*(certifications?|licenses?|courses?|awards?)\s*$/i,
-  skills: /^\s*(skills|technical skills|core competencies|technical proficiencies|technologies)\s*$/i,
+  education: /^\s*(education|academic background|academics?|qualifications?|degrees?|educational background)\s*$/i,
+  experience: /^\s*(experience|work experience|professional experience|employment|work history|career history|relevant experience|professional background)\s*$/i,
+  projects: /^\s*(projects|personal projects|academic projects|selected projects|key projects|notable projects|side projects)\s*$/i,
+  certifications: /^\s*(certifications?|licenses?|courses?|awards?|honors?|achievements?|professional development)\s*$/i,
+  skills: /^\s*(skills|technical skills|core competencies|technical proficiencies|technologies|tech stack|tools\s*[&and]*\s*technologies|competencies|areas of expertise)\s*$/i,
+  summary: /^\s*(summary|profile|about me?|about|objective|personal statement|professional summary|career objective|career summary)\s*$/i,
 };
 
 function normalizeResumeText(text) {
@@ -44,6 +45,8 @@ function normalizeResumeText(text) {
     .replace(/\r/g, '')
     .replace(/\n{3,}/g, '\n\n')
     .replace(/[ \t]{2,}/g, ' ')
+    .replace(/([a-z])([A-Z][a-z])/g, '$1 $2')  // Fix merged words from PDF: "workedAtGoogle" → "worked AtGoogle"  
+    .replace(/(\d)([A-Z])/g, '$1 $2')  // Fix "3Years" → "3 Years"
     .trim();
 }
 
@@ -102,10 +105,21 @@ function extractSkillsFromText(text) {
   uniqueTokens.forEach((token) => {
     if (found.size > 60) return; // safety cap
     const { bestMatch } = stringSimilarity.findBestMatch(token, flatNames);
-    if (bestMatch.rating >= 0.88) {
+    if (bestMatch.rating >= 0.82) {
       const canonical = lookup.get(bestMatch.target);
       if (canonical && !found.has(canonical)) {
         found.set(canonical, { confidence: Number(bestMatch.rating.toFixed(2)), source: 'fuzzy' });
+      }
+    }
+  });
+
+  // 2.5 — N-gram phrase matching for multi-word taxonomy entries
+  lookup.forEach((canonical, alias) => {
+    if (found.has(canonical)) return;
+    // Only check multi-word or special-character aliases not caught by token matching
+    if (alias.includes(' ') || alias.includes('.') || alias.includes('-') || alias.includes('+')) {
+      if (lowerText.includes(alias)) {
+        found.set(canonical, { confidence: 0.95, source: 'phrase' });
       }
     }
   });
@@ -162,21 +176,27 @@ function parseEducation(lines) {
 function parseExperience(lines) {
   const entries = [];
   let buffer = [];
+  const datePattern = /\b((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+)?((?:19|20)\d{2})\b/i;
+
   lines.forEach((line) => {
-    const isDateLine = /\b(19|20)\d{2}\b/.test(line);
     buffer.push(line);
-    if (isDateLine && buffer.length) {
+    if (datePattern.test(line) && buffer.length >= 1) {
       entries.push(buffer.join(' '));
       buffer = [];
     }
   });
   if (buffer.length) entries.push(buffer.join(' '));
-  return entries.slice(0, 6).map((line) => {
-    const dateMatch = line.match(/(19|20)\d{2}\s*[-–to]+\s*((19|20)\d{2}|present)/i);
+
+  return entries.slice(0, 8).map((line) => {
+    const dateMatch = line.match(
+      /(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+)?((?:19|20)\d{2})\s*[-–—to]+\s*(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+)?((?:(?:19|20)\d{2})|[Pp]resent|[Cc]urrent|[Nn]ow)/i
+    );
     return {
-      company: line.split(/[-–|,]/)[0]?.trim().slice(0, 60) || 'Unknown',
+      company: line.split(/[-–—|,]/)[0]?.trim().slice(0, 80) || 'Unknown',
       title: '',
       duration: dateMatch ? dateMatch[0] : '',
+      startYear: dateMatch ? dateMatch[1] : '',
+      endYear: dateMatch ? dateMatch[2] : '',
       _rawLine: line, // used only by refineOrganizationsWithNER below, stripped before saving
     };
   });

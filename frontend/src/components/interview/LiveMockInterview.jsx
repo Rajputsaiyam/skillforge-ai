@@ -53,7 +53,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
   // --- Step 3: Interview Execution State ---
   const [assessmentId, setAssessmentId] = useState(null);
-  const [interviewerName, setInterviewerName] = useState('Nexora');
+  const [interviewerName, setInterviewerName] = useState('ForgeAI');
   const [currentQuestionText, setCurrentQuestionText] = useState('');
   const [candidateAnswer, setCandidateAnswer] = useState('');
   const [turnIndex, setTurnIndex] = useState(1);
@@ -65,12 +65,14 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
   const [sessionTimer, setSessionTimer] = useState(0);
   const timerIntervalRef = useRef(null);
   const speechRecognitionRef = useRef(null);
+  const activeUtterancesRef = useRef([]);
+  const watchdogIntervalRef = useRef(null);
 
   // --- Step 4: Final Scorecard & Advice ---
   const [finalReport, setFinalReport] = useState(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
-  // Load existing profile resume on mount
+  // Load existing profile resume on mount & prepare voices
   useEffect(() => {
     resumeService.getMyResume()
       .then((res) => {
@@ -80,13 +82,24 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
         }
       })
       .catch(() => {});
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      const onVoicesChanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+      return () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+      };
+    }
   }, []);
 
   // Cleanup media & timers on unmount
   useEffect(() => {
     return () => {
       stopMediaTracks();
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      stopSpeaking();
       if (speechRecognitionRef.current) speechRecognitionRef.current.stop();
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
@@ -197,26 +210,120 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
     }
   };
 
-  // --- Voice Agent TTS: Nexora Speaks ---
-  const speakText = (text) => {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    setIsAiSpeaking(true);
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.05;
-
-    // Pick a natural voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const femaleVoice = voices.find((v) => v.lang.startsWith('en') && (v.name.includes('Female') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Karen')));
-    if (femaleVoice) utterance.voice = femaleVoice;
-
-    utterance.onend = () => setIsAiSpeaking(false);
-    utterance.onerror = () => setIsAiSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
+  // --- Voice Agent TTS: ForgeAI Speaks ---
+  const stopSpeaking = () => {
+    if (watchdogIntervalRef.current) {
+      clearInterval(watchdogIntervalRef.current);
+      watchdogIntervalRef.current = null;
+    }
+    activeUtterancesRef.current = [];
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    }
+    setIsAiSpeaking(false);
   };
+
+  const speakText = (text) => {
+    if (!('speechSynthesis' in window) || !text) return;
+
+    stopSpeaking();
+
+    // Clean text of markdown characters (*, _, #, `, ~) so TTS doesn't stumble
+    const clean = text
+      .replace(/[*_#`~]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Split into sentences / natural pauses to prevent Chrome's 15s freeze & long-text drop bug
+    const sentences = clean.match(/[^.!?]+[.!?]+|\s*[^.!?]+$/g) || [clean];
+    const filteredSentences = sentences.map((s) => s.trim()).filter(Boolean);
+    if (!filteredSentences.length) return;
+
+    // Small delay so cancel() is flushed through browser audio pipeline
+    setTimeout(() => {
+      try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(
+          (v) =>
+            v.lang.startsWith('en') &&
+            (v.name.includes('Female') ||
+              v.name.includes('Google') ||
+              v.name.includes('Samantha') ||
+              v.name.includes('Karen') ||
+              v.name.includes('Victoria') ||
+              v.name.includes('Natural'))
+        ) || voices.find((v) => v.lang.startsWith('en'));
+
+        const utterances = filteredSentences.map((sentence, idx) => {
+          const utt = new SpeechSynthesisUtterance(sentence);
+          utt.rate = 1.0;
+          utt.pitch = 1.05;
+          utt.volume = 1.0;
+          if (preferredVoice) utt.voice = preferredVoice;
+
+          if (idx === 0) {
+            utt.onstart = () => setIsAiSpeaking(true);
+          }
+
+          if (idx === filteredSentences.length - 1) {
+            utt.onend = () => {
+              setIsAiSpeaking(false);
+              stopSpeaking();
+            };
+          }
+
+          utt.onerror = (e) => {
+            console.warn('Speech synthesis notice:', e);
+            if (idx === filteredSentences.length - 1) {
+              setIsAiSpeaking(false);
+              stopSpeaking();
+            }
+          };
+
+          return utt;
+        });
+
+        // Retain reference to prevent garbage collection halting speech in Chrome
+        activeUtterancesRef.current = utterances;
+
+        // Chrome watchdog timer to unpause if it stalls
+        watchdogIntervalRef.current = setInterval(() => {
+          if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+          }
+        }, 10000);
+
+        utterances.forEach((utt) => window.speechSynthesis.speak(utt));
+        // Force Chrome audio pipeline to process queue immediately
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+      } catch (err) {
+        console.error('Failed to trigger speech synthesis:', err);
+        setIsAiSpeaking(false);
+      }
+    }, 60);
+  };
+
+  // Automatically speak question aloud by default whenever Step 3 begins or question changes
+  const hasSpokenQuestionRef = useRef('');
+  useEffect(() => {
+    if (currentStep === 3 && currentQuestionText && hasSpokenQuestionRef.current !== currentQuestionText) {
+      hasSpokenQuestionRef.current = currentQuestionText;
+      const timer = setTimeout(() => {
+        speakText(currentQuestionText);
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, currentQuestionText]);
 
   // --- Voice Agent STT: Candidate Dictates ---
   const toggleSpeechRecognition = () => {
@@ -287,6 +394,16 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
   // --- Transition Step 2 -> Step 3: Launch Live Interview ---
   const startLiveInterviewSession = async () => {
+    // Prime speech synthesis directly within the user click gesture
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.resume();
+      try {
+        const primeUtterance = new SpeechSynthesisUtterance(' ');
+        primeUtterance.volume = 0.01;
+        window.speechSynthesis.speak(primeUtterance);
+      } catch {}
+    }
+
     setIsSubmittingTurn(true);
     try {
       const payload = {
@@ -299,17 +416,12 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
       const res = await assessmentService.startInterview(payload);
       setAssessmentId(res.assessmentId);
-      setInterviewerName(res.interviewerName || 'Nexora');
+      setInterviewerName(res.interviewerName || 'ForgeAI');
       setCurrentQuestionText(res.message);
       setTurnIndex(1);
       setTotalQuestions(res.questionCount || questionCount);
       setConversationHistory([{ role: 'interviewer', text: res.message }]);
       setCurrentStep(3);
-
-      // Nexora speaks Question 1 aloud
-      setTimeout(() => {
-        speakText(res.message);
-      }, 600);
     } catch (err) {
       console.error('Failed to start interview:', err);
     } finally {
@@ -322,10 +434,14 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
     const text = candidateAnswer.trim();
     if (!text || isSubmittingTurn) return;
 
+    // Keep speech synthesis active in this user gesture
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.resume();
+    }
+
     if (speechRecognitionRef.current) speechRecognitionRef.current.stop();
     setIsCandidateSpeaking(false);
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    setIsAiSpeaking(false);
+    stopSpeaking();
 
     setConversationHistory((prev) => [...prev, { role: 'candidate', text }]);
     setCandidateAnswer('');
@@ -345,7 +461,6 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
         handleCompleteInterview();
       } else {
         setTurnIndex((prev) => prev + 1);
-        speakText(res.message);
       }
     } catch (err) {
       console.error('Error continuing interview:', err);
@@ -356,9 +471,8 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
   // --- Transition Step 3 -> Step 4: Finish & Generate Report ---
   const handleCompleteInterview = async () => {
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    stopSpeaking();
     if (speechRecognitionRef.current) speechRecognitionRef.current.stop();
-    setIsAiSpeaking(false);
     setIsCandidateSpeaking(false);
     stopMediaTracks();
 
@@ -592,7 +706,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
                   Get ready for your interview
                 </h2>
                 <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-                  Turn on your webcam and check the preview before you meet Nexora. Your video stays on your device and is never recorded or uploaded.
+                  Turn on your webcam and check the preview before you meet ForgeAI. Your video stays on your device and is never recorded or uploaded.
                 </p>
               </div>
 
@@ -723,7 +837,7 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
               {/* Dual Video Grid: Interviewer Tile & Candidate Tile */}
               <div className="grid md:grid-cols-2 gap-4">
-                {/* Nexora (AI Interviewer) Tile */}
+                {/* ForgeAI (AI Interviewer) Tile */}
                 <div className="relative flex min-h-[200px] flex-col items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-navy p-6 text-center text-white">
                   <div className="relative mb-3">
                     <div className={`flex h-16 w-16 items-center justify-center rounded-lg bg-primary ${isAiSpeaking ? 'animate-pulse ring-4 ring-primary/40' : ''}`}>
@@ -742,11 +856,12 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
                       {isAiSpeaking ? 'Speaking question...' : 'Listening to candidate'}
                     </span>
                     <button
-                      onClick={() => speakText(currentQuestionText)}
-                      className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                      title="Repeat question"
+                      onClick={() => (isAiSpeaking ? stopSpeaking() : speakText(currentQuestionText))}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[11px] font-semibold transition-colors"
+                      title={isAiSpeaking ? 'Stop voice' : 'Play question audio'}
                     >
-                      <Volume2 size={13} />
+                      {isAiSpeaking ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                      <span>{isAiSpeaking ? 'Stop' : 'Play Voice'}</span>
                     </button>
                   </div>
                 </div>
@@ -782,9 +897,22 @@ export default function LiveMockInterview({ onClose, defaultRole = 'Full Stack E
 
               {/* Current Question Card */}
               <div className="p-4 rounded-2xl bg-lightSky/40 border border-primary/20 text-navy">
-                <span className="text-[10px] font-bold text-primary uppercase tracking-wider block mb-1">
-                  Active Question #{turnIndex}
-                </span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                    Active Question #{turnIndex}
+                  </span>
+                  <button
+                    onClick={() => (isAiSpeaking ? stopSpeaking() : speakText(currentQuestionText))}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all shadow-xs ${
+                      isAiSpeaking
+                        ? 'bg-rose-500 hover:bg-rose-600 text-white'
+                        : 'bg-primary hover:bg-primary/90 text-white'
+                    }`}
+                  >
+                    {isAiSpeaking ? <VolumeX size={13} /> : <Volume2 size={13} />}
+                    <span>{isAiSpeaking ? 'Mute AI Voice' : 'Hear ForgeAI Speak 🔊'}</span>
+                  </button>
+                </div>
                 <p className="text-sm sm:text-base font-extrabold leading-snug">
                   {currentQuestionText}
                 </p>
