@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AdminRoute from './routes/AdminRoute';
 import ToastContainer from './components/ui/Toast';
@@ -23,7 +23,6 @@ const SkillGapPage = lazy(() => import('./pages/SkillGap/SkillGapPage'));
 const JobsPage = lazy(() => import('./pages/Jobs/JobsPage'));
 const JobDetailsPage = lazy(() => import('./pages/Jobs/JobDetailsPage'));
 const ApplicationsPage = lazy(() => import('./pages/Applications/ApplicationsPage'));
-const ColdEmailPage = lazy(() => import('./pages/ColdEmail/ColdEmailPage'));
 const RoadmapPage = lazy(() => import('./pages/Roadmap/RoadmapPage'));
 const ProgressPage = lazy(() => import('./pages/Progress/ProgressPage'));
 const ProfilePage = lazy(() => import('./pages/Profile/ProfilePage'));
@@ -68,7 +67,7 @@ function App() {
               <Route path="/jobs" element={<JobsPage />} />
               <Route path="/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/applications" element={<ApplicationsPage />} />
-              <Route path="/cold-email" element={<ColdEmailPage />} />
+              <Route path="/cold-email" element={<Navigate to="/dashboard" replace />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
               <Route path="/progress" element={<ProgressPage />} />
               <Route path="/profile" element={<ProfilePage />} />

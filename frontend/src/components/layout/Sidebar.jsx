@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Share2, ClipboardCheck, Target, Briefcase,
   ListChecks, Route as RouteIcon, TrendingUp, User, Settings, ChevronLeft, ChevronRight,
-  Mail,
+  Mail, Lock,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import Logo from '../ui/Logo';
@@ -21,11 +21,47 @@ const CAREER_ITEMS = [
   { to: '/progress', label: 'Progress', icon: TrendingUp },
   { to: '/jobs', label: 'Jobs', icon: Briefcase },
   { to: '/applications', label: 'Applications', icon: ListChecks },
-  { to: '/cold-email', label: 'Cold Email', icon: Mail },
+  { to: '/cold-email', label: 'Cold Email', icon: Mail, locked: true },
 ];
 
-const NavItem = ({ item, collapsed }) => {
+const NavItem = ({ item, collapsed, isLocked }) => {
   const Icon = item.icon;
+  const locked = Boolean(isLocked ?? item.locked);
+  const { showToast } = useApp() || {};
+
+  if (locked) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          if (showToast) {
+            showToast(`${item.label} is locked by administrator.`, 'warning');
+          }
+        }}
+        title={collapsed ? `${item.label} (Locked)` : undefined}
+        className="w-full relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-slate-50/80 border border-transparent cursor-not-allowed text-left group"
+      >
+        <div className="relative flex w-5 shrink-0 items-center justify-center text-slate-400">
+          <Icon size={17} strokeWidth={1.9} />
+          {collapsed && (
+            <span className="absolute -top-1 -right-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-amber-100 text-amber-700 border border-amber-300">
+              <Lock size={8} strokeWidth={2.5} />
+            </span>
+          )}
+        </div>
+        {!collapsed && (
+          <span className="truncate flex-1">{item.label}</span>
+        )}
+        {!collapsed && (
+          <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-full shadow-2xs">
+            <Lock size={9} strokeWidth={2.5} />
+            <span>Locked</span>
+          </span>
+        )}
+      </button>
+    );
+  }
+
   return (
     <NavLink
       end={item.to === '/dashboard'}
@@ -41,7 +77,11 @@ const NavItem = ({ item, collapsed }) => {
     >
       {({ isActive }) => (
         <>
-          <div className={`flex w-5 shrink-0 items-center justify-center transition-colors ${isActive ? 'text-primary' : 'text-slate'}`}>
+          <div
+            className={`flex w-5 shrink-0 items-center justify-center transition-colors ${
+              isActive ? 'text-primary' : 'text-slate'
+            }`}
+          >
             <Icon size={17} strokeWidth={isActive ? 2.4 : 1.9} />
           </div>
           {!collapsed && (
@@ -57,7 +97,7 @@ const NavItem = ({ item, collapsed }) => {
 };
 
 const Sidebar = () => {
-  const { sidebarCollapsed, setSidebarCollapsed } = useApp();
+  const { sidebarCollapsed, setSidebarCollapsed, coldEmailLocked } = useApp();
 
   const section = (label, items) => (
     <div className="mb-5">
@@ -68,7 +108,12 @@ const Sidebar = () => {
       )}
       <div className="space-y-1">
         {items.map((item) => (
-          <NavItem key={item.to} item={item} collapsed={sidebarCollapsed} />
+          <NavItem
+            key={item.to}
+            item={item}
+            collapsed={sidebarCollapsed}
+            isLocked={item.to === '/cold-email' ? (coldEmailLocked ?? true) : item.locked}
+          />
         ))}
       </div>
     </div>

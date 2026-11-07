@@ -14,7 +14,6 @@ const PAGE_TITLES = {
   '/progress': 'Career Readiness Progress',
   '/jobs': 'AI Job Matching',
   '/applications': 'Job Application Tracker',
-  '/cold-email': 'Automated Cold Email Studio',
   '/profile': 'Candidate Profile',
   '/settings': 'System Settings',
 };

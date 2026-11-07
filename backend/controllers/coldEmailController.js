@@ -13,6 +13,13 @@ const logActivity = require('../utils/activityLogger');
  * @access Private
  */
 const sendBatch = asyncHandler(async (req, res) => {
+  // Feature Lock: Check if cold emailing is locked
+  const isLocked = process.env.COLD_EMAIL_LOCKED !== 'false';
+  if (isLocked) {
+    res.status(403);
+    throw new Error('Cold email outreach feature is currently locked by administrator.');
+  }
+
   const { recipients, subject, body, senderEmail, attachResume } = req.body;
 
   if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {

@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Mail, Send, Sparkles, FileText, CheckCircle2, ShieldCheck,
   Copy, Check, Trash2, Plus, Upload, X, AtSign, Building2,
   RefreshCw, Paperclip, CheckCheck, Loader2, Users, Layers,
-  History, Clock, AlertCircle, ExternalLink
+  History, Clock, AlertCircle, ExternalLink, Lock
 } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { useApp } from '../../context/AppContext';
@@ -114,8 +115,9 @@ const INITIAL_EMAILS = [
 ];
 
 export default function ColdEmailPage() {
-  const { showToast } = useApp();
+  const { showToast, coldEmailLocked } = useApp() || {};
   const { user } = useAuth();
+  const isLocked = Boolean(coldEmailLocked ?? true);
 
   // Raw Emails Batch Queue (Up to 10 max)
   const [emailList, setEmailList] = useState(INITIAL_EMAILS);
@@ -195,6 +197,10 @@ export default function ColdEmailPage() {
   // Add single email
   const handleAddQuickEmail = (e) => {
     if (e) e.preventDefault();
+    if (isLocked) {
+      showToast('Cold email outreach is locked by administrator.', 'error');
+      return;
+    }
     const raw = quickEmailInput.trim();
     if (!raw) return;
 
@@ -223,6 +229,10 @@ export default function ColdEmailPage() {
 
   // Bulk Paste parser (Extracts raw emails from comma, space, newline separated text)
   const handleBulkParse = () => {
+    if (isLocked) {
+      showToast('Cold email outreach is locked by administrator.', 'error');
+      return;
+    }
     if (!bulkInputText.trim()) return;
 
     const availableSlots = BATCH_LIMIT - emailList.length;
@@ -296,6 +306,11 @@ export default function ColdEmailPage() {
 
   // Dispatch Same Content to All Emails via Backend API using saiyamrajput71@gmail.com
   const handleDispatchBatch = async () => {
+    if (isLocked) {
+      showToast('Cold email dispatching is currently locked.', 'error');
+      return;
+    }
+
     if (emailList.length === 0) {
       showToast('Please add at least 1 email address to dispatch', 'warning');
       return;
@@ -351,13 +366,19 @@ export default function ColdEmailPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate/15 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-             <span className="h-2 w-2 rounded-full bg-success" />
+            <span className={`h-2 w-2 rounded-full ${isLocked ? 'bg-amber-500' : 'bg-success'}`} />
             <span className="text-[11px] font-extrabold uppercase tracking-widest text-primary">
               Bulk Cold Outreach Studio
             </span>
-             <span className="text-[10px] font-semibold text-success">
-               Backend connected
-            </span>
+            {isLocked ? (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
+                <Lock size={10} /> Locked
+              </span>
+            ) : (
+              <span className="text-[10px] font-semibold text-success">
+                Backend connected
+              </span>
+            )}
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-navy tracking-tight">
             Cold Email Dispatcher
@@ -397,10 +418,18 @@ export default function ColdEmailPage() {
 
           <button
             onClick={handleDispatchBatch}
-            disabled={emailList.length === 0 || isSendingBatch}
-             className="btn-primary !px-5 !py-2.5 text-xs disabled:pointer-events-none"
+            disabled={isLocked || emailList.length === 0 || isSendingBatch}
+            className={`btn-primary !px-5 !py-2.5 text-xs ${
+              isLocked ? 'opacity-60 cursor-not-allowed bg-slate-400 hover:bg-slate-400 border-none' : 'disabled:pointer-events-none'
+            }`}
+            title={isLocked ? 'Cold Email Dispatcher is Locked' : undefined}
           >
-            {isSendingBatch ? (
+            {isLocked ? (
+              <>
+                <Lock size={14} />
+                <span>Feature Locked</span>
+              </>
+            ) : isSendingBatch ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
                 <span>Dispatching Batch...</span>
@@ -414,6 +443,64 @@ export default function ColdEmailPage() {
           </button>
         </div>
       </div>
+
+      {/* --- Locked Feature Banner & Notice --- */}
+      {isLocked && (
+        <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-50/70 p-5 sm:p-6 shadow-xs relative overflow-hidden">
+          <div className="absolute -top-10 -right-10 w-44 h-44 bg-amber-200/30 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+            <div className="flex items-start sm:items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300/80 text-amber-700 flex items-center justify-center shrink-0 shadow-2xs">
+                <Lock size={22} className="text-amber-800" />
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-base sm:text-lg font-black text-navy">
+                    Cold Email Outreach Studio is Locked
+                  </h2>
+                  <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 bg-amber-200 text-amber-900 rounded-full border border-amber-300">
+                    Locked Feature
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                  Automated cold outreach and recruiter dispatching are locked. Domain sending and batch processing are currently disabled for this workspace.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => showToast('Access request submitted to administrator.', 'info')}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-100/90 hover:bg-amber-200 border border-amber-300 transition-colors"
+              >
+                Request Access
+              </button>
+              <Link
+                to="/dashboard"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-navy hover:bg-navy/90 transition-colors shadow-2xs"
+              >
+                Return to Dashboard
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-5 pt-4 border-t border-amber-200/70 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-medium text-slate-600">
+            <div className="flex items-center gap-2">
+              <ShieldCheck size={16} className="text-amber-600 shrink-0" />
+              <span>Domain Reputation & Spam Protection</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Sparkles size={16} className="text-amber-600 shrink-0" />
+              <span>10-Recipients Per-Batch Safe Dispatch</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FileText size={16} className="text-amber-600 shrink-0" />
+              <span>Automated ATS Resume Attachment</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* --- Outreach Metrics & Sender Identity Bar --- */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
